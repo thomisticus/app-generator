@@ -158,7 +158,7 @@ class ModelGenerator extends BaseGenerator
 				return '\Illuminate\Database\Eloquent\Collection' . ' ' . $relation->inputs[0];
 			case 'mtm':
 			case 'hmt':
-				return '\Illuminate\Database\Eloquent\Collection' . ' ' . camel_case($relation->inputs[1]);
+				return '\Illuminate\Database\Eloquent\Collection' . ' ' . camel_case(model_name_from_table_name($relation->inputs[1]));
 			default:
 				return $db_type;
 		}
