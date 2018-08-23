@@ -1,0 +1,51 @@
+<?php
+
+namespace $NAMESPACE_TRAIT$;
+
+use Exception;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Trait ExceptionHandlerTrait
+ * @package App\Traits
+ */
+trait ExceptionHandlerTrait
+{
+	/**
+	 * @param      $anonymousFunction
+	 *
+	 * @return Exception|mixed
+	 * @throws Exception
+	 */
+	public function tryWithTransaction($anonymousFunction)
+	{
+		try {
+			DB::beginTransaction();
+
+			$result = $anonymousFunction();
+
+			DB::commit();
+
+			return $result;
+
+		} catch (Exception $exception) {
+			DB::rollBack();
+
+			return $exception;
+		}
+	}
+
+	/**
+	 * @param      $anonymousFunction
+	 *
+	 * @return Exception|mixed
+	 */
+	public function tryWithoutTransaction($anonymousFunction)
+	{
+		try {
+			return $anonymousFunction();
+		} catch (Exception $exception) {
+			return $exception;
+		}
+	}
+}

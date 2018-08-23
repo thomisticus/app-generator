@@ -1,0 +1,5 @@
+	/**
+	 * The name of the "deleted at" column.
+	 *
+	 * @var string
+	 */

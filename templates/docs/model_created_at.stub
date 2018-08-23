@@ -1,0 +1,5 @@
+/**
+	 * The name of the "created at" column.
+	 *
+	 * @var string
+	 */

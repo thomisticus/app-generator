@@ -1,0 +1,108 @@
+<?php
+
+namespace $NAMESPACE_SERVICE$;
+
+use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
+use $NAMESPACE_TRAIT$\ResponseTrait;
+use Illuminate\Http\Request;
+
+/**
+ * Class $MODEL_NAME$Service.
+ * Contains business logics of $MODEL_NAME$Controller
+ *
+ * @package namespace $NAMESPACE_SERVICE$;
+ */
+class $MODEL_NAME$Service
+{
+	use ResponseTrait;
+
+	/**
+	 * @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
+	 */
+	private $$MODEL_NAME_CAMEL$Repository;
+
+	/**
+	 * $MODEL_NAME$Service constructor
+	 * Dependencies injection
+	 *
+	 * @param $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
+	 */
+	public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository)
+	{
+		$this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
+	}
+
+	/**
+	 * Returns a paginated list of $MODEL_NAME$.
+	 *
+	 * @return mixed
+	 * @throws \Prettus\Repository\Exceptions\RepositoryException
+	 */
+	public function get$MODEL_NAME$s()
+	{
+		$this->$MODEL_NAME_CAMEL$Repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
+
+		$$MODEL_NAME_CAMEL$s = $this->$MODEL_NAME_CAMEL$Repository->$RENDER_TYPE$;
+
+		return $this->sendResponse($$MODEL_NAME_CAMEL$s, __('responses.success.list'), \Illuminate\Http\Response::HTTP_OK, false);
+	}
+
+	/**
+	 * Data of a $MODEL_NAME$ by primary key
+	 *
+	 * @param int|string $id
+	 *
+	 * @return mixed
+	 */
+	public function get$MODEL_NAME$ById($id)
+	{
+		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
+
+		return $this->sendResponse($$MODEL_NAME_CAMEL$, __('responses.success.item'));
+	}
+
+	/**
+	 * Store a newly created $MODEL_NAME$ in storage.
+	 *
+	 * @param Request $request
+	 *
+	 * @return mixed
+	 * @throws \Prettus\Validator\Exceptions\ValidatorException
+	 */
+	public function create(Request $request)
+	{
+		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($request->all());
+
+		return $this->sendResponse($$MODEL_NAME_CAMEL$, __('responses.success.create'), \Illuminate\Http\Response::HTTP_CREATED);
+	}
+
+	/**
+	 * Update the specified $MODEL_NAME$ in storage.
+	 *
+	 * @param Request    $request
+	 * @param int|string $id
+	 *
+	 * @return mixed
+	 * @throws \Prettus\Validator\Exceptions\ValidatorException
+	 */
+	public function update(Request $request, $id)
+	{
+		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
+
+		return $this->sendResponse($$MODEL_NAME_CAMEL$, __('responses.success.update'), \Illuminate\Http\Response::HTTP_ACCEPTED);
+	}
+
+	/**
+	 * Remove the specified $MODEL_NAME$ from storage.
+	 *
+	 * @param int|string $id
+	 *
+	 * @return null
+	 */
+	public function destroy($id)
+	{
+		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->delete($id);
+
+		return $this->sendResponse($$MODEL_NAME_CAMEL$, __('responses.success.destroy'));
+	}
+}

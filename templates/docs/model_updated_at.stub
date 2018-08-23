@@ -1,0 +1,5 @@
+	/**
+	 * The name of the "updated at" column.
+	 *
+	 * @var string
+	 */
