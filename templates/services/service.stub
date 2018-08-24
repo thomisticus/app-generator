@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
  */
 class $MODEL_NAME$Service
 {
-	use ResponseTrait;
-
 	/**
 	 * @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
 	 */
