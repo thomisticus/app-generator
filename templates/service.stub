@@ -42,7 +42,7 @@ class $MODEL_NAME$Service
 	{
 		$this->$MODEL_NAME_CAMEL$Repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
 
-		$$MODEL_NAME_CAMEL$s = $this->$MODEL_NAME_CAMEL$Repository->$RENDER_TYPE$;
+		$$MODEL_NAME_CAMEL$s = $this->$MODEL_NAME_CAMEL$Repository->paginate();
 
 		return $this->sendResponse($$MODEL_NAME_CAMEL$s, __('responses.success.list'), \Illuminate\Http\Response::HTTP_OK, false);
 	}
