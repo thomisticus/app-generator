@@ -69,6 +69,7 @@ class GeneratorConfig
 		'jsonFromGUI',
 		'tableName',
 		'fromTable',
+		'jsonResponse',
 		'save',
 		'primary',
 		'prefix',
@@ -80,6 +81,11 @@ class GeneratorConfig
 	];
 
 	public $tableName;
+
+	/**
+	 * @var bool
+	 */
+	public $jsonResponse;
 
 	/** @var string */
 	protected $primaryName;
@@ -101,6 +107,7 @@ class GeneratorConfig
 		$this->preparePrefixes();
 		$this->loadPaths();
 		$this->prepareTableName();
+		$this->prepareJsonResponseParam();
 		$this->preparePrimaryName();
 		$this->loadNamespaces($commandData);
 		$commandData = $this->loadDynamicVariables($commandData);
@@ -290,6 +297,12 @@ class GeneratorConfig
 		} else {
 			$this->tableName = $this->mSnakePlural;
 		}
+	}
+
+	public function prepareJsonResponseParam()
+	{
+		$jsonResponse = $this->getOption('jsonResponse') === 'false' ? false : true;
+		$this->setOption('jsonResponse', $jsonResponse);
 	}
 
 	public function preparePrimaryName()

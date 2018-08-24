@@ -273,6 +273,7 @@ class BaseCommand extends Command
 			['fieldsFile', null, InputOption::VALUE_REQUIRED, 'Fields input as json file'],
 			['jsonFromGUI', null, InputOption::VALUE_REQUIRED, 'Direct Json string while using GUI interface'],
 			['tableName', null, InputOption::VALUE_REQUIRED, 'Table Name'],
+			['jsonResponse', null, InputOption::VALUE_REQUIRED, 'To methods return jsons'],
 			['fromTable', null, InputOption::VALUE_NONE, 'Generate from existing table'],
 			['save', null, InputOption::VALUE_NONE, 'Save model schema to file'],
 			['primary', null, InputOption::VALUE_REQUIRED, 'Custom primary key'],

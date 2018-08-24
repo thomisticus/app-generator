@@ -4,6 +4,7 @@ namespace Thomisticus\Generator\Commands\Service;
 
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Generators\Service\ServiceGenerator;
 
 class ServiceGeneratorCommand extends BaseCommand
 {
@@ -12,14 +13,14 @@ class ServiceGeneratorCommand extends BaseCommand
 	 *
 	 * @var string
 	 */
-	protected $name = 'thomisticus:repository';
+	protected $name = 'thomisticus:service';
 
 	/**
 	 * The console command description.
 	 *
 	 * @var string
 	 */
-	protected $description = 'Create repository command';
+	protected $description = 'Create service command';
 
 	/**
 	 * Create a new command instance.
@@ -40,7 +41,7 @@ class ServiceGeneratorCommand extends BaseCommand
 	{
 		parent::handle();
 
-		$repositoryGenerator = new RepositoryGenerator($this->commandData);
+		$repositoryGenerator = new ServiceGenerator($this->commandData);
 		$repositoryGenerator->generate();
 
 		$this->performPostActions();

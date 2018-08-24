@@ -26,7 +26,8 @@ class ServiceGenerator extends BaseGenerator
 
 	public function generate()
 	{
-		$templateData = get_template('service', 'crud-generator');
+		$templateName = $this->commandData->getOption('jsonResponse') ? 'service_json_response' : 'service';
+		$templateData = get_template('services.' . $templateName, 'crud-generator');
 
 		$paginate = $this->commandData->getOption('paginate');
 
