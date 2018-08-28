@@ -235,28 +235,6 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	}
 
 	/**
-	 * Get the model skipping presenter, because is not to get some data.
-	 *
-	 * @param string $method
-	 * @param array  $attributes
-	 * @param null   $id
-	 *
-	 * @return mixed
-	 * @throws \Prettus\Validator\Exceptions\ValidatorException
-	 */
-	protected function getModelSkippingPresenter(array $attributes, $method = 'create', $id = null)
-	{
-		$temporarySkipPresenter = $this->skipPresenter;
-		$this->skipPresenter(true);
-
-		$model = $method == 'update' && !empty($id) ? parent::update($attributes, $id) : parent::create($attributes);
-
-		$this->skipPresenter($temporarySkipPresenter);
-
-		return $model;
-	}
-
-	/**
 	 * @param      $anonymousFunc
 	 * @param bool $withTransaction
 	 *
