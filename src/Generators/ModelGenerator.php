@@ -37,7 +37,7 @@ class ModelGenerator extends BaseGenerator
 		$this->commandData = $commandData;
 		$this->path        = $commandData->config->pathModel;
 		$this->fileName    = $this->commandData->modelName . '.php';
-		$this->table       = $this->commandData->dynamicVars['$TABLE_NAME$'];
+		$this->commandData->dynamicVars['$TABLE_NAME$'] = strtolower($this->commandData->dynamicVars['$TABLE_NAME$']);
 	}
 
 	public function generate()
@@ -62,7 +62,7 @@ class ModelGenerator extends BaseGenerator
 
 		foreach ($this->commandData->fields as $field) {
 			if ($field->isFillable) {
-				$fillables[] = "'" . $field->name . "'";
+				$fillables[] = "'" . strtolower($field->name) . "'";
 			}
 		}
 
@@ -71,7 +71,7 @@ class ModelGenerator extends BaseGenerator
 		$templateData = $this->fillTimestamps($templateData);
 
 		if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
-			$primary = generate_new_line_tab() . "protected \$primaryKey = '" . $primary . "';\n";
+			$primary = generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
 		}
 
 		$templateData = str_replace('$PRIMARY$', $primary, $templateData);
@@ -126,7 +126,7 @@ class ModelGenerator extends BaseGenerator
 			}
 			foreach ($this->commandData->fields as $field) {
 				if ($field->isFillable) {
-					$fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . $field->name . PHP_EOL;
+					$fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . strtolower($field->name) . PHP_EOL;
 				}
 			}
 			$docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);

@@ -173,11 +173,11 @@ return [
 
 		'enabled' => true,
 
-		'created_at' => 'DH_CRIADO_EM',
+		'created_at' => 'dh_criado_em',
 
-		'updated_at' => 'DH_ATUALIZADO_EM',
+		'updated_at' => 'dh_atualizado_em',
 
-		'deleted_at' => 'DH_DELETADO_EM',
+		'deleted_at' => 'dh_deletado_em',
 	],
 
 	/*

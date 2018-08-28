@@ -85,7 +85,7 @@ class GeneratorFieldRelation
 			$inputFields = '';
 		}
 
-		$template = str_replace('$INPUT_FIELDS$', $inputFields, $template);
+		$template = str_replace('$INPUT_FIELDS$', strtolower($inputFields), $template);
 
 		return $template;
 	}
