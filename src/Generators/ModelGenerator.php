@@ -71,7 +71,8 @@ class ModelGenerator extends BaseGenerator
 		$templateData = $this->fillTimestamps($templateData);
 
 		if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
-			$primary = generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+			$primaryDocs = get_template('docs.model_primary', 'crud-generator');
+			$primary = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
 		}
 
 		$templateData = str_replace('$PRIMARY$', $primary, $templateData);
