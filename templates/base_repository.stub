@@ -209,6 +209,7 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function findWhereIn($field, array $values, $columns = ['*'])
 	{

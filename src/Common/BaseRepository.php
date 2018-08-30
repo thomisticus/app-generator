@@ -4,6 +4,7 @@ namespace Thomisticus\Generator\Common;
 
 use App\Traits\ExceptionHandlerTrait;
 use Exception;
+use Prettus\Validator\Exceptions\ValidatorException;
 
 abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepository
 {
@@ -16,21 +17,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 *
 	 * @return mixed
 	 * @throws \Prettus\Validator\Exceptions\ValidatorException
+	 * @throws Exception
 	 */
 	public function create(array $attributes)
 	{
-		$createAnonFunction = function () use ($attributes) {
-			$model = $this->getModelSkippingPresenter('create', $attributes);
-
-			$model = $this->updateRelations($model, $attributes);
-			$model->save();
-
-			return $model;
-		};
-
-		$result = $this->tryWithTransaction($createAnonFunction);
-
-		return ($result instanceof Exception) ? $result : $this->parserResult($result);
+		return $this->getResult(function () use ($attributes) {
+			return parent::create($attributes);
+		});
 	}
 
 	/**
@@ -41,25 +34,20 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 *
 	 * @return mixed
 	 * @throws \Prettus\Validator\Exceptions\ValidatorException
+	 * @throws Exception
 	 */
 	public function update(array $attributes, $id)
 	{
-		$updateAnonFunction = function () use ($attributes, $id) {
-			$model = $this->getModelSkippingPresenter('update', $attributes, $id);
-
-			$model = $this->updateRelations($model, $attributes);
-			$model->save();
-		};
-
-		$result = $this->tryWithTransaction($updateAnonFunction);
-
-		return ($result instanceof Exception) ? $result : $this->parserResult($result);
+		return $this->getResult(function () use ($attributes, $id) {
+			return parent::update($attributes, $id);
+		});
 	}
 
 	/**
 	 * Update or Create an entity in repository
 	 *
 	 * @throws ValidatorException
+	 * @throws Exception
 	 *
 	 * @param array $attributes
 	 * @param array $values
@@ -68,76 +56,9 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 */
 	public function updateOrCreate(array $attributes, array $values = [])
 	{
-		return $this->tryWithTransaction(function () use ($attributes, $values) {
+		return $this->getResult(function () use ($attributes, $values) {
 			return parent::updateOrCreate($attributes, $values);
 		});
-	}
-
-	/**
-	 * Update relationships
-	 *
-	 *
-	 * @param $model
-	 * @param $attributes
-	 *
-	 * @return mixed
-	 */
-	public function updateRelations($model, $attributes)
-	{
-		foreach ($attributes as $key => $val) {
-			if (isset($model) &&
-				method_exists($model, $key) &&
-				is_a(@$model->$key(), 'Illuminate\Database\Eloquent\Relations\Relation')
-			) {
-				$methodClass = get_class($model->$key($key));
-				switch ($methodClass) {
-					case 'Illuminate\Database\Eloquent\Relations\BelongsToMany':
-						$new_values = array_get($attributes, $key, []);
-						if (array_search('', $new_values) !== false) {
-							unset($new_values[array_search('', $new_values)]);
-						}
-						$model->$key()->sync(array_values($new_values));
-						break;
-					case 'Illuminate\Database\Eloquent\Relations\BelongsTo':
-						$model_key         = $model->$key()->getQualifiedForeignKey();
-						$new_value         = array_get($attributes, $key, null);
-						$new_value         = $new_value == '' ? null : $new_value;
-						$model->$model_key = $new_value;
-						break;
-					case 'Illuminate\Database\Eloquent\Relations\HasOne':
-						break;
-					case 'Illuminate\Database\Eloquent\Relations\HasOneOrMany':
-						break;
-					case 'Illuminate\Database\Eloquent\Relations\HasMany':
-						$new_values = array_get($attributes, $key, []);
-						if (array_search('', $new_values) !== false) {
-							unset($new_values[array_search('', $new_values)]);
-						}
-
-						list($temp, $model_key) = explode('.', $model->$key($key)->getQualifiedForeignPivotKeyName());
-
-						foreach ($model->$key as $rel) {
-							if (!in_array($rel->id, $new_values)) {
-								$rel->$model_key = null;
-								$rel->save();
-							}
-							unset($new_values[array_search($rel->id, $new_values)]);
-						}
-
-						if (count($new_values) > 0) {
-							$related = get_class($model->$key()->getRelated());
-							foreach ($new_values as $val) {
-								$rel             = $related::find($val);
-								$rel->$model_key = $model->id;
-								$rel->save();
-							}
-						}
-						break;
-				}
-			}
-		}
-
-		return $model;
 	}
 
 	/**
@@ -146,10 +67,11 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param $id
 	 *
 	 * @return int
+	 * @throws Exception
 	 */
 	public function delete($id)
 	{
-		return $this->tryWithTransaction(function () use ($id) {
+		return $this->getResult(function () use ($id) {
 			return parent::delete($id);
 		});
 	}
@@ -160,10 +82,11 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $where
 	 *
 	 * @return int
+	 * @throws Exception
 	 */
 	public function deleteWhere(array $where)
 	{
-		return $this->tryWithTransaction(function () use ($where) {
+		return $this->getResult(function () use ($where) {
 			return parent::deleteWhere($where);
 		});
 	}
@@ -175,12 +98,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function all($columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($columns) {
+		return $this->getResult(function () use ($columns) {
 			return parent::all($columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -189,12 +113,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function first($columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($columns) {
+		return $this->getResult(function () use ($columns) {
 			return parent::first($columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -203,10 +128,11 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $attributes
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function firstOrNew(array $attributes = [])
 	{
-		return $this->tryWithoutTransaction(function () use ($attributes) {
+		return $this->getResult(function () use ($attributes) {
 			return parent::firstOrNew($attributes);
 		});
 	}
@@ -217,10 +143,11 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $attributes
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function firstOrCreate(array $attributes = [])
 	{
-		return $this->tryWithoutTransaction(function () use ($attributes) {
+		return $this->getResult(function () use ($attributes) {
 			return parent::firstOrCreate($attributes);
 		});
 	}
@@ -232,12 +159,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function find($id, $columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($id, $columns) {
+		return $this->getResult(function () use ($id, $columns) {
 			return parent::find($id, $columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -248,12 +176,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function findByField($field, $value = null, $columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($field, $value, $columns) {
+		return $this->getResult(function () use ($field, $value, $columns) {
 			return parent::findByField($field, $value, $columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -263,12 +192,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function findWhere(array $where, $columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($where, $columns) {
+		return $this->getResult(function () use ($where, $columns) {
 			return parent::findWhere($where, $columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -279,12 +209,13 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function findWhereIn($field, array $values, $columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($field, $values, $columns) {
+		return $this->getResult(function () use ($field, $values, $columns) {
 			return parent::findWhereIn($field, $values, $columns);
-		});
+		}, false);
 	}
 
 	/**
@@ -295,34 +226,30 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 	 * @param array $columns
 	 *
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function findWhereNotIn($field, array $values, $columns = ['*'])
 	{
-		return $this->tryWithoutTransaction(function () use ($field, $values, $columns) {
+		return $this->getResult(function () use ($field, $values, $columns) {
 			return parent::findWhereNotIn($field, $values, $columns);
-		});
+		}, false);
 	}
 
 	/**
-	 * Get the model skipping presenter, because is not to get some data.
+	 * @param      $anonymousFunc
+	 * @param bool $withTransaction
 	 *
-	 * @param string $method
-	 * @param array  $attributes
-	 * @param null   $id
-	 *
-	 * @return mixed
-	 * @throws \Prettus\Validator\Exceptions\ValidatorException
+	 * @return bool|Exception|mixed
+	 * @throws Exception
 	 */
-	protected function getModelSkippingPresenter($method = 'create', array $attributes, $id = null)
+	private function getResult($anonymousFunc, $withTransaction = true)
 	{
-		$temporarySkipPresenter = $this->skipPresenter;
-		$this->skipPresenter(true);
+		if (is_callable($anonymousFunc)) {
+			return config('app.env') != 'production' ? $anonymousFunc() :
+				($withTransaction ? $this->tryWithTransaction($anonymousFunc) : $this->tryWithoutTransaction($anonymousFunc));
+		}
 
-		$model = $method == 'update' && !empty($id) ? parent::update($attributes, $id) : parent::create($attributes);
-
-		$this->skipPresenter($temporarySkipPresenter);
-
-		return $model;
+		return false;
 	}
 
 }
