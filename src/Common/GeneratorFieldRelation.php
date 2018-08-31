@@ -10,13 +10,14 @@ class GeneratorFieldRelation
 	public $type;
 	public $inputs;
 
-	public static function parseRelation($relationInput)
+	public static function parseRelation($relationInput, $aditionalParams = [])
 	{
 		$inputs = explode(',', $relationInput);
 
-		$relation         = new self();
-		$relation->type   = array_shift($inputs);
-		$relation->inputs = $inputs;
+		$relation                  = new self();
+		$relation->type            = array_shift($inputs);
+		$relation->inputs          = $inputs;
+		$relation->aditionalParams = $aditionalParams;
 
 		return $relation;
 	}
@@ -83,6 +84,11 @@ class GeneratorFieldRelation
 			$inputFields = ", '" . $inputFields . "'";
 		} else {
 			$inputFields = '';
+		}
+
+		if (!empty($this->aditionalParams)) {
+			ksort($this->aditionalParams);
+			$inputFields .= ", '" . implode("', '", $this->aditionalParams) . "'";
 		}
 
 		$template = str_replace('$INPUT_FIELDS$', strtolower($inputFields), $template);

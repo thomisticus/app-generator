@@ -350,8 +350,17 @@ class TableFieldsGenerator
 					// detect if one to many relationship is there
 					$isOneToMany = $this->isOneToMany($primary, $foreignKey, $modelTable->primaryKey);
 					if ($isOneToMany) {
+
+						$aditionalParams = [];
+						if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
+							$aditionalParams = [
+								'foreignKey' => $foreignKey->localField,
+								'localKey' => $foreignKey->foreignField
+							];
+						}
+
 						$modelName         = model_name_from_table_name($tableName);
-						$this->relations[] = GeneratorFieldRelation::parseRelation('1tm,' . $modelName);
+						$this->relations[] = GeneratorFieldRelation::parseRelation('1tm,' . $modelName, $aditionalParams);
 						continue;
 					}
 				}
@@ -394,9 +403,11 @@ class TableFieldsGenerator
 
 		// if foreign key is there
 		if ($isAnyKeyOnModelTable) {
+
+			$aditionalParams = [];
 			foreach ($foreignKeys as $foreignKey) {
-				$foreignField     = $foreignKey->foreignField;
-				$foreignTableName = $foreignKey->foreignTable;
+				$foreignField     = $foreignKey->foreignField; // cd_fabrica_software
+				$foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
 
 				// if foreign table is model table
 				if ($foreignTableName == $modelTableName) {
@@ -405,6 +416,12 @@ class TableFieldsGenerator
 					$foreignTable = $tables[$foreignTableName];
 					// get the many to many model table name
 					$manyToManyTable = $foreignTableName;
+				}
+
+				if ($foreignKey->foreignField == $this->primaryKey) {
+					$aditionalParams['foreignPivotKey'] = $foreignKey->localField;
+				} else {
+					$aditionalParams['relatedPivotKey'] = $foreignKey->localField;
 				}
 
 				// if foreign field is not primary key of foreign table
@@ -424,7 +441,7 @@ class TableFieldsGenerator
 
 		$modelName = model_name_from_table_name($manyToManyTable);
 
-		return GeneratorFieldRelation::parseRelation('mtm,' . $modelName . ',' . $tableName);
+		return GeneratorFieldRelation::parseRelation('mtm,' . $modelName . ',' . $tableName, $aditionalParams);
 	}
 
 	/**
@@ -495,8 +512,17 @@ class TableFieldsGenerator
 			}
 
 			if ($foreignField == $tables[$foreignTable]->primaryKey) {
+
+				$aditionalParams = [];
+				if (!empty($foreignKey->localField)) {
+					$aditionalParams = [
+						'foreignKey' => $foreignKey->localField,
+						'ownerKey'   => $foreignField
+					];
+				}
+
 				$modelName            = model_name_from_table_name($foreignTable);
-				$manyToOneRelations[] = GeneratorFieldRelation::parseRelation('mt1,' . $modelName);
+				$manyToOneRelations[] = GeneratorFieldRelation::parseRelation('mt1,' . $modelName, $aditionalParams);
 			}
 		}
 
