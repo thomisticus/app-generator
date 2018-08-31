@@ -355,12 +355,13 @@ class TableFieldsGenerator
 						if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
 							$aditionalParams = [
 								'foreignKey' => $foreignKey->localField,
-								'localKey' => $foreignKey->foreignField
+								'localKey'   => $foreignKey->foreignField
 							];
 						}
 
 						$modelName         = model_name_from_table_name($tableName);
-						$this->relations[] = GeneratorFieldRelation::parseRelation('1tm,' . $modelName, $aditionalParams);
+						$this->relations[] = GeneratorFieldRelation::parseRelation('1tm,' . $modelName,
+							$aditionalParams);
 						continue;
 					}
 				}

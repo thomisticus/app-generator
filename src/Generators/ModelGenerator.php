@@ -34,9 +34,9 @@ class ModelGenerator extends BaseGenerator
 	 */
 	public function __construct(CommandData $commandData)
 	{
-		$this->commandData = $commandData;
-		$this->path        = $commandData->config->pathModel;
-		$this->fileName    = $this->commandData->modelName . '.php';
+		$this->commandData                              = $commandData;
+		$this->path                                     = $commandData->config->pathModel;
+		$this->fileName                                 = $this->commandData->modelName . '.php';
 		$this->commandData->dynamicVars['$TABLE_NAME$'] = strtolower($this->commandData->dynamicVars['$TABLE_NAME$']);
 	}
 
@@ -72,7 +72,7 @@ class ModelGenerator extends BaseGenerator
 
 		if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
 			$primaryDocs = get_template('docs.model_primary', 'crud-generator');
-			$primary = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+			$primary     = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
 		}
 
 		$templateData = str_replace('$PRIMARY$', $primary, $templateData);
