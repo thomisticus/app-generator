@@ -122,7 +122,7 @@ class TableFieldsGenerator
 				$field->htmlType = 'password';
 			} elseif (strtolower($field->name) == 'email') {
 				$field->htmlType = 'email';
-			} elseif (in_array($field->name, $this->timestamps)) {
+			} elseif (in_array(strtolower($field->name), array_map('strtolower', $this->timestamps))) {
 				$field->isSearchable = false;
 				$field->isFillable   = false;
 				$field->inForm       = false;
@@ -402,7 +402,7 @@ class TableFieldsGenerator
 		}
 
 		$aditionalParams = [];
-		
+
 		// if foreign key is there
 		if ($isAnyKeyOnModelTable) {
 
