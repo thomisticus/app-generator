@@ -14,6 +14,13 @@ use Illuminate\Http\Request;
 class $MODEL_NAME$Service
 {
 	/**
+	 * @var array
+	 */
+	public $relationships = [
+		$RELATIONSHIPS$
+	];
+
+	/**
 	 * @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
 	 */
 	private $$MODEL_NAME_CAMEL$Repository;
@@ -39,7 +46,7 @@ class $MODEL_NAME$Service
 	{
 		$this->$MODEL_NAME_CAMEL$Repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
 
-		return $this->$MODEL_NAME_CAMEL$Repository->paginate();
+		return $this->$MODEL_NAME_CAMEL$Repository->with($this->repositories)->paginate();
 	}
 
 	/**
@@ -51,7 +58,7 @@ class $MODEL_NAME$Service
 	 */
 	public function get$MODEL_NAME$ById($id)
 	{
-		return $this->$MODEL_NAME_CAMEL$Repository->find($id);
+		return $this->$MODEL_NAME_CAMEL$Repository->with($this->repositories)->find($id);
 	}
 
 	/**

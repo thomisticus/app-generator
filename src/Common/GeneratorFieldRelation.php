@@ -22,7 +22,7 @@ class GeneratorFieldRelation
 		return $relation;
 	}
 
-	public function getRelationFunctionText()
+	public function getRelationAttributes()
 	{
 		$inflector = Inflector::get('pt');
 
@@ -60,8 +60,19 @@ class GeneratorFieldRelation
 				break;
 		}
 
-		if (!empty($functionName) and !empty($relation)) {
-			return $this->generateRelation($functionName, $relation, $relationClass);
+		return [
+			'functionName'  => $functionName,
+			'relation'      => $relation,
+			'relationClass' => $relationClass
+		];
+	}
+
+	public function getRelationFunctionText()
+	{
+		$relationAttr = $this->getRelationAttributes();
+
+		if (!empty($relationAttr['functionName']) and !empty($relationAttr['relation'])) {
+			return $this->generateRelation($relationAttr['functionName'], $relationAttr['relation'], $relationAttr['relationClass']);
 		}
 
 		return '';

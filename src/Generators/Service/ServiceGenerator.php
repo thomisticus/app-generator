@@ -5,6 +5,7 @@ namespace Thomisticus\Generator\Generators\Service;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
+use ICanBoogie\Inflector;
 
 class ServiceGenerator extends BaseGenerator
 {
@@ -26,6 +27,8 @@ class ServiceGenerator extends BaseGenerator
 
 	public function generate()
 	{
+		$inflector = Inflector::get('pt');
+
 		$templateName = $this->commandData->getOption('jsonResponse') ? 'service_json_response' : 'service';
 		$templateData = get_template('services.' . $templateName, 'crud-generator');
 
@@ -36,6 +39,17 @@ class ServiceGenerator extends BaseGenerator
 		} else {
 			$templateData = str_replace('$RENDER_TYPE$', 'all()', $templateData);
 		}
+
+		$relationships = [];
+//		foreach ($this->commandData->relations as $relation) {
+//			$attributes = $relation->getRelationAttributes();
+//
+//			if (!empty($attributes['functionName'])) {
+//				$relationships[] = "'" . $attributes['functionName'] . "'";
+//			}
+//		}
+
+		$templateData = str_replace('$RELATIONSHIPS$', implode(',' . generate_new_line_tab(1, 2), $relationships), $templateData);
 
 		$templateData = fill_template($this->commandData->dynamicVars, $templateData);
 

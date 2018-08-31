@@ -401,10 +401,11 @@ class TableFieldsGenerator
 			}
 		}
 
+		$aditionalParams = [];
+		
 		// if foreign key is there
 		if ($isAnyKeyOnModelTable) {
 
-			$aditionalParams = [];
 			foreach ($foreignKeys as $foreignKey) {
 				$foreignField     = $foreignKey->foreignField; // cd_fabrica_software
 				$foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software

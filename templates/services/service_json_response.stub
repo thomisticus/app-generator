@@ -17,6 +17,13 @@ class $MODEL_NAME$Service
 	use ResponseTrait;
 
 	/**
+	 * @var array
+	 */
+	public $relationships = [
+		$RELATIONSHIPS$
+	];
+
+	/**
 	 * @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
 	 */
 	private $$MODEL_NAME_CAMEL$Repository;
@@ -42,7 +49,7 @@ class $MODEL_NAME$Service
 	{
 		$this->$MODEL_NAME_CAMEL$Repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
 
-		$$MODEL_NAME_CAMEL$s = $this->$MODEL_NAME_CAMEL$Repository->paginate();
+		$$MODEL_NAME_CAMEL$s = $this->$MODEL_NAME_CAMEL$Repository->with($this->relationships)->paginate();
 
 		return $this->sendResponse($$MODEL_NAME_CAMEL$s, __('responses.success.list'), \Illuminate\Http\Response::HTTP_OK, false);
 	}
@@ -53,10 +60,11 @@ class $MODEL_NAME$Service
 	 * @param int|string $id
 	 *
 	 * @return mixed
+	 * @throws \Exception
 	 */
 	public function get$MODEL_NAME$ById($id)
 	{
-		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
+		$$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->with($this->relationships)->find($id);
 
 		return $this->sendResponse($$MODEL_NAME_CAMEL$, __('responses.success.item'));
 	}
