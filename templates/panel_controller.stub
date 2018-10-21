@@ -4,7 +4,7 @@ namespace $NAMESPACE_CONTROLLER$;
 
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class PanelController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,6 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        return view('panel');
     }
 }

@@ -29,7 +29,7 @@ class LayoutPublishCommand extends PublishBaseCommand
 	{
 		$this->copyView();
 		$this->updateRoutes();
-		$this->publishHomeController();
+		$this->publishPanelController();
 	}
 
 	private function copyView()
@@ -65,7 +65,7 @@ class LayoutPublishCommand extends PublishBaseCommand
 			'layouts/datatables_css' => 'layouts/datatables_css.blade.php',
 			'layouts/datatables_js'  => 'layouts/datatables_js.blade.php',
 			'layouts/menu'           => 'layouts/menu.blade.php',
-			'layouts/home'           => 'home.blade.php',
+			'layouts/panel'           => 'panel.blade.php',
 			'auth/login'             => 'auth/login.blade.php',
 			'auth/register'          => 'auth/register.blade.php',
 			'auth/email'             => 'auth/passwords/email.blade.php',
@@ -93,15 +93,15 @@ class LayoutPublishCommand extends PublishBaseCommand
 		$this->comment("\nRoutes added");
 	}
 
-	private function publishHomeController()
+	private function publishPanelController()
 	{
-		$templateData = get_template('home_controller', 'crud-generator');
+		$templateData = get_template('panel_controller', 'crud-generator');
 
 		$templateData = $this->fillTemplate($templateData);
 
 		$controllerPath = config('thomisticus.crud_generator.path.controller', app_path('Http/Controllers/'));
 
-		$fileName = 'HomeController.php';
+		$fileName = 'PanelController.php';
 
 		if (file_exists($controllerPath . $fileName) && !$this->confirmOverwrite($fileName)) {
 			return;
@@ -109,7 +109,7 @@ class LayoutPublishCommand extends PublishBaseCommand
 
 		FileUtil::createFile($controllerPath, $fileName, $templateData);
 
-		$this->info('HomeController created');
+		$this->info('PanelController created');
 	}
 
 	/**
