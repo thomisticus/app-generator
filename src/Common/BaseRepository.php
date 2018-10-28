@@ -2,13 +2,13 @@
 
 namespace Thomisticus\Generator\Common;
 
-use App\Traits\ExceptionHandlerTrait;
+//use App\Traits\ExceptionHandlerTrait;
 use Exception;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepository
 {
-	use ExceptionHandlerTrait;
+//	use ExceptionHandlerTrait;
 
 	/**
 	 * Save a new entity in repository
