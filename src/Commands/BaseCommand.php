@@ -215,7 +215,7 @@ class BaseCommand extends Command
 
     public function runMigration()
     {
-        $migrationPath = config('infyom.laravel_generator.path.migration', database_path('migrations/'));
+        $migrationPath = config('thomisticus.crud_generator.path.migration', database_path('migrations/'));
         $path = Str::after($migrationPath, base_path()); // get path after base_path
         $this->call('migrate', ['--path' => $path, '--force' => true]);
 
