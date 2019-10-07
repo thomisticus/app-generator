@@ -183,6 +183,9 @@ class BaseCommand extends Command
                 $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
                 $repositoryTestGenerator->generate();
             }
+
+            $apiTestGenerator = new APITestGenerator($this->commandData);
+            $apiTestGenerator->generate();
         }
     }
 
