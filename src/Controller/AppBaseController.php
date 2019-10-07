@@ -12,8 +12,8 @@ use Thomisticus\Generator\Utils\ResponseUtil;
 
 class AppBaseController extends Controller
 {
-	public function sendResponse($result, $message)
-	{
-		return Response::json(ResponseUtil::makeResponse($message, $result));
-	}
+    public function sendResponse($result, $message)
+    {
+        return Response::json(ResponseUtil::makeResponse($message, $result));
+    }
 }

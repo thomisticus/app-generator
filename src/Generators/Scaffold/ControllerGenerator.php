@@ -50,7 +50,7 @@ class ControllerGenerator extends BaseGenerator
             $paginate = $this->commandData->getOption('paginate');
 
             if ($paginate) {
-                $templateData = str_replace('$RENDER_TYPE$', 'paginate('.$paginate.')', $templateData);
+                $templateData = str_replace('$RENDER_TYPE$', 'paginate(' . $paginate . ')', $templateData);
             } else {
                 $templateData = str_replace('$RENDER_TYPE$', 'all()', $templateData);
             }
@@ -72,13 +72,13 @@ class ControllerGenerator extends BaseGenerator
 
         $templateData = str_replace(
             '$DATATABLE_COLUMNS$',
-            implode(','.infy_nl_tab(1, 3), $this->generateDataTableColumns()),
+            implode(',' . infy_nl_tab(1, 3), $this->generateDataTableColumns()),
             $templateData
         );
 
         $path = $this->commandData->config->pathDataTables;
 
-        $fileName = $this->commandData->modelName.'DataTable.php';
+        $fileName = $this->commandData->modelName . 'DataTable.php';
 
         FileUtil::createFile($path, $fileName, $templateData);
 
@@ -106,7 +106,7 @@ class ControllerGenerator extends BaseGenerator
             if ($field->isSearchable) {
                 $dataTableColumns[] = $fieldTemplate;
             } else {
-                $dataTableColumns[] = "'".$field->name."' => ['searchable' => false]";
+                $dataTableColumns[] = "'" . $field->name . "' => ['searchable' => false]";
             }
         }
 

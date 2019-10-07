@@ -288,7 +288,7 @@ class ViewGenerator extends BaseGenerator
         if (!empty($views)) {
             $files = [];
             foreach ($views as $view) {
-                $files[] = $view.'.blade.php';
+                $files[] = $view . '.blade.php';
             }
         }
 

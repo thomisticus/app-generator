@@ -229,7 +229,7 @@ class BaseCommand extends Command
     public function isSkip($skip)
     {
         if ($this->commandData->getOption('skip')) {
-            return in_array($skip, (array) $this->commandData->getOption('skip'));
+            return in_array($skip, (array)$this->commandData->getOption('skip'));
         }
 
         return false;
