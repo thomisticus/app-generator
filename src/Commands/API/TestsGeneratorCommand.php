@@ -6,7 +6,6 @@ use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\API\APITestGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\TestTraitGenerator;
 
 class TestsGeneratorCommand extends BaseCommand
 {
@@ -45,9 +44,6 @@ class TestsGeneratorCommand extends BaseCommand
 
         $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
         $repositoryTestGenerator->generate();
-
-        $testTraitGenerator = new TestTraitGenerator($this->commandData);
-        $testTraitGenerator->generate();
 
         $apiTestGenerator = new APITestGenerator($this->commandData);
         $apiTestGenerator->generate();

@@ -25,7 +25,6 @@ use Thomisticus\Generator\Generators\SeederGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceControllerGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceRequestGenerator;
-use Thomisticus\Generator\Generators\TestTraitGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class BaseCommand extends Command
@@ -114,9 +113,6 @@ class BaseCommand extends Command
                 $repositoryTestGenerator->generate();
             }
 
-            $testTraitGenerator = new TestTraitGenerator($this->commandData);
-            $testTraitGenerator->generate();
-
             $apiTestGenerator = new APITestGenerator($this->commandData);
             $apiTestGenerator->generate();
         }
@@ -187,9 +183,6 @@ class BaseCommand extends Command
                 $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
                 $repositoryTestGenerator->generate();
             }
-
-            $testTraitGenerator = new TestTraitGenerator($this->commandData);
-            $testTraitGenerator->generate();
         }
     }
 

@@ -136,9 +136,6 @@ class RollbackGeneratorCommand extends Command
             $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
             $repositoryTestGenerator->rollback();
 
-            $testTraitGenerator = new TestTraitGenerator($this->commandData);
-            $testTraitGenerator->rollback();
-
             $apiTestGenerator = new APITestGenerator($this->commandData);
             $apiTestGenerator->rollback();
         }
