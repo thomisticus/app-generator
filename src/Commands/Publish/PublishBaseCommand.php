@@ -8,73 +8,73 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class PublishBaseCommand extends BaseCommand
 {
-	public function handle()
-	{
-	}
+    public function handle()
+    {
+    }
 
-	public function publishFile($sourceFile, $destinationFile, $fileName)
-	{
-		if (file_exists($destinationFile) && !$this->confirmOverwrite($destinationFile)) {
-			return;
-		}
+    public function publishFile($sourceFile, $destinationFile, $fileName)
+    {
+        if (file_exists($destinationFile) && !$this->confirmOverwrite($destinationFile)) {
+            return;
+        }
 
-		copy($sourceFile, $destinationFile);
+        copy($sourceFile, $destinationFile);
 
-		$this->comment($fileName . ' published');
-		$this->info($destinationFile);
-	}
+        $this->comment($fileName . ' published');
+        $this->info($destinationFile);
+    }
 
-	public function createFile($filePath, $fileName, $templateData)
-	{
-		if (file_exists($filePath . $fileName) && !$this->confirmOverwrite($fileName)) {
-			return;
-		}
+    public function createFile($filePath, $fileName, $templateData)
+    {
+        if (file_exists($filePath . $fileName) && !$this->confirmOverwrite($fileName)) {
+            return;
+        }
 
-		FileUtil::createFile($filePath, $fileName, $templateData);
+        FileUtil::createFile($filePath, $fileName, $templateData);
 
-		$this->info($fileName . ' created');
-	}
+        $this->info($fileName . ' created');
+    }
 
-	/**
-	 * @param      $sourceDir
-	 * @param      $destinationDir
-	 * @param      $dirName
-	 * @param bool $force
-	 *
-	 * @return bool|void
-	 */
-	public function publishDirectory($sourceDir, $destinationDir, $dirName, $force = false)
-	{
-		if (file_exists($destinationDir) && !$force && !$this->confirmOverwrite($destinationDir)) {
-			return;
-		}
+    /**
+     * @param      $sourceDir
+     * @param      $destinationDir
+     * @param      $dirName
+     * @param bool $force
+     *
+     * @return bool|void
+     */
+    public function publishDirectory($sourceDir, $destinationDir, $dirName, $force = false)
+    {
+        if (file_exists($destinationDir) && !$force && !$this->confirmOverwrite($destinationDir)) {
+            return;
+        }
 
-		File::makeDirectory($destinationDir, 493, true, true);
-		File::copyDirectory($sourceDir, $destinationDir);
+        File::makeDirectory($destinationDir, 493, true, true);
+        File::copyDirectory($sourceDir, $destinationDir);
 
-		$this->comment($dirName . ' published');
-		$this->info($destinationDir);
+        $this->comment($dirName . ' published');
+        $this->info($destinationDir);
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Get the console command options.
-	 *
-	 * @return array
-	 */
-	public function getOptions()
-	{
-		return [];
-	}
+    /**
+     * Get the console command options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return [];
+    }
 
-	/**
-	 * Get the console command arguments.
-	 *
-	 * @return array
-	 */
-	protected function getArguments()
-	{
-		return [];
-	}
+    /**
+     * Get the console command arguments.
+     *
+     * @return array
+     */
+    protected function getArguments()
+    {
+        return [];
+    }
 }

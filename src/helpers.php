@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use ICanBoogie\Inflector;
 
 if (!function_exists('generate_tab')) {
@@ -207,17 +208,19 @@ if (!function_exists('model_name_from_table_name')) {
 	 */
 	function model_name_from_table_name($tableName)
 	{
-		$inflector = Inflector::get('pt');
+//		$inflector = Inflector::get('pt');
+//
+//		$tableName         = $inflector->singularize(strtolower($tableName));
+//		$prefixesToReplace = ['tb_', 'td_', 'ta_'];
+//		$tableNamePrefix   = substr($tableName, 0, 3);
+//
+//		if (in_array($tableNamePrefix, $prefixesToReplace)) {
+//			$tableName = substr($tableName, 3);
+//		}
+//
+//		return ucfirst(camel_case($tableName));
+		return Str::ucfirst(Str::camel(Str::singular($tableName)));
 
-		$tableName         = $inflector->singularize(strtolower($tableName));
-		$prefixesToReplace = ['tb_', 'td_', 'ta_'];
-		$tableNamePrefix   = substr($tableName, 0, 3);
-
-		if (in_array($tableNamePrefix, $prefixesToReplace)) {
-			$tableName = substr($tableName, 3);
-		}
-
-		return ucfirst(camel_case($tableName));
 	}
 
 }

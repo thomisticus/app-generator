@@ -2,6 +2,7 @@
 
 namespace Thomisticus\Generator\Generators;
 
+use Illuminate\Support\Str;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Common\GeneratorFieldRelation;
 use Thomisticus\Generator\Utils\FileUtil;
@@ -9,310 +10,363 @@ use Thomisticus\Generator\Utils\TableFieldsGenerator;
 
 class ModelGenerator extends BaseGenerator
 {
-	/**
-	 * Fields not included in the generator by default.
-	 *
-	 * @var array
-	 */
-	protected $excluded_fields = [
-		'created_at',
-		'updated_at',
-	];
+    /**
+     * Fields not included in the generator by default.
+     *
+     * @var array
+     */
+    protected $excluded_fields = [
+        'created_at',
+        'updated_at',
+    ];
 
-	/** @var CommandData */
-	private $commandData;
+    /** @var CommandData */
+    private $commandData;
 
-	/** @var string */
-	private $path;
-	private $fileName;
-	private $table;
+    /** @var string */
+    private $path;
+    private $fileName;
+    private $table;
 
-	/**
-	 * ModelGenerator constructor.
-	 *
-	 * @param \Thomisticus\Generator\Common\CommandData $commandData
-	 */
-	public function __construct(CommandData $commandData)
-	{
-		$this->commandData                              = $commandData;
-		$this->path                                     = $commandData->config->pathModel;
-		$this->fileName                                 = $this->commandData->modelName . '.php';
-		$this->commandData->dynamicVars['$TABLE_NAME$'] = strtolower($this->commandData->dynamicVars['$TABLE_NAME$']);
-	}
+    /**
+     * ModelGenerator constructor.
+     *
+     * @param \Thomisticus\Generator\Common\CommandData $commandData
+     */
+    public function __construct(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+        $this->path = $commandData->config->pathModel;
+        $this->fileName = $this->commandData->modelName . '.php';
+        $this->commandData->dynamicVars['$TABLE_NAME$'] = strtolower($this->commandData->dynamicVars['$TABLE_NAME$']);
+    }
 
-	public function generate()
-	{
-		$templateData = get_template('model.model', 'crud-generator');
+    public function generate()
+    {
+        $templateData = get_template('model.model', 'crud-generator');
 
-		$templateData = $this->fillTemplate($templateData);
+        $templateData = $this->fillTemplate($templateData);
 
-		FileUtil::createFile($this->path, $this->fileName, $templateData);
+        FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-		$this->commandData->commandComment("\nModel created: ");
-		$this->commandData->commandInfo($this->fileName);
-	}
+        $this->commandData->commandComment("\nModel created: ");
+        $this->commandData->commandInfo($this->fileName);
+    }
 
-	private function fillTemplate($templateData)
-	{
-		$templateData = fill_template($this->commandData->dynamicVars, $templateData);
+    private function fillTemplate($templateData)
+    {
+        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-		$templateData = $this->fillSoftDeletes($templateData);
+        $templateData = $this->fillSoftDeletes($templateData);
 
-		$fillables = [];
+        $fillables = [];
 
-		foreach ($this->commandData->fields as $field) {
-			if ($field->isFillable) {
-				$fillables[] = "'" . strtolower($field->name) . "'";
-			}
-		}
+        foreach ($this->commandData->fields as $field) {
+            if ($field->isFillable) {
+                $fillables[] = "'" . strtolower($field->name) . "'";
+            }
+        }
 
-		$templateData = $this->fillDocs($templateData);
+        $templateData = $this->fillDocs($templateData);
 
-		$templateData = $this->fillTimestamps($templateData);
+        $templateData = $this->fillTimestamps($templateData);
 
-		if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
-			$primaryDocs = get_template('docs.model_primary', 'crud-generator');
-			$primary     = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
-		}
+        if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
+            $primaryDocs = get_template('docs.model_primary', 'crud-generator');
+            $primary = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+        } else {
+            $primary = '';
+        }
 
-		$templateData = str_replace('$PRIMARY$', $primary, $templateData);
+        $templateData = str_replace('$PRIMARY$', $primary, $templateData);
 
-		$templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $fillables), $templateData);
+        $templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $fillables), $templateData);
 
-		$templateData = str_replace('$RULES$', implode(',' . generate_new_line_tab(1, 2), $this->generateRules()),
-			$templateData);
+        $templateData = str_replace('$RULES$', implode(',' . generate_new_line_tab(1, 2), $this->generateRules()),
+            $templateData);
 
-		$templateData = str_replace('$CAST$', implode(',' . generate_new_line_tab(1, 2), $this->generateCasts()),
-			$templateData);
+        $templateData = str_replace('$CAST$', implode(',' . generate_new_line_tab(1, 2), $this->generateCasts()),
+            $templateData);
 
-		$templateData = str_replace(
-			'$RELATIONS$',
-			fill_template($this->commandData->dynamicVars,
-				implode(PHP_EOL . generate_new_line_tab(1, 1), $this->generateRelations())),
-			$templateData
-		);
+        $templateData = str_replace(
+            '$RELATIONS$',
+            fill_template($this->commandData->dynamicVars,
+                implode(PHP_EOL . generate_new_line_tab(1, 1), $this->generateRelations())),
+            $templateData
+        );
 
-		$templateData = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $templateData);
+        $templateData = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $templateData);
 
-		return $templateData;
-	}
+        return $templateData;
+    }
 
-	private function fillSoftDeletes($templateData)
-	{
-		if (!$this->commandData->getOption('softDelete')) {
-			$templateData = str_replace('$SOFT_DELETE_IMPORT$', '', $templateData);
-			$templateData = str_replace('$SOFT_DELETE$', '', $templateData);
-		} else {
-			$templateData = str_replace(
-				'$SOFT_DELETE_IMPORT$', "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
-				$templateData
-			);
-			$templateData = str_replace('$SOFT_DELETE$', generate_tab() . "use SoftDeletes;\n", $templateData);
-		}
+    private function fillSoftDeletes($templateData)
+    {
+        if (!$this->commandData->getOption('softDelete')) {
+            $templateData = str_replace('$SOFT_DELETE_IMPORT$', '', $templateData);
+            $templateData = str_replace('$SOFT_DELETE$', '', $templateData);
+            $templateData = str_replace('$SOFT_DELETE_DATES$', '', $templateData);
+        } else {
+            $templateData = str_replace(
+                '$SOFT_DELETE_IMPORT$', "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
+                $templateData
+            );
+            $templateData = str_replace('$SOFT_DELETE$', generate_tab() . "use SoftDeletes;\n", $templateData);
+            $deletedAtTimestamp = config('thomisticus.crud_generator.timestamps.deleted_at', 'deleted_at');
+            $templateData = str_replace(
+                '$SOFT_DELETE_DATES$',
+                generate_new_line_tab() . "protected \$dates = ['" . $deletedAtTimestamp . "'];\n",
+                $templateData
+            );
+        }
 
-		return $templateData;
-	}
+        return $templateData;
+    }
 
-	private function fillDocs($templateData)
-	{
-		if ($this->commandData->getAddOn('swagger')) {
-			$templateData = $this->generateSwagger($templateData);
-		} else {
-			$docsTemplate = get_template('docs.model', 'crud-generator');
-			$docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
+    private function fillDocs($templateData)
+    {
+        if ($this->commandData->getAddOn('swagger')) {
+            $templateData = $this->generateSwagger($templateData);
+        }
 
-			$fillables = '';
-			foreach ($this->commandData->relations as $relation) {
-				$fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation) . PHP_EOL;
-			}
-			foreach ($this->commandData->fields as $field) {
-				if ($field->isFillable) {
-					$fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . strtolower($field->name) . PHP_EOL;
-				}
-			}
-			$docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
-			$docsTemplate = str_replace('$PHPDOC$', $fillables, $docsTemplate);
+        $docsTemplate = get_template('docs.model', 'crud-generator');
+        $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
 
-			$templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
-		}
+        $fillables = '';
+        $fieldsArr = [];
+        $count = 1;
+        foreach ($this->commandData->relations as $relation) {
+            $field = $relationText = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
+            if (in_array($field, $fieldsArr)) {
+                $relationText = $relationText . '_' . $count;
+                $count++;
+            }
 
-		return $templateData;
-	}
+            $fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation, $relationText) . PHP_EOL;
+            $fieldsArr[] = $field;
+        }
 
-	/**
-	 * @param                             $db_type
-	 * @param GeneratorFieldRelation|null $relation
-	 *
-	 * @return string
-	 */
-	private function getPHPDocType($db_type, $relation = null)
-	{
-		switch ($db_type) {
-			case 'datetime':
-				return 'string|\Carbon\Carbon';
-			case 'text':
-				return 'string';
-			case '1t1':
-			case 'mt1':
-				return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . camel_case($relation->inputs[0]);
-			case '1tm':
-				return '\Illuminate\Database\Eloquent\Collection' . ' ' . $relation->inputs[0];
-			case 'mtm':
-			case 'hmt':
-				return '\Illuminate\Database\Eloquent\Collection' . ' ' . camel_case(model_name_from_table_name($relation->inputs[1]));
-			default:
-				return $db_type;
-		}
-	}
+        foreach ($this->commandData->fields as $field) {
+            if ($field->isFillable) {
+                $fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . strtolower($field->name) . PHP_EOL;
+            }
+        }
+        $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
+        $docsTemplate = str_replace('$PHPDOC$', $fillables, $docsTemplate);
 
-	public function generateSwagger($templateData)
-	{
-		$fieldTypes = SwaggerGenerator::generateTypes($this->commandData->fields);
+        $templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
 
-		$template = get_template('model_docs.model', 'swagger-generator');
+        return $templateData;
+    }
 
-		$template = fill_template($this->commandData->dynamicVars, $template);
+    /**
+     * @param $db_type
+     * @param GeneratorFieldRelation|null $relation
+     * @param string|null $relationText
+     *
+     * @return string
+     */
+    private function getPHPDocType($db_type, $relation = null, $relationText = null)
+    {
+        $relationText = (!empty($relationText)) ? $relationText : null;
 
-		$template = str_replace('$REQUIRED_FIELDS$',
-			'"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"', $template);
+        switch ($db_type) {
+            case 'datetime':
+                return 'string|\Carbon\Carbon';
+            case '1t1':
+                return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationText);
+            case 'mt1':
+                if (isset($relation->inputs[1])) {
+                    $relationName = str_replace('_id', '', strtolower($relation->inputs[1]));
+                } else {
+                    $relationName = $relationText;
+                }
 
-		$propertyTemplate = get_template('model_docs.property', 'swagger-generator');
+                return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationName);
+            case '1tm':
+            case 'mtm':
+            case 'hmt':
+                return '\Illuminate\Database\Eloquent\Collection' . ' ' . Str::camel(Str::plural($relationText));
+            default:
+                $fieldData = SwaggerGenerator::getFieldType($db_type);
+                if (!empty($fieldData['fieldType'])) {
+                    return $fieldData['fieldType'];
+                }
 
-		$properties = SwaggerGenerator::preparePropertyFields($propertyTemplate, $fieldTypes);
+                return $db_type;
+        }
+    }
 
-		$template = str_replace('$PROPERTIES$', implode(",\n", $properties), $template);
+    public function generateSwagger($templateData)
+    {
+        $fieldTypes = SwaggerGenerator::generateTypes($this->commandData->fields);
 
-		$templateData = str_replace('$DOCS$', $template, $templateData);
+        $template = get_template('model_docs.model', 'swagger-generator');
 
-		return $templateData;
-	}
+        $template = fill_template($this->commandData->dynamicVars, $template);
 
-	private function generateRequiredFields()
-	{
-		$requiredFields = [];
+        $template = str_replace('$REQUIRED_FIELDS$',
+            '"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"', $template);
 
-		foreach ($this->commandData->fields as $field) {
-			if (!empty($field->validations)) {
-				if (str_contains($field->validations, 'required')) {
-					$requiredFields[] = $field->name;
-				}
-			}
-		}
+        $propertyTemplate = get_template('model_docs.property', 'swagger-generator');
 
-		return $requiredFields;
-	}
+        $properties = SwaggerGenerator::preparePropertyFields($propertyTemplate, $fieldTypes);
 
-	private function fillTimestamps($templateData)
-	{
-		$timestamps = TableFieldsGenerator::getTimestampFieldNames();
+        $template = str_replace('$PROPERTIES$', implode(",\n", $properties), $template);
 
-		$replace = '';
+        $templateData = str_replace('$DOCS$', $template, $templateData);
 
-		if ($this->commandData->getOption('fromTable')) {
-			if (empty($timestamps)) {
-				$replace = generate_new_line_tab() . "public \$timestamps = false;\n";
-			} else {
-				list($created_at, $updated_at, $deleted_at) = collect($timestamps)->map(function ($field) {
-					return !empty($field) ? "'$field'" : 'null';
-				});
+        return $templateData;
+    }
 
-				$replace .= get_template('docs.model_created_at', 'crud-generator');
-				$replace .= generate_new_line_tab() . "const CREATED_AT = $created_at;\n\n";
-				$replace .= get_template('docs.model_updated_at', 'crud-generator');
-				$replace .= generate_new_line_tab() . "const UPDATED_AT = $updated_at;\n\n";
-				$replace .= get_template('docs.model_deleted_at', 'crud-generator');
-				$replace .= generate_new_line_tab() . "const DELETED_AT = $deleted_at;";
-			}
-		}
+    private function generateRequiredFields()
+    {
+        $requiredFields = [];
 
-		return str_replace('$TIMESTAMPS$', $replace, $templateData);
-	}
+        foreach ($this->commandData->fields as $field) {
+            if (!empty($field->validations)) {
+                if (Str::contains($field->validations, 'required')) {
+                    $requiredFields[] = $field->name;
+                }
+            }
+        }
 
-	private function generateRules()
-	{
-		$rules = [];
+        return $requiredFields;
+    }
 
-		foreach ($this->commandData->fields as $field) {
-			if (!empty($field->validations)) {
-				$rule    = "'" . $field->name . "' => '" . $field->validations . "'";
-				$rules[] = $rule;
-			}
-		}
+    private function fillTimestamps($templateData)
+    {
+        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
 
-		return $rules;
-	}
+        $replace = '';
+        if (empty($timestamps)) {
+            $replace = generate_new_line_tab() . "public \$timestamps = false;\n";
+        }
 
-	public function generateCasts()
-	{
-		$casts = [];
+        if ($this->commandData->getOption('fromTable') && !empty($timestamps)) {
+            list($created_at, $updated_at, $deleted_at) = collect($timestamps)->map(function ($field) {
+                return !empty($field) ? "'$field'" : 'null';
+            });
 
-		$timestamps = TableFieldsGenerator::getTimestampFieldNames();
+            $replace .= get_template('docs.model_created_at', 'crud-generator');
+            $replace .= generate_new_line_tab() . "const CREATED_AT = $created_at;\n\n";
+            $replace .= get_template('docs.model_updated_at', 'crud-generator');
+            $replace .= generate_new_line_tab() . "const UPDATED_AT = $updated_at;\n\n";
+            $replace .= get_template('docs.model_deleted_at', 'crud-generator');
+            $replace .= generate_new_line_tab() . "const DELETED_AT = $deleted_at;";
+        }
 
-		foreach ($this->commandData->fields as $field) {
-			if (in_array($field->name, $timestamps)) {
-				continue;
-			}
+        return str_replace('$TIMESTAMPS$', $replace, $templateData);
+    }
 
-			$rule = "'" . $field->name . "' => ";
+    private function generateRules()
+    {
+        $dont_require_fields = config('thomisticus.crud_generator.options.hidden_fields', [])
+            + config('thomisticus.crud_generator.options.excluded_fields', []);
 
-			switch ($field->fieldType) {
-				case 'integer':
-					$rule .= "'integer'";
-					break;
-				case 'double':
-					$rule .= "'double'";
-					break;
-				case 'float':
-					$rule .= "'float'";
-					break;
-				case 'boolean':
-					$rule .= "'boolean'";
-					break;
-				case 'dateTime':
-				case 'dateTimeTz':
-					$rule .= "'datetime'";
-					break;
-				case 'date':
-					$rule .= "'date'";
-					break;
-				case 'enum':
-				case 'string':
-				case 'char':
-				case 'text':
-					$rule .= "'string'";
-					break;
-				default:
-					$rule = '';
-					break;
-			}
+        $rules = [];
 
-			if (!empty($rule)) {
-				$casts[] = $rule;
-			}
-		}
+        foreach ($this->commandData->fields as $field) {
+            if (!$field->isPrimary && $field->isNotNull && empty($field->validations) &&
+                !in_array($field->name, $dont_require_fields)) {
+                $field->validations = 'required';
+            }
 
-		return $casts;
-	}
+            if (!empty($field->validations)) {
+                $rule = "'" . $field->name . "' => '" . $field->validations . "'";
+                $rules[] = $rule;
+            }
+        }
 
-	private function generateRelations()
-	{
-		$relations = [];
+        return $rules;
+    }
 
-		foreach ($this->commandData->relations as $relation) {
-			$relationText = $relation->getRelationFunctionText();
+    public function generateCasts()
+    {
+        $casts = [];
 
-			if (!empty($relationText)) {
-				$relations[] = $relationText;
-			}
-		}
+        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
 
-		return $relations;
-	}
+        foreach ($this->commandData->fields as $field) {
+            if (in_array($field->name, $timestamps)) {
+                continue;
+            }
 
-	public function rollback()
-	{
-		if ($this->rollbackFile($this->path, $this->fileName)) {
-			$this->commandData->commandComment('Model file deleted: ' . $this->fileName);
-		}
-	}
+            $rule = "'" . $field->name . "' => ";
+
+            switch (strtolower($field->fieldType)) {
+                case 'integer':
+                case 'increments':
+                case 'smallinteger':
+                case 'long':
+                case 'biginteger':
+                    $rule .= "'integer'";
+                    break;
+                case 'double':
+                    $rule .= "'double'";
+                    break;
+                case 'float':
+                case 'decimal':
+                    $rule .= "'float'";
+                    break;
+                case 'boolean':
+                    $rule .= "'boolean'";
+                    break;
+                case 'datetime':
+                case 'datetimetz':
+                    $rule .= "'datetime'";
+                    break;
+                case 'date':
+                    $rule .= "'date'";
+                    break;
+                case 'enum':
+                case 'string':
+                case 'char':
+                case 'text':
+                    $rule .= "'string'";
+                    break;
+                default:
+                    $rule = '';
+                    break;
+            }
+
+            if (!empty($rule)) {
+                $casts[] = $rule;
+            }
+        }
+
+        return $casts;
+    }
+
+    private function generateRelations()
+    {
+        $relations = [];
+
+        $count = 1;
+        $fieldsArr = [];
+        foreach ($this->commandData->relations as $relation) {
+            $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
+
+            $relationShipText = $field;
+            if (in_array($field, $fieldsArr)) {
+                $relationShipText = $relationShipText . '_' . $count;
+                $count++;
+            }
+
+            $relationText = $relation->getRelationFunctionText($relationShipText);
+            if (!empty($relationText)) {
+                $fieldsArr[] = $field;
+                $relations[] = $relationText;
+            }
+        }
+
+        return $relations;
+    }
+
+    public function rollback()
+    {
+        if ($this->rollbackFile($this->path, $this->fileName)) {
+            $this->commandData->commandComment('Model file deleted: ' . $this->fileName);
+        }
+    }
 }

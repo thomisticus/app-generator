@@ -7,55 +7,55 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class RepositoryGenerator extends BaseGenerator
 {
-	/** @var CommandData */
-	private $commandData;
+    /** @var CommandData */
+    private $commandData;
 
-	/** @var string */
-	private $path;
+    /** @var string */
+    private $path;
 
-	/** @var string */
-	private $fileName;
+    /** @var string */
+    private $fileName;
 
-	public function __construct(CommandData $commandData)
-	{
-		$this->commandData = $commandData;
-		$this->path        = $commandData->config->pathRepository;
-		$this->fileName    = $this->commandData->modelName . 'Repository.php';
-	}
+    public function __construct(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+        $this->path = $commandData->config->pathRepository;
+        $this->fileName = $this->commandData->modelName . 'Repository.php';
+    }
 
-	public function generate()
-	{
-		$templateData = get_template('repository', 'crud-generator');
+    public function generate()
+    {
+        $templateData = get_template('repository', 'crud-generator');
 
-		$templateData = fill_template($this->commandData->dynamicVars, $templateData);
+        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-		$searchables = [];
+        $searchables = [];
 
-		foreach ($this->commandData->fields as $field) {
-			if ($field->isSearchable) {
-				$searchables[] = "'" . strtolower($field->name) . "'";
-			}
-		}
+        foreach ($this->commandData->fields as $field) {
+            if ($field->isSearchable) {
+                $searchables[] = "'" . strtolower($field->name) . "'";
+            }
+        }
 
-		$templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $searchables),
-			$templateData);
+        $templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $searchables),
+            $templateData);
 
-		$docsTemplate = get_template('docs.repository', 'crud-generator');
-		$docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
-		$docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
+        $docsTemplate = get_template('docs.repository', 'crud-generator');
+        $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
+        $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
 
-		$templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
+        $templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
 
-		FileUtil::createFile($this->path, $this->fileName, $templateData);
+        FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-		$this->commandData->commandComment("\nRepository created: ");
-		$this->commandData->commandInfo($this->fileName);
-	}
+        $this->commandData->commandComment("\nRepository created: ");
+        $this->commandData->commandInfo($this->fileName);
+    }
 
-	public function rollback()
-	{
-		if ($this->rollbackFile($this->path, $this->fileName)) {
-			$this->commandData->commandComment('Repository file deleted: ' . $this->fileName);
-		}
-	}
+    public function rollback()
+    {
+        if ($this->rollbackFile($this->path, $this->fileName)) {
+            $this->commandData->commandComment('Repository file deleted: ' . $this->fileName);
+        }
+    }
 }

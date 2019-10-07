@@ -4,5 +4,5 @@ namespace Thomisticus\Generator\Contracts;
 
 interface TemplatesPublisherContract
 {
-	public function publish();
+    public function publish();
 }

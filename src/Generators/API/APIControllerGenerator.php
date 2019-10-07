@@ -8,61 +8,66 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class APIControllerGenerator extends BaseGenerator
 {
-	/** @var CommandData */
-	private $commandData;
+    /** @var CommandData */
+    private $commandData;
 
-	/** @var string */
-	private $path;
+    /** @var string */
+    private $path;
 
-	/** @var string */
-	private $fileName;
+    /** @var string */
+    private $fileName;
 
-	public function __construct(CommandData $commandData)
-	{
-		$this->commandData = $commandData;
-		$this->path        = $commandData->config->pathApiController;
-		$this->fileName    = $this->commandData->modelName . 'APIController.php';
-	}
+    public function __construct(CommandData $commandData)
+    {
+        $this->commandData = $commandData;
+        $this->path = $commandData->config->pathApiController;
+        $this->fileName = $this->commandData->modelName . 'APIController.php';
+    }
 
-	public function generate()
-	{
-		$templateData = get_template('api.controller.api_controller', 'crud-generator');
+    public function generate()
+    {
+        if ($this->commandData->getOption('repositoryPattern')) {
+            $templateName = 'api_controller';
+        } else {
+            $templateName = 'model_api_controller';
+        }
 
-		$templateData = fill_template($this->commandData->dynamicVars, $templateData);
-		$templateData = $this->fillDocs($templateData);
+        $templateData = get_template("api.controller.$templateName", 'crud-generator');
+        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
+        $templateData = $this->fillDocs($templateData);
 
-		FileUtil::createFile($this->path, $this->fileName, $templateData);
+        FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-		$this->commandData->commandComment("\nAPI Controller created: ");
-		$this->commandData->commandInfo($this->fileName);
-	}
+        $this->commandData->commandComment("\nAPI Controller created: ");
+        $this->commandData->commandInfo($this->fileName);
+    }
 
-	private function fillDocs($templateData)
-	{
-		$methods = ['controller', 'index', 'store', 'show', 'update', 'destroy'];
+    private function fillDocs($templateData)
+    {
+        $methods = ['controller', 'index', 'store', 'show', 'update', 'destroy'];
 
-		if ($this->commandData->getAddOn('swagger')) {
-			$templatePrefix = 'controller_docs';
-			$templateType   = 'swagger-generator';
-		} else {
-			$templatePrefix = 'api.docs.controller';
-			$templateType   = 'crud-generator';
-		}
+        if ($this->commandData->getAddOn('swagger')) {
+            $templatePrefix = 'controller_docs';
+            $templateType = 'swagger-generator';
+        } else {
+            $templatePrefix = 'api.docs.controller';
+            $templateType = 'crud-generator';
+        }
 
-		foreach ($methods as $method) {
-			$key          = '$DOC_' . strtoupper($method) . '$';
-			$docTemplate  = get_template($templatePrefix . '.' . $method, $templateType);
-			$docTemplate  = fill_template($this->commandData->dynamicVars, $docTemplate);
-			$templateData = str_replace($key, $docTemplate, $templateData);
-		}
+        foreach ($methods as $method) {
+            $key = '$DOC_' . strtoupper($method) . '$';
+            $docTemplate = get_template($templatePrefix . '.' . $method, $templateType);
+            $docTemplate = fill_template($this->commandData->dynamicVars, $docTemplate);
+            $templateData = str_replace($key, $docTemplate, $templateData);
+        }
 
-		return $templateData;
-	}
+        return $templateData;
+    }
 
-	public function rollback()
-	{
-		if ($this->rollbackFile($this->path, $this->fileName)) {
-			$this->commandData->commandComment('API Controller file deleted: ' . $this->fileName);
-		}
-	}
+    public function rollback()
+    {
+        if ($this->rollbackFile($this->path, $this->fileName)) {
+            $this->commandData->commandComment('API Controller file deleted: ' . $this->fileName);
+        }
+    }
 }
