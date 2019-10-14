@@ -29,9 +29,11 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         $this->publishTestCases();
 //		$this->publishBaseController();
-        $this->publishExceptionHandlerTrait();
         $this->publishResponseTrait();
-        $this->publishBaseRepository();
+
+        if (config('thomisticus.crud_generator.options.repository_pattern')) {
+            $this->publishBaseRepository();
+        }
     }
 
     /**
@@ -135,14 +137,6 @@ class GeneratorPublishCommand extends PublishBaseCommand
         FileUtil::createFile($repositoryPath, $fileName, $templateData);
 
         $this->info('BaseRepository created');
-    }
-
-    private function publishExceptionHandlerTrait()
-    {
-        $templateData = get_template('traits.exception_handler', 'crud-generator');
-        $templateData = $this->fillTemplate($templateData);
-
-        $this->createFile(app_path('Traits/'), 'ExceptionHandlerTrait.php', $templateData);
     }
 
     private function publishResponseTrait()
