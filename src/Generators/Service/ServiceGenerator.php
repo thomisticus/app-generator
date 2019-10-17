@@ -46,8 +46,11 @@ class ServiceGenerator extends BaseGenerator
             }
         }
 
-        $templateData = str_replace('$RELATIONSHIPS$', implode(',' . generate_new_line_tab(1, 2), $relationships),
-            $templateData);
+        $templateData = str_replace(
+            '$RELATIONSHIPS$',
+            implode(',' . generate_new_line_tab(1, 2), $relationships),
+            $templateData
+        );
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 

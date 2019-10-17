@@ -262,12 +262,14 @@ class VueJsLayoutPublishCommand extends PublishBaseCommand
     {
         $templateData = str_replace(
             '$NAMESPACE_CONTROLLER$',
-            config('thomisticus.crud_generator.namespace.controller'), $templateData
+            config('thomisticus.crud_generator.namespace.controller'),
+            $templateData
         );
 
         $templateData = str_replace(
             '$NAMESPACE_REQUEST$',
-            config('thomisticus.crud_generator.namespace.request'), $templateData
+            config('thomisticus.crud_generator.namespace.request'),
+            $templateData
         );
 
         return $templateData;

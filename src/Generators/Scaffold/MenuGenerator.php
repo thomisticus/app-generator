@@ -27,10 +27,9 @@ class MenuGenerator extends BaseGenerator
     {
         $this->commandData = $commandData;
         $this->path = config(
-                'thomisticus.crud_generator.path.views',
-                base_path('resources/views/'
-                )
-            ) . $commandData->getAddOn('menu.menu_file');
+            'thomisticus.crud_generator.path.views',
+            base_path('resources/views/')
+        ) . $commandData->getAddOn('menu.menu_file');
         $this->templateType = config('thomisticus.crud_generator.templates', 'adminlte-templates');
 
         $this->menuContents = file_get_contents($this->path);

@@ -82,16 +82,24 @@ class ModelGenerator extends BaseGenerator
 
         $templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $fillables), $templateData);
 
-        $templateData = str_replace('$RULES$', implode(',' . generate_new_line_tab(1, 2), $this->generateRules()),
-            $templateData);
+        $templateData = str_replace(
+            '$RULES$',
+            implode(',' . generate_new_line_tab(1, 2), $this->generateRules()),
+            $templateData
+        );
 
-        $templateData = str_replace('$CAST$', implode(',' . generate_new_line_tab(1, 2), $this->generateCasts()),
-            $templateData);
+        $templateData = str_replace(
+            '$CAST$',
+            implode(',' . generate_new_line_tab(1, 2), $this->generateCasts()),
+            $templateData
+        );
 
         $templateData = str_replace(
             '$RELATIONS$',
-            fill_template($this->commandData->dynamicVars,
-                implode(PHP_EOL . generate_new_line_tab(1, 1), $this->generateRelations())),
+            fill_template(
+                $this->commandData->dynamicVars,
+                implode(PHP_EOL . generate_new_line_tab(1, 1), $this->generateRelations())
+            ),
             $templateData
         );
 
@@ -108,7 +116,8 @@ class ModelGenerator extends BaseGenerator
             $templateData = str_replace('$SOFT_DELETE_DATES$', '', $templateData);
         } else {
             $templateData = str_replace(
-                '$SOFT_DELETE_IMPORT$', "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
+                '$SOFT_DELETE_IMPORT$',
+                "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
                 $templateData
             );
             $templateData = str_replace('$SOFT_DELETE$', generate_tab() . "use SoftDeletes;\n", $templateData);
@@ -205,8 +214,11 @@ class ModelGenerator extends BaseGenerator
 
         $template = fill_template($this->commandData->dynamicVars, $template);
 
-        $template = str_replace('$REQUIRED_FIELDS$',
-            '"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"', $template);
+        $template = str_replace(
+            '$REQUIRED_FIELDS$',
+            '"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"',
+            $template
+        );
 
         $propertyTemplate = get_template('model_docs.property', 'swagger-generator');
 
@@ -308,8 +320,12 @@ class ModelGenerator extends BaseGenerator
             }
         } else {
             foreach ($this->commandData->fields as $field) {
-                if (!$field->isPrimary && $field->isNotNull && empty($field->validations) &&
-                    !in_array($field->name, $dont_require_fields)) {
+                if (
+                    !$field->isPrimary
+                    && $field->isNotNull
+                    && empty($field->validations)
+                    && !in_array($field->name, $dont_require_fields)
+                ) {
                     $field->validations = 'required';
                 }
 

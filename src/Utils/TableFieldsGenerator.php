@@ -363,7 +363,6 @@ class TableFieldsGenerator
             foreach ($foreignKeys as $foreignKey) {
                 // check if foreign key is on the model table for which we are using generator command
                 if ($foreignKey->foreignTable == $modelTableName) {
-
                     // detect if one to one relationship is there
                     $isOneToOne = $this->isOneToOne($primary, $foreignKey, $modelTable->primaryKey);
                     if ($isOneToOne) {
@@ -375,7 +374,6 @@ class TableFieldsGenerator
                     // detect if one to many relationship is there
                     $isOneToMany = $this->isOneToMany($primary, $foreignKey, $modelTable->primaryKey);
                     if ($isOneToMany) {
-
                         $aditionalParams = [];
                         if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
                             $aditionalParams = [
@@ -385,8 +383,10 @@ class TableFieldsGenerator
                         }
 
                         $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = GeneratorFieldRelation::parseRelation('1tm,' . $modelName,
-                            $aditionalParams);
+                        $this->relations[] = GeneratorFieldRelation::parseRelation(
+                            '1tm,' . $modelName,
+                            $aditionalParams
+                        );
                         continue;
                     }
                 }
@@ -436,7 +436,6 @@ class TableFieldsGenerator
 
         // if foreign key is there
         if ($isAnyKeyOnModelTable) {
-
             foreach ($foreignKeys as $foreignKey) {
                 $foreignField = $foreignKey->foreignField; // cd_fabrica_software
                 $foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
@@ -544,7 +543,6 @@ class TableFieldsGenerator
             }
 
             if ($foreignField == $tables[$foreignTable]->primaryKey) {
-
                 $aditionalParams = [];
                 if (!empty($foreignKey->localField)) {
                     $aditionalParams = [

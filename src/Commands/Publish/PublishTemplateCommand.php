@@ -57,8 +57,12 @@ class PublishTemplateCommand extends PublishBaseCommand
 
         $templatesPath = base_path('vendor/thomisticus/' . $templateType . '/templates/scaffold');
 
-        return $this->publishDirectory($templatesPath, $this->templatesDir . '/scaffold',
-            'thomisticus-crud-templates/scaffold', true);
+        return $this->publishDirectory(
+            $templatesPath,
+            $this->templatesDir . '/scaffold',
+            'thomisticus-crud-templates/scaffold',
+            true
+        );
     }
 
     /**

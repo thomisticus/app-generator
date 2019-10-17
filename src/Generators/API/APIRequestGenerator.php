@@ -52,7 +52,7 @@ class APIRequestGenerator extends BaseGenerator
         $modelGenerator = new ModelGenerator($this->commandData);
         $rules = $modelGenerator->generateUniqueRules();
         $this->commandData->addDynamicVariable('$UNIQUE_RULES$', $rules);
-        
+
         $templateData = get_template('api.request.update_request', 'crud-generator');
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);

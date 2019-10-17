@@ -62,8 +62,12 @@ class SeederGenerator extends BaseGenerator
 
         $replacePosition = strpos($mainSeederContent, $lastSeederStatement);
 
-        $mainSeederContent = substr_replace($mainSeederContent, $newSeederStatement,
-            $replacePosition + strlen($lastSeederStatement) + 1, 0);
+        $mainSeederContent = substr_replace(
+            $mainSeederContent,
+            $newSeederStatement,
+            $replacePosition + strlen($lastSeederStatement) + 1,
+            0
+        );
 
         file_put_contents($this->commandData->config->pathDatabaseSeeder, $mainSeederContent);
         $this->commandData->commandComment('Main Seeder file updated.');

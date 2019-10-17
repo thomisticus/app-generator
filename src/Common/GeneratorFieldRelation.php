@@ -92,8 +92,11 @@ class GeneratorFieldRelation
         $relationAttr = $this->getRelationAttributes($relationText);
 
         if (!empty($relationAttr['functionName']) && !empty($relationAttr['relation'])) {
-            return $this->generateRelation($relationAttr['functionName'], $relationAttr['relation'],
-                $relationAttr['relationClass']);
+            return $this->generateRelation(
+                $relationAttr['functionName'],
+                $relationAttr['relation'],
+                $relationAttr['relationClass']
+            );
         }
 
         return '';

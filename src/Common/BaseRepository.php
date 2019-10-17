@@ -8,7 +8,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 
 abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepository
 {
-//	use ExceptionHandlerTrait;
+//  use ExceptionHandlerTrait;
 
     /**
      * Save a new entity in repository
@@ -251,5 +251,4 @@ abstract class BaseRepository extends \Prettus\Repository\Eloquent\BaseRepositor
 
         return false;
     }
-
 }

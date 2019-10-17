@@ -155,17 +155,21 @@ class GeneratorConfig
         );
 
         $this->nsApiController = config(
-                'thomisticus.crud_generator.namespace.api_controller',
-                'App\Http\Controllers\API'
-            ) . $prefix;
-        $this->nsApiRequest = config('thomisticus.crud_generator.namespace.api_request',
-                'App\Http\Requests\API') . $prefix;
+            'thomisticus.crud_generator.namespace.api_controller',
+            'App\Http\Controllers\API'
+        ) . $prefix;
+        $this->nsApiRequest = config(
+            'thomisticus.crud_generator.namespace.api_request',
+            'App\Http\Requests\API'
+        ) . $prefix;
 
         $this->nsRequest = config('thomisticus.crud_generator.namespace.request', 'App\Http\Requests') . $prefix;
         $this->nsRequestBase = config('thomisticus.crud_generator.namespace.request', 'App\Http\Requests');
         $this->nsBaseController = config('thomisticus.crud_generator.namespace.controller', 'App\Http\Controllers');
-        $this->nsController = config('thomisticus.crud_generator.namespace.controller',
-                'App\Http\Controllers') . $prefix;
+        $this->nsController = config(
+            'thomisticus.crud_generator.namespace.controller',
+            'App\Http\Controllers'
+        ) . $prefix;
 
         $this->nsApiTests = config('thomisticus.crud_generator.namespace.api_test', 'Tests\APIs');
         $this->nsRepositoryTests = config('thomisticus.crud_generator.namespace.repository_test', 'Tests\Repositories');
@@ -187,14 +191,14 @@ class GeneratorConfig
         }
 
         $this->pathRepository = config(
-                'thomisticus.crud_generator.path.repository',
-                app_path('Repositories/')
-            ) . $prefix;
+            'thomisticus.crud_generator.path.repository',
+            app_path('Repositories/')
+        ) . $prefix;
 
         $this->pathService = config(
-                'thomisticus.crud_generator.path.service',
-                app_path('Services/')
-            ) . $prefix;
+            'thomisticus.crud_generator.path.service',
+            app_path('Services/')
+        ) . $prefix;
 
         $this->pathModel = config('thomisticus.crud_generator.path.model', app_path('Models/')) . $prefix;
         if (config('thomisticus.crud_generator.ignore_model_prefix', false)) {
@@ -204,14 +208,14 @@ class GeneratorConfig
         $this->pathDataTables = config('thomisticus.crud_generator.path.datatables', app_path('DataTables/')) . $prefix;
 
         $this->pathApiController = config(
-                'thomisticus.crud_generator.path.api_controller',
-                app_path('Http/Controllers/API/')
-            ) . $prefix;
+            'thomisticus.crud_generator.path.api_controller',
+            app_path('Http/Controllers/API/')
+        ) . $prefix;
 
         $this->pathApiRequest = config(
-                'thomisticus.crud_generator.path.api_request',
-                app_path('Http/Requests/API/')
-            ) . $prefix;
+            'thomisticus.crud_generator.path.api_request',
+            app_path('Http/Requests/API/')
+        ) . $prefix;
 
         $this->pathApiRoutes = config('thomisticus.crud_generator.path.api_routes', base_path('routes/api.php'));
 
@@ -220,9 +224,9 @@ class GeneratorConfig
         $this->pathApiTestTraits = config('thomisticus.crud_generator.path.test_trait', base_path('tests/traits/'));
 
         $this->pathController = config(
-                'thomisticus.crud_generator.path.controller',
-                app_path('Http/Controllers/')
-            ) . $prefix;
+            'thomisticus.crud_generator.path.controller',
+            app_path('Http/Controllers/')
+        ) . $prefix;
 
         $this->pathRequest = config('thomisticus.crud_generator.path.request', app_path('Http/Requests/')) . $prefix;
 
@@ -231,13 +235,15 @@ class GeneratorConfig
         $this->pathFactory = config('thomisticus.crud_generator.path.factory', database_path('factories/'));
 
         $this->pathViews = config(
-                'thomisticus.crud_generator.path.views',
-                base_path('resources/views/')
-            ) . $viewPrefix . $this->mSnakePlural . '/';
+            'thomisticus.crud_generator.path.views',
+            base_path('resources/views/')
+        ) . $viewPrefix . $this->mSnakePlural . '/';
 
         $this->pathSeeder = config('thomisticus.crud_generator.path.seeder', database_path('seeds/'));
-        $this->pathDatabaseSeeder = config('thomisticus.crud_generator.path.database_seeder',
-            database_path('seeds/DatabaseSeeder.php'));
+        $this->pathDatabaseSeeder = config(
+            'thomisticus.crud_generator.path.database_seeder',
+            database_path('seeds/DatabaseSeeder.php')
+        );
 
         $this->modelJsPath = config(
             'thomisticus.crud_generator.path.modelsJs',

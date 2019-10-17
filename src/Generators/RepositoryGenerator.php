@@ -37,8 +37,11 @@ class RepositoryGenerator extends BaseGenerator
             }
         }
 
-        $templateData = str_replace('$FIELDS$', implode(',' . generate_new_line_tab(1, 2), $searchables),
-            $templateData);
+        $templateData = str_replace(
+            '$FIELDS$',
+            implode(',' . generate_new_line_tab(1, 2), $searchables),
+            $templateData
+        );
 
         $docsTemplate = get_template('docs.repository', 'crud-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);

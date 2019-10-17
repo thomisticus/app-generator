@@ -28,7 +28,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     public function handle()
     {
         $this->publishTestCases();
-//		$this->publishBaseController();
+//      $this->publishBaseController();
         $this->publishResponseTrait();
 
         if (config('thomisticus.crud_generator.options.repository_pattern')) {
@@ -91,8 +91,10 @@ class GeneratorPublishCommand extends PublishBaseCommand
             $this->info('APIs Tests directory created');
         }
 
-        $testRepositoriesPath = config('thomisticus.crud_generator.path.repository_test',
-            base_path('tests/Repositories/'));
+        $testRepositoriesPath = config(
+            'thomisticus.crud_generator.path.repository_test',
+            base_path('tests/Repositories/')
+        );
         if (!file_exists($testRepositoriesPath)) {
             FileUtil::createDirectoryIfNotExist($testRepositoriesPath);
             $this->info('Repositories Tests directory created');
