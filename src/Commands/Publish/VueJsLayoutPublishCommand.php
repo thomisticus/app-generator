@@ -212,7 +212,7 @@ class VueJsLayoutPublishCommand extends PublishBaseCommand
 
     private function updateRoutes()
     {
-        $path = config('thomisticus.crud_generator.path.routes', app_path('Http/routes.php'));
+        $path = config('thomisticus.crud_generator.path.routes', base_path('routes/web.php'));
         $routeContents = file_get_contents($path);
 
         $routesTemplate = get_template('routes.auth', 'crud-generator');

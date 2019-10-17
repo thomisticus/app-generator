@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\Scaffold;
 
-use InfyOm\Generator\Generators\ModelGenerator;
+use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
@@ -52,7 +52,7 @@ class RequestGenerator extends BaseGenerator
         $modelGenerator = new ModelGenerator($this->commandData);
         $rules = $modelGenerator->generateUniqueRules();
         $this->commandData->addDynamicVariable('$UNIQUE_RULES$', $rules);
-        
+
         $templateData = get_template('scaffold.request.update_request', 'crud-generator');
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);

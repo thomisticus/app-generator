@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use InfyOm\Generator\Utils\GeneratorFieldsInputUtil;
+use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
 
 class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
 {

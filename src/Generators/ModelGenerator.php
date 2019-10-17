@@ -266,24 +266,66 @@ class ModelGenerator extends BaseGenerator
 
         $rules = [];
 
-        foreach ($this->commandData->fields as $field) {
-            if (!$field->isPrimary && $field->isNotNull && empty($field->validations) &&
-                !in_array($field->name, $dont_require_fields)) {
-                $field->validations = 'required';
+        if ($this->commandData->getOption('fromTable')) {
+            $timestamps = TableFieldsGenerator::getTimestampFieldNames();
+            foreach ($this->commandData->fields as $field) {
+                if (in_array($field->name, $timestamps) || !$field->isFillable) {
+                    continue;
+                }
+                $rule = "'" . $field->name . "' => ";
+                switch ($field->fieldType) {
+                    case 'integer':
+                        $rule .= "'required|integer'";
+                        break;
+                    case 'decimal':
+                    case 'double':
+                    case 'float':
+                        $rule .= "'required|numeric'";
+                        break;
+                    case 'boolean':
+                        $rule .= "'required|boolean'";
+                        break;
+                    case 'dateTime':
+                    case 'dateTimeTz':
+                        $rule .= "'required|datetime'";
+                        break;
+                    case 'date':
+                        $rule .= "'required|date'";
+                        break;
+                    case 'enum':
+                    case 'string':
+                    case 'char':
+                    case 'text':
+                        $rule .= "'required|max:45'";
+                        break;
+                    default:
+                        $rule = '';
+                        break;
+                }
+                if (!empty($rule)) {
+                    $rules[] = $rule;
+                }
             }
-
-            if (!empty($field->validations)) {
-                if (Str::contains($field->validations, 'unique:')) {
-                    $rule = explode('|', $field->validations);
-                    // move unique rule to last
-                    usort($rule, function ($record) {
-                        return (Str::contains($record, 'unique:')) ? 1 : 0;
-                    });
-                    $field->validations = implode('|', $rule);
+        } else {
+            foreach ($this->commandData->fields as $field) {
+                if (!$field->isPrimary && $field->isNotNull && empty($field->validations) &&
+                    !in_array($field->name, $dont_require_fields)) {
+                    $field->validations = 'required';
                 }
 
-                $rule = "'" . $field->name . "' => '" . $field->validations . "'";
-                $rules[] = $rule;
+                if (!empty($field->validations)) {
+                    if (Str::contains($field->validations, 'unique:')) {
+                        $rule = explode('|', $field->validations);
+                        // move unique rule to last
+                        usort($rule, function ($record) {
+                            return (Str::contains($record, 'unique:')) ? 1 : 0;
+                        });
+                        $field->validations = implode('|', $rule);
+                    }
+
+                    $rule = "'" . $field->name . "' => '" . $field->validations . "'";
+                    $rules[] = $rule;
+                }
             }
         }
 

@@ -7,14 +7,13 @@ use $NAMESPACE_API_REQUEST$\Update$MODEL_NAME$APIRequest;
 use $NAMESPACE_MODEL$\$MODEL_NAME$;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
 use Illuminate\Http\Request;
-use $NAMESPACE_BASE_CONTROLLER$\AppBaseController as InfyOmBaseController;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
-use InfyOm\Generator\Utils\ResponseUtil;
+use $NAMESPACE_BASE_CONTROLLER$\AppBaseController as ThomisticusBaseController;
+use Thomisticus\Generator\Utils\ResponseUtil;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
 $DOC_CONTROLLER$
-class $MODEL_NAME$APIController extends InfyOmBaseController
+class $MODEL_NAME$APIController extends ThomisticusBaseController
 {
     /** @var  $MODEL_NAME$Repository */
     private $$MODEL_NAME_CAMEL$Repository;
@@ -42,7 +41,7 @@ class $MODEL_NAME$APIController extends InfyOmBaseController
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        return response()->json($query->paginate($perPage));    
+        return response()->json($query->paginate($perPage));
     }
 
     $DOC_STORE$
