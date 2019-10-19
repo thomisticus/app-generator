@@ -15,10 +15,8 @@ use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\ControllerGenerator;
-use Thomisticus\Generator\Generators\Scaffold\MenuGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
-use Thomisticus\Generator\Generators\VueJs\ModelJsConfigGenerator;
 
 class RollbackGeneratorCommand extends Command
 {
@@ -64,13 +62,12 @@ class RollbackGeneratorCommand extends Command
     public function handle()
     {
         if (
-            !in_array($this->argument('type'), [
+        !in_array($this->argument('type'), [
             CommandData::$COMMAND_TYPE_API,
             CommandData::$COMMAND_TYPE_SCAFFOLD,
             CommandData::$COMMAND_TYPE_SERVICE_SCAFFOLD,
             CommandData::$COMMAND_TYPE_API_SCAFFOLD,
-            CommandData::$COMMAND_TYPE_VUEJS,
-            ])
+        ])
         ) {
             $this->error('invalid rollback type');
         }
@@ -78,19 +75,7 @@ class RollbackGeneratorCommand extends Command
         $this->commandData = new CommandData($this, $this->argument('type'));
         $this->commandData->config->mName = $this->commandData->modelName = $this->argument('model');
 
-        $this->commandData->config->init($this->commandData, ['tableName', 'prefix', 'plural', 'views']);
-
-        $views = $this->commandData->getOption('views');
-        if (!empty($views)) {
-            $views = explode(',', $views);
-            $viewGenerator = new ViewGenerator($this->commandData);
-            $viewGenerator->rollback($views);
-
-            $this->info('Generating autoload files');
-            $this->composer->dumpOptimized();
-
-            return;
-        }
+        $this->commandData->config->init($this->commandData, ['tableName', 'prefix', 'plural']);
 
         $migrationGenerator = new MigrationGenerator($this->commandData);
         $migrationGenerator->rollback();
@@ -116,23 +101,8 @@ class RollbackGeneratorCommand extends Command
         $controllerGenerator = new ControllerGenerator($this->commandData);
         $controllerGenerator->rollback();
 
-        $viewGenerator = new ViewGenerator($this->commandData);
-        $viewGenerator->rollback();
-
         $routeGenerator = new RoutesGenerator($this->commandData);
         $routeGenerator->rollback();
-
-        $controllerGenerator = new VueJsControllerGenerator($this->commandData);
-        $controllerGenerator->rollback();
-
-        $routesGenerator = new VueJsRoutesGenerator($this->commandData);
-        $routesGenerator->rollback();
-
-        $viewGenerator = new VueJsViewGenerator($this->commandData);
-        $viewGenerator->rollback();
-
-        $modelJsConfigGenerator = new ModelJsConfigGenerator($this->commandData);
-        $modelJsConfigGenerator->rollback();
 
         if ($this->commandData->getAddOn('tests')) {
             $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
@@ -140,11 +110,6 @@ class RollbackGeneratorCommand extends Command
 
             $apiTestGenerator = new APITestGenerator($this->commandData);
             $apiTestGenerator->rollback();
-        }
-
-        if ($this->commandData->config->getAddOn('menu.enabled')) {
-            $menuGenerator = new MenuGenerator($this->commandData);
-            $menuGenerator->rollback();
         }
 
         $this->info('Generating autoload files');
@@ -162,7 +127,6 @@ class RollbackGeneratorCommand extends Command
             ['tableName', null, InputOption::VALUE_REQUIRED, 'Table Name'],
             ['prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for all files'],
             ['plural', null, InputOption::VALUE_REQUIRED, 'Plural Model name'],
-            ['views', null, InputOption::VALUE_REQUIRED, 'Views to rollback'],
         ];
     }
 

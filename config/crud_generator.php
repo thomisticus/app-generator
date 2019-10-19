@@ -41,8 +41,6 @@ return [
 
         'tests' => base_path('tests/'),
 
-        'views' => resource_path('views/'),
-
         'schema_files' => resource_path('model_schemas/'),
 
         'templates_dir' => resource_path('thomisticus/thomisticus-generator-templates/'),
@@ -50,8 +48,6 @@ return [
         'seeder' => database_path('seeds/'),
 
         'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
-
-        'modelJs' => resource_path('assets/js/models/'),
 
         'factory' => database_path('factories/'),
     ],
@@ -150,8 +146,6 @@ return [
 
         'path' => '',
 
-        'view' => '',  // using backend will create return view('backend.?.index') type the backend views directory
-
         'public' => '',
     ],
 
@@ -166,12 +160,6 @@ return [
 
         'tests' => true,
 
-        'menu' => [
-
-            'enabled' => false,
-
-            'menu_file' => 'layouts/menu.blade.php',
-        ],
     ],
 
     /*

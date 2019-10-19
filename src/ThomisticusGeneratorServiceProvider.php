@@ -12,19 +12,14 @@ use Thomisticus\Generator\Commands\Common\MigrationGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\ModelGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\RepositoryGeneratorCommand;
 use Thomisticus\Generator\Commands\Publish\GeneratorPublishCommand;
-use Thomisticus\Generator\Commands\Publish\LayoutPublishCommand;
-use Thomisticus\Generator\Commands\Publish\PublishTemplateCommand;
-use Thomisticus\Generator\Commands\Publish\VueJsLayoutPublishCommand;
 use Thomisticus\Generator\Commands\RollbackGeneratorCommand;
 use Thomisticus\Generator\Commands\Scaffold\ControllerGeneratorCommand;
 use Thomisticus\Generator\Commands\Scaffold\RequestsGeneratorCommand;
 use Thomisticus\Generator\Commands\Scaffold\ScaffoldGeneratorCommand;
-use Thomisticus\Generator\Commands\Scaffold\ViewsGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceControllerGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceRequestGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceScaffoldGeneratorCommand;
-use Thomisticus\Generator\Commands\VueJs\VueJsGeneratorCommand;
 
 class ThomisticusGeneratorServiceProvider extends ServiceProvider
 {
@@ -63,14 +58,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
 
         $this->app->singleton('thomisticus.service_scaffold', function ($app) {
             return new ServiceScaffoldGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.publish.layout', function ($app) {
-            return new LayoutPublishCommand();
-        });
-
-        $this->app->singleton('thomisticus.publish.templates', function ($app) {
-            return new PublishTemplateCommand();
         });
 
         $this->app->singleton('thomisticus.api_scaffold', function ($app) {
@@ -121,20 +108,8 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             return new ServiceRequestGeneratorCommand();
         });
 
-        $this->app->singleton('thomisticus.scaffold.views', function ($app) {
-            return new ViewsGeneratorCommand();
-        });
-
         $this->app->singleton('thomisticus.rollback', function ($app) {
             return new RollbackGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.vuejs', function ($app) {
-            return new VueJsGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.publish.vuejs', function ($app) {
-            return new VueJsLayoutPublishCommand();
         });
 
         $this->commands([
@@ -143,7 +118,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus.scaffold',
             'thomisticus.service_scaffold',
             'thomisticus.api_scaffold',
-            'thomisticus.publish.layout',
             'thomisticus.publish.templates',
             'thomisticus.migration',
             'thomisticus.model',
@@ -154,10 +128,7 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus.api.tests',
             'thomisticus.scaffold.controller',
             'thomisticus.scaffold.requests',
-            'thomisticus.scaffold.views',
             'thomisticus.rollback',
-            'thomisticus.vuejs',
-            'thomisticus.publish.vuejs',
         ]);
     }
 }

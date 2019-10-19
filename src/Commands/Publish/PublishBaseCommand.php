@@ -36,29 +36,6 @@ class PublishBaseCommand extends BaseCommand
     }
 
     /**
-     * @param      $sourceDir
-     * @param      $destinationDir
-     * @param      $dirName
-     * @param bool $force
-     *
-     * @return bool|void
-     */
-    public function publishDirectory($sourceDir, $destinationDir, $dirName, $force = false)
-    {
-        if (file_exists($destinationDir) && !$force && !$this->confirmOverwrite($destinationDir)) {
-            return;
-        }
-
-        File::makeDirectory($destinationDir, 493, true, true);
-        File::copyDirectory($sourceDir, $destinationDir);
-
-        $this->comment($dirName . ' published');
-        $this->info($destinationDir);
-
-        return true;
-    }
-
-    /**
      * Get the console command options.
      *
      * @return array

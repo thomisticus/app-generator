@@ -17,10 +17,8 @@ use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\ControllerGenerator;
-use Thomisticus\Generator\Generators\Scaffold\MenuGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
-use Thomisticus\Generator\Generators\Scaffold\ViewGenerator;
 use Thomisticus\Generator\Generators\SeederGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceControllerGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceGenerator;
@@ -128,19 +126,9 @@ class BaseCommand extends Command
             $controllerGenerator->generate();
         }
 
-        if (!$this->isSkip('views')) {
-            $viewGenerator = new ViewGenerator($this->commandData);
-            $viewGenerator->generate();
-        }
-
         if (!$this->isSkip('routes') && !$this->isSkip('scaffold_routes')) {
             $routeGenerator = new RoutesGenerator($this->commandData);
             $routeGenerator->generate();
-        }
-
-        if (!$this->isSkip('menu') && $this->commandData->config->getAddOn('menu.enabled')) {
-            $menuGenerator = new MenuGenerator($this->commandData);
-            $menuGenerator->generate();
         }
     }
 
@@ -161,19 +149,9 @@ class BaseCommand extends Command
             $serviceGenerator->generate();
         }
 
-//        if (!$this->isSkip('views')) {
-//            $viewGenerator = new ViewGenerator($this->commandData);
-//            $viewGenerator->generate();
-//        }
-
 //        if (!$this->isSkip('routes') && !$this->isSkip('scaffold_routes')) {
 //            $routeGenerator = new RoutesGenerator($this->commandData);
 //            $routeGenerator->generate();
-//        }
-
-//        if (!$this->isSkip('menu') && $this->commandData->config->getAddOn('menu.enabled')) {
-//            $menuGenerator = new MenuGenerator($this->commandData);
-//            $menuGenerator->generate();
 //        }
 
         if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
@@ -310,13 +288,7 @@ class BaseCommand extends Command
                 'skip',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Skip Specific Items to Generate (migration,model,controllers,api_controller,scaffold_controller,repository,requests,api_requests,scaffold_requests,routes,api_routes,scaffold_routes,views,tests,menu,dump-autoload)'
-            ],
-            [
-                'views',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Specify only the views you want generated: index,create,edit,show'
+                'Skip Specific Items to Generate (migration,model,controllers,api_controller,scaffold_controller,repository,requests,api_requests,scaffold_requests,routes,api_routes,scaffold_routes,tests,dump-autoload)'
             ],
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
             ['softDelete', null, InputOption::VALUE_NONE, 'Soft Delete Option'],
