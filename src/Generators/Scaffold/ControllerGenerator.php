@@ -15,16 +15,12 @@ class ControllerGenerator extends BaseGenerator
     private $path;
 
     /** @var string */
-    private $templateType;
-
-    /** @var string */
     private $fileName;
 
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->pathController;
-        $this->templateType = config('thomisticus.crud_generator.templates', 'adminlte-templates');
         $this->fileName = $this->commandData->modelName . 'Controller.php';
     }
 
