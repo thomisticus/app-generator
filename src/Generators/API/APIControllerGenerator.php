@@ -46,13 +46,8 @@ class APIControllerGenerator extends BaseGenerator
     {
         $methods = ['controller', 'index', 'store', 'show', 'update', 'destroy'];
 
-        if ($this->commandData->getAddOn('swagger')) {
-            $templatePrefix = 'controller_docs';
-            $templateType = 'swagger-generator';
-        } else {
-            $templatePrefix = 'api.docs.controller';
-            $templateType = 'crud-generator';
-        }
+        $templatePrefix = 'api.docs.controller';
+        $templateType = 'crud-generator';
 
         foreach ($methods as $method) {
             $key = '$DOC_' . strtoupper($method) . '$';

@@ -506,7 +506,7 @@ class GeneratorConfig
             $this->loadDynamicVariables($this->commandData);
         }
 
-        $addOns = ['swagger', 'tests', 'datatables'];
+        $addOns = ['tests', 'datatables'];
 
         foreach ($addOns as $addOn) {
             if (isset($jsonData['addOns'][$addOn])) {
@@ -540,7 +540,6 @@ class GeneratorConfig
 
     public function prepareAddOns()
     {
-        $this->addOns['swagger'] = config('thomisticus.crud_generator.add_on.swagger', false);
         $this->addOns['tests'] = config('thomisticus.crud_generator.add_on.tests', false);
         $this->addOns['datatables'] = config('thomisticus.crud_generator.add_on.datatables', false);
         $this->addOns['menu.enabled'] = config('thomisticus.crud_generator.add_on.menu.enabled', false);

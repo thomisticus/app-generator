@@ -34,7 +34,6 @@ class PublishTemplateCommand extends PublishBaseCommand
 
         if ($this->publishGeneratorTemplates()) {
             $this->publishScaffoldTemplates();
-            $this->publishSwaggerTemplates();
         }
     }
 
@@ -63,16 +62,6 @@ class PublishTemplateCommand extends PublishBaseCommand
             'thomisticus-crud-templates/scaffold',
             true
         );
-    }
-
-    /**
-     * Publishes swagger stemplates.
-     */
-    public function publishSwaggerTemplates()
-    {
-        $templatesPath = base_path('vendor/thomisticus/swagger-generator/templates');
-
-        return $this->publishDirectory($templatesPath, $this->templatesDir, 'swagger-generator', true);
     }
 
     /**

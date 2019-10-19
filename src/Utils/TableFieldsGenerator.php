@@ -129,12 +129,10 @@ class TableFieldsGenerator
                 case 'float':
                     $field = $this->generateNumberInput($column, 'float');
                     break;
-                case 'string':
-                    $field = $this->generateField($column, 'string', 'text');
-                    break;
                 case 'text':
                     $field = $this->generateField($column, 'text', 'textarea');
                     break;
+                case 'string':
                 default:
                     $field = $this->generateField($column, 'string', 'text');
                     break;

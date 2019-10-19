@@ -134,10 +134,6 @@ class ModelGenerator extends BaseGenerator
 
     private function fillDocs($templateData)
     {
-        if ($this->commandData->getAddOn('swagger')) {
-            $templateData = $this->generateSwagger($templateData);
-        }
-
         $docsTemplate = get_template('docs.model', 'crud-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
 
@@ -166,6 +162,63 @@ class ModelGenerator extends BaseGenerator
         $templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
 
         return $templateData;
+    }
+
+    public function getFieldType($type)
+    {
+        $fieldType = null;
+        $fieldFormat = null;
+        switch (strtolower($type)) {
+            case 'increments':
+            case 'integer':
+            case 'smallinteger':
+            case 'long':
+            case 'biginteger':
+                $fieldType = 'integer';
+                $fieldFormat = 'int32';
+                break;
+            case 'double':
+            case 'float':
+            case 'real':
+            case 'decimal':
+                $fieldType = 'number';
+                $fieldFormat = 'number';
+                break;
+            case 'boolean':
+                $fieldType = 'boolean';
+                break;
+            case 'string':
+            case 'char':
+            case 'text':
+            case 'mediumtext':
+            case 'longtext':
+            case 'enum':
+                $fieldType = 'string';
+                break;
+            case 'byte':
+                $fieldType = 'string';
+                $fieldFormat = 'byte';
+                break;
+            case 'binary':
+                $fieldType = 'string';
+                $fieldFormat = 'binary';
+                break;
+            case 'password':
+                $fieldType = 'string';
+                $fieldFormat = 'password';
+                break;
+            case 'date':
+                $fieldType = 'string';
+                $fieldFormat = 'date';
+                break;
+            case 'datetime':
+            case 'timestamp':
+                $fieldType = 'string';
+                $fieldFormat = 'date-time';
+                break;
+        }
+
+        return ['fieldType' => $fieldType, 'fieldFormat' => $fieldFormat];
     }
 
     /**
@@ -197,53 +250,13 @@ class ModelGenerator extends BaseGenerator
             case 'hmt':
                 return '\Illuminate\Database\Eloquent\Collection' . ' ' . Str::camel(Str::plural($relationText));
             default:
-                $fieldData = SwaggerGenerator::getFieldType($db_type);
+                $fieldData = $this->getFieldType($db_type);
                 if (!empty($fieldData['fieldType'])) {
                     return $fieldData['fieldType'];
                 }
 
                 return $db_type;
         }
-    }
-
-    public function generateSwagger($templateData)
-    {
-        $fieldTypes = SwaggerGenerator::generateTypes($this->commandData->fields);
-
-        $template = get_template('model_docs.model', 'swagger-generator');
-
-        $template = fill_template($this->commandData->dynamicVars, $template);
-
-        $template = str_replace(
-            '$REQUIRED_FIELDS$',
-            '"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"',
-            $template
-        );
-
-        $propertyTemplate = get_template('model_docs.property', 'swagger-generator');
-
-        $properties = SwaggerGenerator::preparePropertyFields($propertyTemplate, $fieldTypes);
-
-        $template = str_replace('$PROPERTIES$', implode(",\n", $properties), $template);
-
-        $templateData = str_replace('$DOCS$', $template, $templateData);
-
-        return $templateData;
-    }
-
-    private function generateRequiredFields()
-    {
-        $requiredFields = [];
-
-        foreach ($this->commandData->fields as $field) {
-            if (!empty($field->validations)) {
-                if (Str::contains($field->validations, 'required')) {
-                    $requiredFields[] = $field->name;
-                }
-            }
-        }
-
-        return $requiredFields;
     }
 
     private function fillTimestamps($templateData)

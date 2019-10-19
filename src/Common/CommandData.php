@@ -45,10 +45,9 @@ class CommandData
     }
 
     /**
+     * CommandData constructor.
      * @param Command $commandObj
-     * @param string $commandType
-     *
-     * @return CommandData
+     * @param $commandType
      */
     public function __construct(Command $commandObj, $commandType)
     {

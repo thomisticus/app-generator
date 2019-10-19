@@ -168,8 +168,6 @@ return [
 
     'add_on' => [
 
-        'swagger' => false,
-
         'tests' => true,
 
         'datatables' => false,

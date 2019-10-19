@@ -138,7 +138,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
 
         FileUtil::createFile($repositoryPath, $fileName, $templateData);
 
-        $this->info('BaseRepository created');
+        $this->info('BaseRepository.php created');
     }
 
     private function publishResponseTrait()
