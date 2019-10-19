@@ -82,34 +82,11 @@ class ViewGenerator extends BaseGenerator
 
     private function generateTable()
     {
-        if ($this->commandData->getAddOn('datatables')) {
-            $templateData = $this->generateDataTableBody();
-            $this->generateDataTableActions();
-        } else {
-            $templateData = $this->generateBladeTableBody();
-        }
+        $templateData = $this->generateBladeTableBody();
 
         FileUtil::createFile($this->path, 'table.blade.php', $templateData);
 
         $this->commandData->commandInfo('table.blade.php created');
-    }
-
-    private function generateDataTableBody()
-    {
-        $templateData = get_template('scaffold.views.datatable_body', $this->templateType);
-
-        return fill_template($this->commandData->dynamicVars, $templateData);
-    }
-
-    private function generateDataTableActions()
-    {
-        $templateData = get_template('scaffold.views.datatables_actions', $this->templateType);
-
-        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
-
-        FileUtil::createFile($this->path, 'datatables_actions.blade.php', $templateData);
-
-        $this->commandData->commandInfo('datatables_actions.blade.php created');
     }
 
     private function generateBladeTableBody()
@@ -169,20 +146,16 @@ class ViewGenerator extends BaseGenerator
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-        if ($this->commandData->getAddOn('datatables')) {
-            $templateData = str_replace('$PAGINATE$', '', $templateData);
+        $paginate = $this->commandData->getOption('paginate');
+
+        if ($paginate) {
+            $paginateTemplate = get_template('scaffold.views.paginate', $this->templateType);
+
+            $paginateTemplate = fill_template($this->commandData->dynamicVars, $paginateTemplate);
+
+            $templateData = str_replace('$PAGINATE$', $paginateTemplate, $templateData);
         } else {
-            $paginate = $this->commandData->getOption('paginate');
-
-            if ($paginate) {
-                $paginateTemplate = get_template('scaffold.views.paginate', $this->templateType);
-
-                $paginateTemplate = fill_template($this->commandData->dynamicVars, $paginateTemplate);
-
-                $templateData = str_replace('$PAGINATE$', $paginateTemplate, $templateData);
-            } else {
-                $templateData = str_replace('$PAGINATE$', '', $templateData);
-            }
+            $templateData = str_replace('$PAGINATE$', '', $templateData);
         }
 
         FileUtil::createFile($this->path, 'index.blade.php', $templateData);
@@ -310,10 +283,6 @@ class ViewGenerator extends BaseGenerator
             foreach ($views as $view) {
                 $files[] = $view . '.blade.php';
             }
-        }
-
-        if ($this->commandData->getAddOn('datatables')) {
-            $files[] = 'datatables_actions.blade.php';
         }
 
         foreach ($files as $file) {

@@ -12,7 +12,6 @@ class GeneratorConfig
     public $nsService;
     public $nsTrait;
     public $nsModel;
-    public $nsDataTables;
     public $nsModelExtend;
 
     public $nsApiController;
@@ -32,7 +31,6 @@ class GeneratorConfig
     public $pathRepository;
     public $pathService;
     public $pathModel;
-    public $pathDataTables;
     public $pathFactory;
     public $pathSeeder;
     public $pathDatabaseSeeder;
@@ -86,7 +84,6 @@ class GeneratorConfig
         'prefix',
         'paginate',
         'skip',
-        'datatables',
         'views',
         'relations',
         'plural',
@@ -148,7 +145,6 @@ class GeneratorConfig
         if (config('thomisticus.crud_generator.ignore_model_prefix', false)) {
             $this->nsModel = config('thomisticus.crud_generator.namespace.model', 'App\Models');
         }
-        $this->nsDataTables = config('thomisticus.crud_generator.namespace.datatables', 'App\DataTables') . $prefix;
         $this->nsModelExtend = config(
             'thomisticus.crud_generator.model_extend_class',
             'Illuminate\Database\Eloquent\Model'
@@ -205,8 +201,6 @@ class GeneratorConfig
             $this->pathModel = config('thomisticus.crud_generator.path.model', app_path('Models/'));
         }
 
-        $this->pathDataTables = config('thomisticus.crud_generator.path.datatables', app_path('DataTables/')) . $prefix;
-
         $this->pathApiController = config(
             'thomisticus.crud_generator.path.api_controller',
             app_path('Http/Controllers/API/')
@@ -258,7 +252,6 @@ class GeneratorConfig
         $commandData->addDynamicVariable('$NAMESPACE_SERVICE$', $this->nsService);
         $commandData->addDynamicVariable('$NAMESPACE_TRAIT$', $this->nsTrait);
         $commandData->addDynamicVariable('$NAMESPACE_MODEL$', $this->nsModel);
-        $commandData->addDynamicVariable('$NAMESPACE_DATATABLES$', $this->nsDataTables);
         $commandData->addDynamicVariable('$NAMESPACE_MODEL_EXTEND$', $this->nsModelExtend);
 
         $commandData->addDynamicVariable('$NAMESPACE_API_CONTROLLER$', $this->nsApiController);
@@ -396,14 +389,6 @@ class GeneratorConfig
         if (!empty($this->options['skip'])) {
             $this->options['skip'] = array_map('trim', explode(',', $this->options['skip']));
         }
-
-        if (!empty($this->options['datatables'])) {
-            if (strtolower($this->options['datatables']) == 'true') {
-                $this->addOns['datatables'] = true;
-            } else {
-                $this->addOns['datatables'] = false;
-            }
-        }
     }
 
     public function preparePrefixes()
@@ -506,7 +491,7 @@ class GeneratorConfig
             $this->loadDynamicVariables($this->commandData);
         }
 
-        $addOns = ['tests', 'datatables'];
+        $addOns = ['tests'];
 
         foreach ($addOns as $addOn) {
             if (isset($jsonData['addOns'][$addOn])) {
@@ -541,7 +526,6 @@ class GeneratorConfig
     public function prepareAddOns()
     {
         $this->addOns['tests'] = config('thomisticus.crud_generator.add_on.tests', false);
-        $this->addOns['datatables'] = config('thomisticus.crud_generator.add_on.datatables', false);
         $this->addOns['menu.enabled'] = config('thomisticus.crud_generator.add_on.menu.enabled', false);
         $this->addOns['menu.menu_file'] = config('thomisticus.crud_generator.add_on.menu.menu_file', 'layouts.menu');
     }

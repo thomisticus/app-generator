@@ -62,8 +62,6 @@ class LayoutPublishCommand extends PublishBaseCommand
         return [
             'layouts/app' => 'layouts/app.blade.php',
             'layouts/sidebar' => 'layouts/sidebar.blade.php',
-            'layouts/datatables_css' => 'layouts/datatables_css.blade.php',
-            'layouts/datatables_js' => 'layouts/datatables_js.blade.php',
             'layouts/menu' => 'layouts/menu.blade.php',
             'layouts/panel' => 'panel.blade.php',
             'auth/login' => 'auth/login.blade.php',

@@ -15,8 +15,6 @@ return [
 
         'model' => app_path('Models/'),
 
-        'datatables' => app_path('DataTables/'),
-
         'repository' => app_path('Repositories/'),
 
         'service' => app_path('Services/'),
@@ -68,8 +66,6 @@ return [
     'namespace' => [
 
         'model' => 'App\Models',
-
-        'datatables' => 'App\DataTables',
 
         'repository' => 'App\Repositories',
 
@@ -169,8 +165,6 @@ return [
     'add_on' => [
 
         'tests' => true,
-
-        'datatables' => false,
 
         'menu' => [
 

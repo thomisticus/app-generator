@@ -67,20 +67,16 @@ class ViewGenerator extends BaseGenerator
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-        if ($this->commandData->getAddOn('datatables')) {
-            $templateData = str_replace('$PAGINATE$', '', $templateData);
+        $paginate = $this->commandData->getOption('paginate');
+
+        if ($paginate) {
+            $paginateTemplate = get_template('vuejs.views.paginate', $this->templateType);
+
+            $paginateTemplate = fill_template($this->commandData->dynamicVars, $paginateTemplate);
+
+            $templateData = str_replace('$PAGINATE$', $paginateTemplate, $templateData);
         } else {
-            $paginate = $this->commandData->getOption('paginate');
-
-            if ($paginate) {
-                $paginateTemplate = get_template('vuejs.views.paginate', $this->templateType);
-
-                $paginateTemplate = fill_template($this->commandData->dynamicVars, $paginateTemplate);
-
-                $templateData = str_replace('$PAGINATE$', $paginateTemplate, $templateData);
-            } else {
-                $templateData = str_replace('$PAGINATE$', '', $templateData);
-            }
+            $templateData = str_replace('$PAGINATE$', '', $templateData);
         }
 
         FileUtil::createFile($this->path, 'index.blade.php', $templateData);
