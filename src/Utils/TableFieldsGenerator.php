@@ -8,26 +8,8 @@ use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Common\GeneratorField;
 use Thomisticus\Generator\Common\GeneratorFieldRelation;
-
-class GeneratorForeignKey
-{
-    /** @var string */
-    public $name;
-    public $localField;
-    public $foreignField;
-    public $foreignTable;
-    public $onUpdate;
-    public $onDelete;
-}
-
-class GeneratorTable
-{
-    /** @var string */
-    public $primaryKey;
-
-    /** @var GeneratorForeignKey[] */
-    public $foreignKeys;
-}
+use Thomisticus\Generator\Common\GeneratorForeignKey;
+use Thomisticus\Generator\Common\GeneratorTable;
 
 class TableFieldsGenerator
 {
