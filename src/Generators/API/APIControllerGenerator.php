@@ -33,6 +33,15 @@ class APIControllerGenerator extends BaseGenerator
         }
 
         $templateData = get_template("api.controller.$templateName", 'crud-generator');
+
+//        $paginate = $this->commandData->getOption('paginate');
+//
+//        if ($paginate) {
+//            $templateData = str_replace('$RENDER_TYPE$', 'paginate(' . $paginate . ')', $templateData);
+//        } else {
+//            $templateData = str_replace('$RENDER_TYPE$', 'all()', $templateData);
+//        }
+
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
         $templateData = $this->fillDocs($templateData);
 

@@ -29,8 +29,6 @@ return [
 
         'api_request' => app_path('Http/Requests/API/'),
 
-        'controller' => app_path('Http/Controllers/'),
-
         'api_controller' => app_path('Http/Controllers/API/'),
 
         'test_trait' => base_path('tests/Traits/'),
@@ -68,8 +66,6 @@ return [
         'service' => 'App\Services',
 
         'trait' => 'App\Traits',
-
-        'controller' => 'App\Http\Controllers',
 
         'api_controller' => 'App\Http\Controllers\API',
 

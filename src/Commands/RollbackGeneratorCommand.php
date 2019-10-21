@@ -14,7 +14,6 @@ use Thomisticus\Generator\Generators\MigrationGenerator;
 use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\ControllerGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
 
@@ -97,9 +96,6 @@ class RollbackGeneratorCommand extends Command
 
         $requestGenerator = new RequestGenerator($this->commandData);
         $requestGenerator->rollback();
-
-        $controllerGenerator = new ControllerGenerator($this->commandData);
-        $controllerGenerator->rollback();
 
         $routeGenerator = new RoutesGenerator($this->commandData);
         $routeGenerator->rollback();

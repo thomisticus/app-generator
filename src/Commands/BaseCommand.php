@@ -16,7 +16,6 @@ use Thomisticus\Generator\Generators\MigrationGenerator;
 use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\ControllerGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
 use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
 use Thomisticus\Generator\Generators\SeederGenerator;
@@ -119,11 +118,6 @@ class BaseCommand extends Command
         if (!$this->isSkip('requests') && !$this->isSkip('scaffold_requests')) {
             $requestGenerator = new RequestGenerator($this->commandData);
             $requestGenerator->generate();
-        }
-
-        if (!$this->isSkip('controllers') && !$this->isSkip('scaffold_controller')) {
-            $controllerGenerator = new ControllerGenerator($this->commandData);
-            $controllerGenerator->generate();
         }
 
         if (!$this->isSkip('routes') && !$this->isSkip('scaffold_routes')) {
