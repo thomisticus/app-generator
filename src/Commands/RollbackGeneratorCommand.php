@@ -58,13 +58,8 @@ class RollbackGeneratorCommand extends Command
      */
     public function handle()
     {
-        if (
-        !in_array($this->argument('type'), [
-            CommandData::$COMMAND_TYPE_API,
-            CommandData::$COMMAND_TYPE_SERVICE_SCAFFOLD,
-            CommandData::$COMMAND_TYPE_API_SCAFFOLD,
-        ])
-        ) {
+        if (!in_array($this->argument('type'),
+            [CommandData::$COMMAND_TYPE_API, CommandData::$COMMAND_TYPE_API_SCAFFOLD])) {
             $this->error('invalid rollback type');
         }
 

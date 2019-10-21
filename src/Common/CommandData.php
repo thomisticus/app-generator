@@ -12,7 +12,6 @@ class CommandData
 {
     public static $COMMAND_TYPE_API = 'api';
     public static $COMMAND_TYPE_API_SCAFFOLD = 'api_scaffold';
-    public static $COMMAND_TYPE_SERVICE_SCAFFOLD = 'service_scaffold';
 
     /** @var string */
     public $modelName;
@@ -109,7 +108,7 @@ class CommandData
     {
         $this->fields = [];
 
-        if ($this->getOption('fieldsFile') or $this->getOption('jsonFromGUI')) {
+        if ($this->getOption('fieldsFile') || $this->getOption('jsonFromGUI')) {
             $this->getInputFromFileOrJson();
         } elseif ($this->getOption('fromTable')) {
             $this->getInputFromTable();

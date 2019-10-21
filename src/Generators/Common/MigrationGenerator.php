@@ -65,7 +65,7 @@ class MigrationGenerator extends BaseGenerator
             }
         }
 
-        if ($createdAtField and $updatedAtField) {
+        if ($createdAtField && $updatedAtField) {
             $fields[] = '$table->timestamps();';
         } else {
             if ($createdAtField) {
