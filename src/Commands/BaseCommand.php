@@ -17,7 +17,6 @@ use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 use Thomisticus\Generator\Generators\SeederGenerator;
-use Thomisticus\Generator\Generators\Service\ServiceControllerGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -94,6 +93,11 @@ class BaseCommand extends Command
             $controllerGenerator->generate();
         }
 
+//        if (!$this->isSkip('services') && !$this->isSkip('scaffold_service')) {
+//            $serviceGenerator = new ServiceGenerator($this->commandData);
+//            $serviceGenerator->generate();
+//        }
+
         if (!$this->isSkip('routes') && !$this->isSkip('api_routes')) {
             $routesGenerator = new APIRoutesGenerator($this->commandData);
             $routesGenerator->generate();
@@ -101,29 +105,6 @@ class BaseCommand extends Command
 
         if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
             if ($this->commandData->getOption('repositoryPattern')) {
-                $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
-                $repositoryTestGenerator->generate();
-            }
-
-            $apiTestGenerator = new APITestGenerator($this->commandData);
-            $apiTestGenerator->generate();
-        }
-    }
-
-    public function generateServiceItems()
-    {
-        if (!$this->isSkip('controllers') && !$this->isSkip('scaffold_controller')) {
-            $controllerGenerator = new ServiceControllerGenerator($this->commandData);
-            $controllerGenerator->generate();
-        }
-
-        if (!$this->isSkip('services') && !$this->isSkip('scaffold_service')) {
-            $serviceGenerator = new ServiceGenerator($this->commandData);
-            $serviceGenerator->generate();
-        }
-
-        if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
-            if (!$this->isSkip('repository') && $this->commandData->getOption('repositoryPattern')) {
                 $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
                 $repositoryTestGenerator->generate();
             }
