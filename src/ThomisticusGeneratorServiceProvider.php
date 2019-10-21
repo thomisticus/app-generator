@@ -14,11 +14,8 @@ use Thomisticus\Generator\Commands\Common\RepositoryGeneratorCommand;
 use Thomisticus\Generator\Commands\Publish\GeneratorPublishCommand;
 use Thomisticus\Generator\Commands\Publish\PublishTemplateCommand;
 use Thomisticus\Generator\Commands\RollbackGeneratorCommand;
-use Thomisticus\Generator\Commands\Scaffold\RequestsGeneratorCommand;
-use Thomisticus\Generator\Commands\Scaffold\ScaffoldGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceControllerGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceGeneratorCommand;
-use Thomisticus\Generator\Commands\Service\ServiceRequestGeneratorCommand;
 use Thomisticus\Generator\Commands\Service\ServiceScaffoldGeneratorCommand;
 
 class ThomisticusGeneratorServiceProvider extends ServiceProvider
@@ -50,10 +47,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
 
         $this->app->singleton('thomisticus.api', function ($app) {
             return new APIGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.scaffold', function ($app) {
-            return new ScaffoldGeneratorCommand();
         });
 
         $this->app->singleton('thomisticus.service_scaffold', function ($app) {
@@ -100,14 +93,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             return new ServiceControllerGeneratorCommand();
         });
 
-        $this->app->singleton('thomisticus.scaffold.requests', function ($app) {
-            return new RequestsGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.service_scaffold.requests', function ($app) {
-            return new ServiceRequestGeneratorCommand();
-        });
-
         $this->app->singleton('thomisticus.rollback', function ($app) {
             return new RollbackGeneratorCommand();
         });
@@ -115,7 +100,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
         $this->commands([
             'thomisticus.publish',
             'thomisticus.api',
-            'thomisticus.scaffold',
             'thomisticus.service_scaffold',
             'thomisticus.api_scaffold',
             'thomisticus.publish.templates',
@@ -126,7 +110,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus.api.controller',
             'thomisticus.api.requests',
             'thomisticus.api.tests',
-            'thomisticus.scaffold.requests',
             'thomisticus.rollback',
         ]);
     }

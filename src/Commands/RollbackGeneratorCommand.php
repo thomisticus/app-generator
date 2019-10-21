@@ -14,8 +14,6 @@ use Thomisticus\Generator\Generators\MigrationGenerator;
 use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
 
 class RollbackGeneratorCommand extends Command
 {
@@ -63,7 +61,6 @@ class RollbackGeneratorCommand extends Command
         if (
         !in_array($this->argument('type'), [
             CommandData::$COMMAND_TYPE_API,
-            CommandData::$COMMAND_TYPE_SCAFFOLD,
             CommandData::$COMMAND_TYPE_SERVICE_SCAFFOLD,
             CommandData::$COMMAND_TYPE_API_SCAFFOLD,
         ])
@@ -93,12 +90,6 @@ class RollbackGeneratorCommand extends Command
 
         $routesGenerator = new APIRoutesGenerator($this->commandData);
         $routesGenerator->rollback();
-
-        $requestGenerator = new RequestGenerator($this->commandData);
-        $requestGenerator->rollback();
-
-        $routeGenerator = new RoutesGenerator($this->commandData);
-        $routeGenerator->rollback();
 
         if ($this->commandData->getAddOn('tests')) {
             $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);

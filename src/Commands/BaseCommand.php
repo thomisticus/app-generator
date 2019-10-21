@@ -16,12 +16,9 @@ use Thomisticus\Generator\Generators\MigrationGenerator;
 use Thomisticus\Generator\Generators\ModelGenerator;
 use Thomisticus\Generator\Generators\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\RequestGenerator;
-use Thomisticus\Generator\Generators\Scaffold\RoutesGenerator;
 use Thomisticus\Generator\Generators\SeederGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceControllerGenerator;
 use Thomisticus\Generator\Generators\Service\ServiceGenerator;
-use Thomisticus\Generator\Generators\Service\ServiceRequestGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class BaseCommand extends Command
@@ -113,26 +110,8 @@ class BaseCommand extends Command
         }
     }
 
-    public function generateScaffoldItems()
-    {
-        if (!$this->isSkip('requests') && !$this->isSkip('scaffold_requests')) {
-            $requestGenerator = new RequestGenerator($this->commandData);
-            $requestGenerator->generate();
-        }
-
-        if (!$this->isSkip('routes') && !$this->isSkip('scaffold_routes')) {
-            $routeGenerator = new RoutesGenerator($this->commandData);
-            $routeGenerator->generate();
-        }
-    }
-
     public function generateServiceItems()
     {
-        if (!$this->isSkip('requests') && !$this->isSkip('scaffold_requests')) {
-            $requestGenerator = new ServiceRequestGenerator($this->commandData);
-            $requestGenerator->generate();
-        }
-
         if (!$this->isSkip('controllers') && !$this->isSkip('scaffold_controller')) {
             $controllerGenerator = new ServiceControllerGenerator($this->commandData);
             $controllerGenerator->generate();
@@ -142,11 +121,6 @@ class BaseCommand extends Command
             $serviceGenerator = new ServiceGenerator($this->commandData);
             $serviceGenerator->generate();
         }
-
-//        if (!$this->isSkip('routes') && !$this->isSkip('scaffold_routes')) {
-//            $routeGenerator = new RoutesGenerator($this->commandData);
-//            $routeGenerator->generate();
-//        }
 
         if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
             if (!$this->isSkip('repository') && $this->commandData->getOption('repositoryPattern')) {

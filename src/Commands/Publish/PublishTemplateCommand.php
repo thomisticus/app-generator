@@ -32,9 +32,7 @@ class PublishTemplateCommand extends PublishBaseCommand
             base_path('resources/thomisticus/thomisticus-crud-templates/')
         );
 
-        if ($this->publishGeneratorTemplates()) {
-            $this->publishScaffoldTemplates();
-        }
+        $this->publishGeneratorTemplates();
     }
 
     /**
@@ -45,23 +43,6 @@ class PublishTemplateCommand extends PublishBaseCommand
         $templatesPath = __DIR__ . '/../../../templates';
 
         return $this->publishDirectory($templatesPath, $this->templatesDir, 'thomisticus-crud-templates');
-    }
-
-    /**
-     * Publishes templates.
-     */
-    public function publishScaffoldTemplates()
-    {
-        $templateType = config('thomisticus.crud_generator.templates', 'adminlte-templates');
-
-        $templatesPath = base_path('vendor/thomisticus/' . $templateType . '/templates/scaffold');
-
-        return $this->publishDirectory(
-            $templatesPath,
-            $this->templatesDir . '/scaffold',
-            'thomisticus-crud-templates/scaffold',
-            true
-        );
     }
 
     /**

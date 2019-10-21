@@ -11,7 +11,6 @@ use Thomisticus\Generator\Utils\TableFieldsGenerator;
 class CommandData
 {
     public static $COMMAND_TYPE_API = 'api';
-    public static $COMMAND_TYPE_SCAFFOLD = 'scaffold';
     public static $COMMAND_TYPE_API_SCAFFOLD = 'api_scaffold';
     public static $COMMAND_TYPE_SERVICE_SCAFFOLD = 'service_scaffold';
 
