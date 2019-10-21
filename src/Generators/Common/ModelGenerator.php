@@ -1,10 +1,11 @@
 <?php
 
-namespace Thomisticus\Generator\Generators;
+namespace Thomisticus\Generator\Generators\Common;
 
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Common\GeneratorFieldRelation;
+use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 use Thomisticus\Generator\Utils\TableFieldsGenerator;
 

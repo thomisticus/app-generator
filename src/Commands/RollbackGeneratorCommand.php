@@ -10,9 +10,9 @@ use Thomisticus\Generator\Generators\API\APIControllerGenerator;
 use Thomisticus\Generator\Generators\API\APIRequestGenerator;
 use Thomisticus\Generator\Generators\API\APIRoutesGenerator;
 use Thomisticus\Generator\Generators\API\APITestGenerator;
-use Thomisticus\Generator\Generators\MigrationGenerator;
-use Thomisticus\Generator\Generators\ModelGenerator;
-use Thomisticus\Generator\Generators\RepositoryGenerator;
+use Thomisticus\Generator\Generators\Common\MigrationGenerator;
+use Thomisticus\Generator\Generators\Common\ModelGenerator;
+use Thomisticus\Generator\Generators\Common\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 
 class RollbackGeneratorCommand extends Command

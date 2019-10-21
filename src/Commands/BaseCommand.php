@@ -11,13 +11,13 @@ use Thomisticus\Generator\Generators\API\APIControllerGenerator;
 use Thomisticus\Generator\Generators\API\APIRequestGenerator;
 use Thomisticus\Generator\Generators\API\APIRoutesGenerator;
 use Thomisticus\Generator\Generators\API\APITestGenerator;
-use Thomisticus\Generator\Generators\FactoryGenerator;
-use Thomisticus\Generator\Generators\MigrationGenerator;
-use Thomisticus\Generator\Generators\ModelGenerator;
-use Thomisticus\Generator\Generators\RepositoryGenerator;
+use Thomisticus\Generator\Generators\Common\FactoryGenerator;
+use Thomisticus\Generator\Generators\Common\MigrationGenerator;
+use Thomisticus\Generator\Generators\Common\ModelGenerator;
+use Thomisticus\Generator\Generators\Common\RepositoryGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
-use Thomisticus\Generator\Generators\SeederGenerator;
-use Thomisticus\Generator\Generators\Service\ServiceGenerator;
+use Thomisticus\Generator\Generators\Common\SeederGenerator;
+use Thomisticus\Generator\Generators\API\ServiceGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class BaseCommand extends Command

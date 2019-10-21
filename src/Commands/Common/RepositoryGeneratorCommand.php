@@ -4,7 +4,7 @@ namespace Thomisticus\Generator\Commands\Common;
 
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\RepositoryGenerator;
+use Thomisticus\Generator\Generators\Common\RepositoryGenerator;
 
 class RepositoryGeneratorCommand extends BaseCommand
 {

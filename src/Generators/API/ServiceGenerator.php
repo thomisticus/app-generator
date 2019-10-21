@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomisticus\Generator\Generators\Service;
+namespace Thomisticus\Generator\Generators\API;
 
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;

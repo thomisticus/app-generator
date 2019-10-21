@@ -1,8 +1,9 @@
 <?php
 
-namespace Thomisticus\Generator\Generators;
+namespace Thomisticus\Generator\Generators\Common;
 
 use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 /**

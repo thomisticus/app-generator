@@ -1,10 +1,10 @@
 <?php
 
-namespace Thomisticus\Generator\Commands\Service;
+namespace Thomisticus\Generator\Commands\API;
 
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\Service\ServiceGenerator;
+use Thomisticus\Generator\Generators\API\ServiceGenerator;
 
 class ServiceGeneratorCommand extends BaseCommand
 {

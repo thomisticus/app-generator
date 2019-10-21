@@ -7,14 +7,13 @@ use Thomisticus\Generator\Commands\API\APIControllerGeneratorCommand;
 use Thomisticus\Generator\Commands\API\APIGeneratorCommand;
 use Thomisticus\Generator\Commands\API\APIRequestsGeneratorCommand;
 use Thomisticus\Generator\Commands\API\TestsGeneratorCommand;
-use Thomisticus\Generator\Commands\APIScaffoldGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\MigrationGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\ModelGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\RepositoryGeneratorCommand;
 use Thomisticus\Generator\Commands\Publish\GeneratorPublishCommand;
 use Thomisticus\Generator\Commands\Publish\PublishTemplateCommand;
 use Thomisticus\Generator\Commands\RollbackGeneratorCommand;
-use Thomisticus\Generator\Commands\Service\ServiceGeneratorCommand;
+use Thomisticus\Generator\Commands\API\ServiceGeneratorCommand;
 
 class ThomisticusGeneratorServiceProvider extends ServiceProvider
 {
@@ -49,10 +48,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
 
         $this->app->singleton('thomisticus.publish.templates', function ($app) {
             return new PublishTemplateCommand();
-        });
-
-        $this->app->singleton('thomisticus.api_scaffold', function ($app) {
-            return new APIScaffoldGeneratorCommand();
         });
 
         $this->app->singleton('thomisticus.migration', function ($app) {
@@ -90,7 +85,6 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
         $this->commands([
             'thomisticus.publish',
             'thomisticus.api',
-            'thomisticus.api_scaffold',
             'thomisticus.publish.templates',
             'thomisticus.migration',
             'thomisticus.model',

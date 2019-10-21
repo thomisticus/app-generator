@@ -4,7 +4,7 @@ namespace Thomisticus\Generator\Generators\API;
 
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
-use Thomisticus\Generator\Generators\ModelGenerator;
+use Thomisticus\Generator\Generators\Common\ModelGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class APIRequestGenerator extends BaseGenerator
