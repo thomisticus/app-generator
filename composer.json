@@ -1,6 +1,6 @@
 {
-  "name": "thomisticus/crud-generator",
-  "description": "Thomisticus Crud Generator",
+  "name": "thomisticus/app-generator",
+  "description": "Thomisticus App Generator",
   "keywords": [
     "laravel",
     "api",

@@ -25,7 +25,7 @@ class MigrationGenerator extends BaseGenerator
 
     public function generate()
     {
-        $templateData = get_template('migration', 'crud-generator');
+        $templateData = get_template('migration', 'app-generator');
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 

@@ -32,7 +32,7 @@ class APIControllerGenerator extends BaseGenerator
             $templateName = 'model_api_controller';
         }
 
-        $templateData = get_template("api.controller.$templateName", 'crud-generator');
+        $templateData = get_template("api.controller.$templateName", 'app-generator');
 
 //        $paginate = $this->commandData->getOption('paginate');
 //
@@ -56,7 +56,7 @@ class APIControllerGenerator extends BaseGenerator
         $methods = ['controller', 'index', 'store', 'show', 'update', 'destroy'];
 
         $templatePrefix = 'api.docs.controller';
-        $templateType = 'crud-generator';
+        $templateType = 'app-generator';
 
         foreach ($methods as $method) {
             $key = '$DOC_' . strtoupper($method) . '$';

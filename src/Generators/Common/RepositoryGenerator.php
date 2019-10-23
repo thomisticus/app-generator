@@ -26,7 +26,7 @@ class RepositoryGenerator extends BaseGenerator
 
     public function generate()
     {
-        $templateData = get_template('repository', 'crud-generator');
+        $templateData = get_template('repository', 'app-generator');
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -44,7 +44,7 @@ class RepositoryGenerator extends BaseGenerator
             $templateData
         );
 
-        $docsTemplate = get_template('docs.repository', 'crud-generator');
+        $docsTemplate = get_template('docs.repository', 'app-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
         $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
 

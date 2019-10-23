@@ -44,7 +44,7 @@ class ModelGenerator extends BaseGenerator
 
     public function generate()
     {
-        $templateData = get_template('model.model', 'crud-generator');
+        $templateData = get_template('model.model', 'app-generator');
 
         $templateData = $this->fillTemplate($templateData);
 
@@ -73,7 +73,7 @@ class ModelGenerator extends BaseGenerator
         $templateData = $this->fillTimestamps($templateData);
 
         if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
-            $primaryDocs = get_template('docs.model_primary', 'crud-generator');
+            $primaryDocs = get_template('docs.model_primary', 'app-generator');
             $primary = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
             $primary = '';
@@ -135,7 +135,7 @@ class ModelGenerator extends BaseGenerator
 
     private function fillDocs($templateData)
     {
-        $docsTemplate = get_template('docs.model', 'crud-generator');
+        $docsTemplate = get_template('docs.model', 'app-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
 
         $fillables = '';
@@ -274,11 +274,11 @@ class ModelGenerator extends BaseGenerator
                 return !empty($field) ? "'$field'" : 'null';
             });
 
-            $replace .= get_template('docs.model_created_at', 'crud-generator');
+            $replace .= get_template('docs.model_created_at', 'app-generator');
             $replace .= generate_new_line_tab() . "const CREATED_AT = $created_at;\n\n";
-            $replace .= get_template('docs.model_updated_at', 'crud-generator');
+            $replace .= get_template('docs.model_updated_at', 'app-generator');
             $replace .= generate_new_line_tab() . "const UPDATED_AT = $updated_at;\n\n";
-            $replace .= get_template('docs.model_deleted_at', 'crud-generator');
+            $replace .= get_template('docs.model_deleted_at', 'app-generator');
             $replace .= generate_new_line_tab() . "const DELETED_AT = $deleted_at;";
         }
 

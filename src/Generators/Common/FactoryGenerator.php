@@ -35,7 +35,7 @@ class FactoryGenerator extends BaseGenerator
 
     public function generate()
     {
-        $templateData = get_template('factories.model_factory', 'crud-generator');
+        $templateData = get_template('factories.model_factory', 'app-generator');
 
         $templateData = $this->fillTemplate($templateData);
 

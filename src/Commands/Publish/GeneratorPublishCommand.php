@@ -71,7 +71,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $createdAtField = config('app-generator.timestamps.created_at', 'created_at');
         $updatedAtField = config('app-generator.timestamps.updated_at', 'updated_at');
 
-        $templateData = get_template('test.api_test_trait', 'crud-generator');
+        $templateData = get_template('test.api_test_trait', 'app-generator');
 
         $templateData = str_replace('$NAMESPACE_TESTS$', $testsNameSpace, $templateData);
         $templateData = str_replace('$TIMESTAMPS$', "['$createdAtField', '$updatedAtField']", $templateData);
@@ -103,7 +103,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
 
     private function publishBaseController()
     {
-        $templateData = get_template('app_base_controller', 'crud-generator');
+        $templateData = get_template('app_base_controller', 'app-generator');
 
         $templateData = $this->fillTemplate($templateData);
 
@@ -122,7 +122,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
 
     private function publishBaseRepository()
     {
-        $templateData = get_template('base_repository', 'crud-generator');
+        $templateData = get_template('base_repository', 'app-generator');
 
         $templateData = $this->fillTemplate($templateData);
 
@@ -143,7 +143,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
 
     private function publishResponseTrait()
     {
-        $templateData = get_template('traits.response', 'crud-generator');
+        $templateData = get_template('traits.response', 'app-generator');
         $templateData = $this->fillTemplate($templateData);
 
         $this->createFile(app_path('Traits/'), 'ResponseTrait.php', $templateData);
