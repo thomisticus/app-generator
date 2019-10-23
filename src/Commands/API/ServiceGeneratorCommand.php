@@ -31,8 +31,7 @@ class ServiceGeneratorCommand extends BaseCommand
     {
         parent::handle();
 
-        $repositoryGenerator = new ServiceGenerator($this->commandData);
-        $repositoryGenerator->generate();
+        (new ServiceGenerator($this->commandData))->generate();
 
         $this->performPostActions();
     }

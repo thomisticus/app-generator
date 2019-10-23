@@ -31,8 +31,7 @@ class RepositoryGeneratorCommand extends BaseCommand
     {
         parent::handle();
 
-        $repositoryGenerator = new RepositoryGenerator($this->commandData);
-        $repositoryGenerator->generate();
+        (new RepositoryGenerator($this->commandData))->generate();
 
         $this->performPostActions();
     }

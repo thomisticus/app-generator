@@ -31,8 +31,7 @@ class APIControllerGeneratorCommand extends BaseCommand
     {
         parent::handle();
 
-        $controllerGenerator = new APIControllerGenerator($this->commandData);
-        $controllerGenerator->generate();
+        (new APIControllerGenerator($this->commandData))->generate();
 
         $this->performPostActions();
     }
