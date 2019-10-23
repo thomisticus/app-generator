@@ -23,16 +23,6 @@ class APIControllerGeneratorCommand extends BaseCommand
     protected $description = 'Create an api controller command';
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->commandData = new CommandData($this, CommandData::$COMMAND_TYPE_API);
-    }
-
-    /**
      * Execute the command.
      *
      * @return void
