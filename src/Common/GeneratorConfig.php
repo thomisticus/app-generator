@@ -360,7 +360,8 @@ class GeneratorConfig
         }
 
         $this->options['softDelete'] = config('app-generator.options.softDelete', false);
-        $this->options['repositoryPattern'] = config('app-generator.options.repository_pattern', true);
+        $this->options['repositoryPattern'] = config('app-generator.options.repository_pattern', false);
+        $this->options['seeder'] = config('app-generator.options.generate_seeder', false);
         if (!empty($this->options['skip'])) {
             $this->options['skip'] = array_map('trim', explode(',', $this->options['skip']));
         }

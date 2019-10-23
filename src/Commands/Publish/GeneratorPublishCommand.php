@@ -7,7 +7,7 @@ use Thomisticus\Generator\Utils\FileUtil;
 class GeneratorPublishCommand extends PublishBaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -21,9 +21,9 @@ class GeneratorPublishCommand extends PublishBaseCommand
     protected $description = 'Publishes & init api routes, base controller, base test cases traits.';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

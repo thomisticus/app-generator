@@ -24,7 +24,7 @@ class RollbackGeneratorCommand extends Command
      */
     public $commandData;
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -52,9 +52,9 @@ class RollbackGeneratorCommand extends Command
     }
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

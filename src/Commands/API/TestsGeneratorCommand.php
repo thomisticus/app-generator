@@ -10,7 +10,7 @@ use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 class TestsGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -24,9 +24,9 @@ class TestsGeneratorCommand extends BaseCommand
     protected $description = 'Create tests command';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

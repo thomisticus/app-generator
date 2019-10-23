@@ -117,6 +117,8 @@ return [
 
         'repository_pattern' => true,
 
+        'generate_seeder' => true,
+
         'excluded_fields' => ['id'], // Array of columns that doesn't required while creating module
     ],
 

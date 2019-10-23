@@ -8,7 +8,7 @@ use Thomisticus\Generator\Common\CommandData;
 class APIGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -22,9 +22,9 @@ class APIGeneratorCommand extends BaseCommand
     protected $description = 'Create a full CRUD API for given model';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {
@@ -34,7 +34,7 @@ class APIGeneratorCommand extends BaseCommand
 
         $this->generateAPIItems();
 
-        $this->performPostActionsWithMigration();
+        $this->performPostActions(true);
     }
 
     /**

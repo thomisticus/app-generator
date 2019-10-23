@@ -9,7 +9,7 @@ use Thomisticus\Generator\Generators\API\APIRequestGenerator;
 class APIRequestsGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -23,9 +23,9 @@ class APIRequestsGeneratorCommand extends BaseCommand
     protected $description = 'Create an api request command';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

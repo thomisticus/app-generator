@@ -9,7 +9,7 @@ use Thomisticus\Generator\Generators\API\ServiceGenerator;
 class ServiceGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -23,9 +23,9 @@ class ServiceGeneratorCommand extends BaseCommand
     protected $description = 'Create service command';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

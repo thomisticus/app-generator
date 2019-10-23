@@ -9,7 +9,7 @@ use Thomisticus\Generator\Generators\Common\MigrationGenerator;
 class MigrationGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -23,9 +23,9 @@ class MigrationGeneratorCommand extends BaseCommand
     protected $description = 'Create migration command';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {
@@ -39,7 +39,7 @@ class MigrationGeneratorCommand extends BaseCommand
 
         (new MigrationGenerator($this->commandData))->generate();
 
-        $this->performPostActionsWithMigration();
+        $this->performPostActions(true);
     }
 
     /**

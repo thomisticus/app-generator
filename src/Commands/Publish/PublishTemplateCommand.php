@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Commands\Publish;
 class PublishTemplateCommand extends PublishBaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -21,9 +21,9 @@ class PublishTemplateCommand extends PublishBaseCommand
     private $templatesDir;
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

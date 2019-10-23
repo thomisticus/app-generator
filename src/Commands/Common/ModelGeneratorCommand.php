@@ -9,7 +9,7 @@ use Thomisticus\Generator\Generators\Common\ModelGenerator;
 class ModelGeneratorCommand extends BaseCommand
 {
     /**
-     * The console command name.
+     * The name and signature of the console command.
      *
      * @var string
      */
@@ -23,9 +23,9 @@ class ModelGeneratorCommand extends BaseCommand
     protected $description = 'Create model command';
 
     /**
-     * Execute the command.
+     * Execute the console command.
      *
-     * @return void
+     * @return mixed
      */
     public function handle()
     {

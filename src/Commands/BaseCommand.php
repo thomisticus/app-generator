@@ -45,6 +45,9 @@ class BaseCommand extends Command
         $this->composer = app()['composer'];
     }
 
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
         $this->commandData->modelName = $this->argument('model');
@@ -53,92 +56,91 @@ class BaseCommand extends Command
         $this->commandData->getFields();
     }
 
+    /**
+     * Generate common items
+     * Eg: Migration, Model, Repository, Factory and Seeder
+     */
     public function generateCommonItems()
     {
         if (!$this->commandData->getOption('fromTable') && !$this->isSkip('migration')) {
-            $migrationGenerator = new MigrationGenerator($this->commandData);
-            $migrationGenerator->generate();
+            (new MigrationGenerator($this->commandData))->generate();
         }
 
         if (!$this->isSkip('model')) {
-            $modelGenerator = new ModelGenerator($this->commandData);
-            $modelGenerator->generate();
+            (new ModelGenerator($this->commandData))->generate();
         }
 
         if (!$this->isSkip('repository') && $this->commandData->getOption('repositoryPattern')) {
-            $repositoryGenerator = new RepositoryGenerator($this->commandData);
-            $repositoryGenerator->generate();
+            (new RepositoryGenerator($this->commandData))->generate();
         }
 
         if ($this->commandData->getOption('factory') || (!$this->isSkip('tests') && $this->commandData->getAddOn('tests'))) {
-            $factoryGenerator = new FactoryGenerator($this->commandData);
-            $factoryGenerator->generate();
+            (new FactoryGenerator($this->commandData))->generate();
         }
 
         if ($this->commandData->getOption('seeder')) {
-            $seederGenerator = new SeederGenerator($this->commandData);
-            $seederGenerator->generate();
-            $seederGenerator->updateMainSeeder();
+            (new SeederGenerator($this->commandData))->generate()->updateMainSeeder();
         }
     }
 
+    /**
+     * Generates API Items
+     * Eg: Request, Controller, Service, Routes and Repository
+     */
     public function generateAPIItems()
     {
         if (!$this->isSkip('requests') && !$this->isSkip('api_requests')) {
-            $requestGenerator = new APIRequestGenerator($this->commandData);
-            $requestGenerator->generate();
+            (new APIRequestGenerator($this->commandData))->generate();
         }
 
-        if (!$this->isSkip('controllers') && !$this->isSkip('api_controller')) {
-            $controllerGenerator = new APIControllerGenerator($this->commandData);
-            $controllerGenerator->generate();
+        if (!$this->isSkip('controller') && !$this->isSkip('api_controller')) {
+            (new APIControllerGenerator($this->commandData))->generate();
         }
 
 //        if (!$this->isSkip('services') && !$this->isSkip('scaffold_service')) {
-//            $serviceGenerator = new ServiceGenerator($this->commandData);
-//            $serviceGenerator->generate();
+//            (new ServiceGenerator($this->commandData))->generate();
 //        }
 
         if (!$this->isSkip('routes') && !$this->isSkip('api_routes')) {
-            $routesGenerator = new APIRoutesGenerator($this->commandData);
-            $routesGenerator->generate();
+            (new APIRoutesGenerator($this->commandData))->generate();
         }
 
         if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
             if ($this->commandData->getOption('repositoryPattern')) {
-                $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
-                $repositoryTestGenerator->generate();
+                (new RepositoryTestGenerator($this->commandData))->generate();
             }
 
-            $apiTestGenerator = new APITestGenerator($this->commandData);
-            $apiTestGenerator->generate();
+            (new APITestGenerator($this->commandData))->generate();
         }
     }
 
+    /**
+     * Actions to be performed after file generations, such as saving json schema file of generated files,
+     * run the migration and also run the "composer dump-autoload"
+     *
+     * @param bool $runMigration Whether is to run the migrations or not
+     */
     public function performPostActions($runMigration = false)
     {
         if ($this->commandData->getOption('save')) {
             $this->saveSchemaFile();
         }
 
-        if ($runMigration) {
-            if ($this->commandData->getOption('forceMigrate')) {
-                $this->runMigration();
-            } elseif (!$this->commandData->getOption('fromTable') && !$this->isSkip('migration')) {
-                $requestFromConsole = (php_sapi_name() == 'cli') ? true : false;
-                if ($this->commandData->getOption('jsonFromGUI') && $requestFromConsole) {
-                    $this->runMigration();
-                } elseif ($requestFromConsole && $this->confirm("\nDo you want to migrate database? [y|N]", false)) {
-                    $this->runMigration();
-                }
-            }
+        if ($runMigration && $this->canRunMigration()) {
+            $this->runMigration();
         }
+
         if (!$this->isSkip('dump-autoload')) {
             $this->info('Generating autoload files');
             $this->composer->dumpOptimized();
         }
     }
 
+    /**
+     * Execute database migration
+     *
+     * @return bool
+     */
     public function runMigration()
     {
         $migrationPath = config('app-generator.path.migration', database_path('migrations/'));
@@ -148,6 +150,37 @@ class BaseCommand extends Command
         return true;
     }
 
+    /**
+     * Checks if the database migration can be run
+     *
+     * @return bool
+     */
+    public function canRunMigration()
+    {
+        if ($this->commandData->getOption('forceMigrate')) {
+            return true;
+        }
+
+        if (!$this->commandData->getOption('fromTable') && !$this->isSkip('migration')) {
+            $requestFromConsole = (php_sapi_name() == 'cli');
+
+            if ($requestFromConsole &&
+                ($this->commandData->getOption('jsonFromGUI') ||
+                    $this->confirm("\nDo you want to migrate database? [y|N]", false))
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if is to skip specific option/file during generation.
+     *
+     * @param string $skip Eg: (migration, model, controller, repository, request, routes, tests, dump-autoload)
+     * @return bool
+     */
     public function isSkip($skip)
     {
         if ($this->commandData->getOption('skip')) {
@@ -157,11 +190,9 @@ class BaseCommand extends Command
         return false;
     }
 
-    public function performPostActionsWithMigration()
-    {
-        $this->performPostActions(true);
-    }
-
+    /**
+     * Save model schema file at model_schemas folder. Useful for backup and versioning for generated cruds
+     */
     private function saveSchemaFile()
     {
         $fileFields = [];
@@ -195,16 +226,18 @@ class BaseCommand extends Command
         if (file_exists($path . $fileName) && !$this->confirmOverwrite($fileName)) {
             return;
         }
+
         FileUtil::createFile($path, $fileName, json_encode($fileFields, JSON_PRETTY_PRINT));
         $this->commandData->commandComment("\nSchema File saved: ");
         $this->commandData->commandInfo($fileName);
     }
 
     /**
-     * @param        $fileName
-     * @param string $prompt
+     * Confirm file overwrite
      *
-     * @return bool
+     * @param string $fileName
+     * @param string $prompt
+     * @return mixed
      */
     protected function confirmOverwrite($fileName, $prompt = '')
     {
@@ -234,7 +267,12 @@ class BaseCommand extends Command
             ['primary', null, InputOption::VALUE_REQUIRED, 'Custom primary key'],
             ['prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for all files'],
             ['paginate', null, InputOption::VALUE_REQUIRED, 'Pagination for index.blade.php'],
-            ['skip', null, InputOption::VALUE_REQUIRED, 'Skip Specific Items to Generate (migration,model,controllers,api_controller,scaffold_controller,repository,requests,api_requests,scaffold_requests,routes,api_routes,scaffold_routes,tests,dump-autoload)'],
+            [
+                'skip',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Skip Specific Items to Generate (migration,model,controller,api_controller,scaffold_controller,repository,requests,api_requests,scaffold_requests,routes,api_routes,scaffold_routes,tests,dump-autoload)'
+            ],
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
             ['softDelete', null, InputOption::VALUE_NONE, 'Soft Delete Option'],
             ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],
