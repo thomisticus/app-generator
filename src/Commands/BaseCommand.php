@@ -141,7 +141,7 @@ class BaseCommand extends Command
 
     public function runMigration()
     {
-        $migrationPath = config('thomisticus.crud_generator.path.migration', database_path('migrations/'));
+        $migrationPath = config('app-generator.path.migration', database_path('migrations/'));
         $path = Str::after($migrationPath, base_path()); // get path after base_path
         $this->call('migrate', ['--path' => $path, '--force' => true]);
 
@@ -188,7 +188,7 @@ class BaseCommand extends Command
             ];
         }
 
-        $path = config('thomisticus.crud_generator.path.schema_files', resource_path('model_schemas/'));
+        $path = config('app-generator.path.schema_files', resource_path('model_schemas/'));
 
         $fileName = $this->commandData->modelName . '.json';
 

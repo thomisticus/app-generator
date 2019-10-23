@@ -90,7 +90,7 @@ if (!function_exists('get_template_file_path')) {
         $templateName = str_replace('.', '/', $templateName);
 
         $templatesPath = config(
-            'thomisticus.crud_generator.path.templates_dir',
+            'thomisticus.path.templates_dir',
             base_path('resources/thomisticus/thomisticus-crud-templates/')
         );
 

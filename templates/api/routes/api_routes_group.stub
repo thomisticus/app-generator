@@ -6,6 +6,6 @@
 
 Route::group(['prefix' => '$API_PREFIX$', 'namespace' => 'API'], function () {
     Route::group(['prefix' => '$API_VERSION$'], function () {
-        require config('thomisticus.crud_generator.path.api_routes');
+        require config('app-generator.path.api_routes');
     });
 });

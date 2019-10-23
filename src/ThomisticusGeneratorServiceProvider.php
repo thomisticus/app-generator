@@ -24,10 +24,10 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $configPath = __DIR__ . '/../config/crud_generator.php';
+        $configPath = __DIR__ . '/../config/app-generator.php';
 
         $this->publishes([
-            $configPath => config_path('thomisticus/crud_generator.php'),
+            $configPath => config_path('app-generator.php'),
         ]);
     }
 

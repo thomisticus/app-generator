@@ -122,7 +122,7 @@ class ModelGenerator extends BaseGenerator
                 $templateData
             );
             $templateData = str_replace('$SOFT_DELETE$', generate_tab() . "use SoftDeletes;\n", $templateData);
-            $deletedAtTimestamp = config('thomisticus.crud_generator.timestamps.deleted_at', 'deleted_at');
+            $deletedAtTimestamp = config('app-generator.timestamps.deleted_at', 'deleted_at');
             $templateData = str_replace(
                 '$SOFT_DELETE_DATES$',
                 generate_new_line_tab() . "protected \$dates = ['" . $deletedAtTimestamp . "'];\n",
@@ -287,8 +287,8 @@ class ModelGenerator extends BaseGenerator
 
     private function generateRules()
     {
-        $dont_require_fields = config('thomisticus.crud_generator.options.hidden_fields', [])
-            + config('thomisticus.crud_generator.options.excluded_fields', []);
+        $dont_require_fields = config('app-generator.options.hidden_fields', [])
+            + config('app-generator.options.excluded_fields', []);
 
         $rules = [];
 

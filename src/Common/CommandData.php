@@ -155,7 +155,7 @@ class CommandData
             }
         }
 
-        if (config('thomisticus.crud_generator.timestamps.enabled', true)) {
+        if (config('app-generator.timestamps.enabled', true)) {
             $this->addTimestamps();
         }
     }
@@ -200,7 +200,7 @@ class CommandData
                 } elseif (file_exists(base_path($fieldsFileValue))) {
                     $filePath = base_path($fieldsFileValue);
                 } else {
-                    $schemaFileDirector = config('thomisticus.crud_generator.path.schema_files');
+                    $schemaFileDirector = config('app-generator.path.schema_files');
                     $filePath = $schemaFileDirector . $fieldsFileValue;
                 }
 

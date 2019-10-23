@@ -20,7 +20,7 @@ class MigrationGenerator extends BaseGenerator
     public function __construct($commandData)
     {
         $this->commandData = $commandData;
-        $this->path = config('thomisticus.crud_generator.path.migration', base_path('database/migrations/'));
+        $this->path = config('app-generator.path.migration', base_path('database/migrations/'));
     }
 
     public function generate()

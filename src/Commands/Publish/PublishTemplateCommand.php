@@ -28,7 +28,7 @@ class PublishTemplateCommand extends PublishBaseCommand
     public function handle()
     {
         $this->templatesDir = config(
-            'thomisticus.crud_generator.path.templates_dir',
+            'thomisticus.path.templates_dir',
             base_path('resources/thomisticus/thomisticus-crud-templates/')
         );
 
