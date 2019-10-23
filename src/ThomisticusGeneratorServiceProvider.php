@@ -38,62 +38,20 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('thomisticus.publish', function ($app) {
-            return new GeneratorPublishCommand();
-        });
+        $commands = [
+            'thomisticus:publish' => GeneratorPublishCommand::class,
+            'thomisticus.publish:templates' => PublishTemplateCommand::class,
+            'thomisticus:api' => APIGeneratorCommand::class,
+            'thomisticus.api:controller' => APIControllerGeneratorCommand::class,
+            'thomisticus.api:requests' => APIRequestsGeneratorCommand::class,
+            'thomisticus:service' => ServiceGeneratorCommand::class,
+            'thomisticus.api:tests' => TestsGeneratorCommand::class,
+            'thomisticus:migration' => MigrationGeneratorCommand::class,
+            'thomisticus:model' => ModelGeneratorCommand::class,
+            'thomisticus:repository' => RepositoryGeneratorCommand::class,
+            'thomisticus:rollback' => RollbackGeneratorCommand::class,
+        ];
 
-        $this->app->singleton('thomisticus.api', function ($app) {
-            return new APIGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.publish.templates', function ($app) {
-            return new PublishTemplateCommand();
-        });
-
-        $this->app->singleton('thomisticus.migration', function ($app) {
-            return new MigrationGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.model', function ($app) {
-            return new ModelGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.repository', function ($app) {
-            return new RepositoryGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.service', function ($app) {
-            return new ServiceGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.api.controller', function ($app) {
-            return new APIControllerGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.api.requests', function ($app) {
-            return new APIRequestsGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.api.tests', function ($app) {
-            return new TestsGeneratorCommand();
-        });
-
-        $this->app->singleton('thomisticus.rollback', function ($app) {
-            return new RollbackGeneratorCommand();
-        });
-
-        $this->commands([
-            'thomisticus.publish',
-            'thomisticus.api',
-            'thomisticus.publish.templates',
-            'thomisticus.migration',
-            'thomisticus.model',
-            'thomisticus.repository',
-            'thomisticus.service',
-            'thomisticus.api.controller',
-            'thomisticus.api.requests',
-            'thomisticus.api.tests',
-            'thomisticus.rollback',
-        ]);
+        $this->commands($commands);
     }
 }
