@@ -260,7 +260,6 @@ class BaseCommand extends Command
             ['jsonFromGUI', null, InputOption::VALUE_REQUIRED, 'Direct Json string while using GUI interface'],
             ['plural', null, InputOption::VALUE_REQUIRED, 'Plural Model name'],
             ['tableName', null, InputOption::VALUE_REQUIRED, 'Table Name'],
-            ['jsonResponse', null, InputOption::VALUE_REQUIRED, 'To methods return jsons'],
             ['fromTable', null, InputOption::VALUE_NONE, 'Generate from existing table'],
             ['ignoreFields', null, InputOption::VALUE_REQUIRED, 'Ignore fields while generating from table'],
             ['save', null, InputOption::VALUE_NONE, 'Save model schema to file'],

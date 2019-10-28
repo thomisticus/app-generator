@@ -37,7 +37,7 @@ class ModelGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathModel;
+        $this->path = $commandData->config->paths['model'];
         $this->fileName = $this->commandData->modelName . '.php';
         $this->commandData->dynamicVars['$TABLE_NAME$'] = strtolower($this->commandData->dynamicVars['$TABLE_NAME$']);
     }
@@ -237,7 +237,7 @@ class ModelGenerator extends BaseGenerator
             case 'datetime':
                 return 'string|\Carbon\Carbon';
             case '1t1':
-                return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationText);
+                return '\\' . $this->commandData->config->namespaces['model'] . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationText);
             case 'mt1':
                 if (isset($relation->inputs[1])) {
                     $relationName = str_replace('_id', '', strtolower($relation->inputs[1]));
@@ -245,7 +245,7 @@ class ModelGenerator extends BaseGenerator
                     $relationName = $relationText;
                 }
 
-                return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationName);
+                return '\\' . $this->commandData->config->namespaces['model'] . '\\' . $relation->inputs[0] . ' ' . Str::camel($relationName);
             case '1tm':
             case 'mtm':
             case 'hmt':

@@ -20,7 +20,7 @@ class APIControllerGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathApiController;
+        $this->path = $commandData->config->paths['api_controller'];
         $this->fileName = $this->commandData->modelName . 'APIController.php';
     }
 

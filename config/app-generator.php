@@ -11,43 +11,45 @@ return [
 
     'path' => [
 
+        'api_controller' => app_path('Http/Controllers/API/'),
+
+        'api_request' => app_path('Http/Requests/API/'),
+
+        'api_routes' => base_path('routes/api.php'),
+
+        'api_test' => base_path('tests/APIs/'),
+
+        'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
+
+        'factory' => database_path('factories/'),
+
         'migration' => database_path('migrations/'),
 
         'model' => app_path('Models/'),
 
         'repository' => app_path('Repositories/'),
 
-        'service' => app_path('Services/'),
-
-        'trait' => app_path('Traits/'),
-
-        'routes' => base_path('routes/web.php'),
-
-        'api_routes' => base_path('routes/api.php'),
+        'repository_test' => base_path('tests/Repositories/'),
 
         'request' => app_path('Http/Requests/'),
 
-        'api_request' => app_path('Http/Requests/API/'),
-
-        'api_controller' => app_path('Http/Controllers/API/'),
-
-        'test_trait' => base_path('tests/Traits/'),
-
-        'repository_test' => base_path('tests/Repositories/'),
-
-        'api_test' => base_path('tests/APIs/'),
-
-        'tests' => base_path('tests/'),
+        'routes' => base_path('routes/web.php'),
 
         'schema_files' => resource_path('model_schemas/'),
 
-        'templates_dir' => resource_path('thomisticus/thomisticus-generator-templates/'),
-
         'seeder' => database_path('seeds/'),
 
-        'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
+        'service' => app_path('Services/'),
 
-        'factory' => database_path('factories/'),
+        'templates_dir' => resource_path('thomisticus/thomisticus-generator-templates/'),
+
+        'test_trait' => base_path('tests/Traits/'),
+
+        'tests' => base_path('tests/'),
+
+        'api_tests' => base_path('tests/'),
+
+        'trait' => app_path('Traits/'),
     ],
 
     /*
@@ -59,35 +61,29 @@ return [
 
     'namespace' => [
 
-        'model' => 'App\Models',
-
-        'repository' => 'App\Repositories',
-
-        'service' => 'App\Services',
-
-        'trait' => 'App\Traits',
-
         'api_controller' => 'App\Http\Controllers\API',
-
-        'request' => 'App\Http\Requests',
 
         'api_request' => 'App\Http\Requests\API',
 
-        'repository_test' => 'Tests\Repositories',
-
         'api_test' => 'Tests\APIs',
 
+        'model' => 'App\Models',
+
+        // Model extend class
+        'model_extend_class' => 'Illuminate\Database\Eloquent\Model',
+
+        'repository' => 'App\Repositories',
+
+        'repository_test' => 'Tests\Repositories',
+
+        'request' => 'App\Http\Requests',
+
+        'service' => 'App\Services',
+
         'tests' => 'Tests',
+
+        'trait' => 'App\Traits',
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Model extend class
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'model_extend_class' => 'Eloquent',
 
     /*
     |--------------------------------------------------------------------------
@@ -109,7 +105,7 @@ return [
 
     'options' => [
 
-        'softDelete' => true,
+        'soft_delete' => true,
 
         'save_schema_file' => true,
 
@@ -134,8 +130,6 @@ return [
         'route' => '',  // using admin will create route('admin.?.index') type routes
 
         'path' => '',
-
-        'public' => '',
     ],
 
     /*

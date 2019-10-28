@@ -63,34 +63,20 @@ class RollbackGeneratorCommand extends Command
         }
 
         $this->commandData = new CommandData($this, $this->argument('type'));
-        $this->commandData->config->mName = $this->commandData->modelName = $this->argument('model');
+        $this->commandData->config->modelName = $this->commandData->modelName = $this->argument('model');
 
         $this->commandData->config->init($this->commandData, ['tableName', 'prefix', 'plural']);
 
-        $migrationGenerator = new MigrationGenerator($this->commandData);
-        $migrationGenerator->rollback();
-
-        $modelGenerator = new ModelGenerator($this->commandData);
-        $modelGenerator->rollback();
-
-        $repositoryGenerator = new RepositoryGenerator($this->commandData);
-        $repositoryGenerator->rollback();
-
-        $requestGenerator = new APIRequestGenerator($this->commandData);
-        $requestGenerator->rollback();
-
-        $controllerGenerator = new APIControllerGenerator($this->commandData);
-        $controllerGenerator->rollback();
-
-        $routesGenerator = new APIRoutesGenerator($this->commandData);
-        $routesGenerator->rollback();
+        (new MigrationGenerator($this->commandData))->rollback();
+        (new ModelGenerator($this->commandData))->rollback();
+        (new RepositoryGenerator($this->commandData))->rollback();
+        (new APIRequestGenerator($this->commandData))->rollback();
+        (new APIControllerGenerator($this->commandData))->rollback();
+        (new APIRoutesGenerator($this->commandData))->rollback();
 
         if ($this->commandData->getAddOn('tests')) {
-            $repositoryTestGenerator = new RepositoryTestGenerator($this->commandData);
-            $repositoryTestGenerator->rollback();
-
-            $apiTestGenerator = new APITestGenerator($this->commandData);
-            $apiTestGenerator->rollback();
+            (new RepositoryTestGenerator($this->commandData))->rollback();
+            (new APITestGenerator($this->commandData))->rollback();
         }
 
         $this->info('Generating autoload files');

@@ -20,7 +20,7 @@ class APITestGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathApiTests;
+        $this->path = $commandData->config->paths['api_tests'];
         $this->fileName = $this->commandData->modelName . 'ApiTest.php';
     }
 

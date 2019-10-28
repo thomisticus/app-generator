@@ -26,8 +26,8 @@ class SeederGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathSeeder;
-        $this->fileName = $this->commandData->config->mPlural . 'TableSeeder.php';
+        $this->path = $commandData->config->paths['seeder'];
+        $this->fileName = $this->commandData->config->modelNames['plural'] . 'TableSeeder.php';
     }
 
     public function generate()
@@ -46,12 +46,12 @@ class SeederGenerator extends BaseGenerator
 
     public function updateMainSeeder()
     {
-        $mainSeederContent = file_get_contents($this->commandData->config->pathDatabaseSeeder);
+        $mainSeederContent = file_get_contents($this->commandData->config->paths['database_seeder']);
 
-        $newSeederStatement = '$this->call(' . $this->commandData->config->mPlural . 'TableSeeder::class);';
+        $newSeederStatement = '$this->call(' . $this->commandData->config->modelNames['plural'] . 'TableSeeder::class);';
 
         if (strpos($mainSeederContent, $newSeederStatement) != false) {
-            $this->commandData->commandObj->info($this->commandData->config->mPlural . 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.');
+            $this->commandData->commandObj->info($this->commandData->config->modelNames['plural'] . 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.');
 
             return;
         }
@@ -72,7 +72,7 @@ class SeederGenerator extends BaseGenerator
             0
         );
 
-        file_put_contents($this->commandData->config->pathDatabaseSeeder, $mainSeederContent);
+        file_put_contents($this->commandData->config->paths['database_seeder'], $mainSeederContent);
         $this->commandData->commandComment('Main Seeder file updated.');
 
         return $this;

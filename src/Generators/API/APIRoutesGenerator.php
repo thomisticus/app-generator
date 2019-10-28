@@ -23,7 +23,7 @@ class APIRoutesGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathApiRoutes;
+        $this->path = $commandData->config->paths['api_routes'];
 
         $this->routeContents = file_get_contents($this->path);
 
@@ -42,7 +42,7 @@ class APIRoutesGenerator extends BaseGenerator
 
         file_put_contents($this->path, $this->routeContents);
 
-        $this->commandData->commandComment("\n" . $this->commandData->config->mCamelPlural . ' api routes added.');
+        $this->commandData->commandComment("\n" . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.');
     }
 
     public function rollback()

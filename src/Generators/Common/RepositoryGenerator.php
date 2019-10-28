@@ -20,7 +20,7 @@ class RepositoryGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathRepository;
+        $this->path = $commandData->config->paths['repository'];
         $this->fileName = $this->commandData->modelName . 'Repository.php';
     }
 

@@ -78,7 +78,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
             $this->info('APIs Tests directory created');
         }
 
-        $testRepositoriesPath = config('thomisticus.path.repository_test', base_path('tests/Repositories/'));
+        $testRepositoriesPath = config('app-generator.path.repository_test', base_path('tests/Repositories/'));
         if (!file_exists($testRepositoriesPath)) {
             FileUtil::createDirectoryIfNotExist($testRepositoriesPath);
             $this->info('Repositories Tests directory created');

@@ -20,14 +20,13 @@ class ServiceGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->pathService;
+        $this->path = $commandData->config->paths['service'];
         $this->fileName = $this->commandData->modelName . 'Service.php';
     }
 
     public function generate()
     {
-        $templateName = $this->commandData->getOption('jsonResponse') ? 'service_json_response' : 'service';
-        $templateData = get_template('services.' . $templateName, 'app-generator');
+        $templateData = get_template('services.service', 'app-generator');
 
         $paginate = $this->commandData->getOption('paginate');
 
