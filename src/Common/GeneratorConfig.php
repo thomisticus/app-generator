@@ -311,9 +311,7 @@ class GeneratorConfig
             $dynamicVars['$RAW_ROUTE_PREFIX$'] = $this->prefixes['route'];
         }
 
-        foreach ($dynamicVars as $var => $value) {
-            $commandData->addDynamicVariable($var, $value);
-        }
+        $commandData->addDynamicVariable($dynamicVars);
 
         return $commandData;
     }

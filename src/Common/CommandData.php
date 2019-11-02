@@ -145,8 +145,10 @@ class CommandData
             if (isset($jsonData['tableName'])) {
                 $tableName = $jsonData['tableName'];
                 $this->config->tableName = $tableName;
-                $this->addDynamicVariable('$TABLE_NAME$', $tableName);
-                $this->addDynamicVariable('$TABLE_NAME_TITLE$', Str::studly($tableName));
+                $this->addDynamicVariable([
+                    '$TABLE_NAME$' => $tableName,
+                    '$TABLE_NAME_TITLE$' => Str::studly($tableName)
+                ]);
             }
 
             // Manage migrate option
@@ -299,13 +301,19 @@ class CommandData
     }
 
     /**
-     * Sets a dynamic variable and its value that will be used to replace in the template (stub) file
-     * @param string $name
-     * @param string $val
+     * Sets a dynamic variables and their values that will be used to replace in the template (stub) file
+     * @param array|string $nameOrArray
+     * @param string|null $val
      */
-    public function addDynamicVariable($name, $val)
+    public function addDynamicVariable($nameOrArray, $val = null)
     {
-        $this->dynamicVars[$name] = $val;
+        if (is_array($nameOrArray)) {
+            foreach ($nameOrArray as $name => $val) {
+                $this->dynamicVars[$name] = $val;
+            }
+        } else {
+            $this->dynamicVars[$nameOrArray] = $val;
+        }
     }
 
 }
