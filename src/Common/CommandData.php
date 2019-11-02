@@ -302,6 +302,7 @@ class CommandData
 
     /**
      * Sets a dynamic variables and their values that will be used to replace in the template (stub) file
+     *
      * @param array|string $nameOrArray
      * @param string|null $val
      */

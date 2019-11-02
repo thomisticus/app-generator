@@ -7,19 +7,20 @@ use Illuminate\Support\Str;
 class GeneratorConfig
 {
     /**
-     * @var array Namespace variables array
-     */
-    public $namespaces;
-
-    /**
-     * @var array Path variables array
-     */
-    public $paths;
-
-    /**
      * @var string Default model name
      */
     public $modelName;
+
+    /**
+     * @var array Addons values based on config file
+     */
+    public $addOns;
+
+    /**
+     * Generator options available, based on config file and $availableOptions set by user in the command
+     * @var array
+     */
+    public $options;
 
     /**
      * Array of model names in multiple cases
@@ -27,21 +28,43 @@ class GeneratorConfig
      */
     public $modelNames;
 
-    /* Prefixes */
-    public $options;
+    /**
+     * Prefixes of the custom paths where the generated files will be created
+     * @var array
+     */
     public $prefixes;
 
-    /* Command Options */
+    /**
+     * Path variables array
+     *
+     * @var array
+     */
+    public $paths;
+
+    /**
+     * @var string
+     */
     public $tableName;
 
-    public $addOns;
-
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $primaryKeyName;
 
-    /* Generator AddOns */
+    /**
+     * Namespace variables array
+     * @var array
+     */
+    public $namespaces;
+
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
+    /**
+     * @var array command options
+     */
     public static $availableOptions = [
         'fieldsFile',
         'jsonFromGUI',
@@ -62,6 +85,12 @@ class GeneratorConfig
         'repositoryPattern',
     ];
 
+    /**
+     * Initialize GeneratorConfig, loading all config properties
+     *
+     * @param CommandData $commandData
+     * @param null $options
+     */
     public function init(CommandData &$commandData, $options = null)
     {
         if (!empty($options)) {
@@ -82,35 +111,53 @@ class GeneratorConfig
         $this->commandData = &$commandData;
     }
 
+    /**
+     * Prepare add-ons, filling $addOns property based on config file
+     */
     public function prepareAddOns()
     {
         $this->addOns['tests'] = config('app-generator.add_on.tests', false);
     }
 
+    /**
+     * Prepare options setting on $options property based on config file and
+     * $availableOptions set by user in the command
+     *
+     * @param CommandData $commandData
+     */
     public function prepareOptions(CommandData &$commandData)
     {
-        foreach (self::$availableOptions as $option) {
-            $this->options[$option] = $commandData->commandObj->option($option);
+        $optionsToSet = [];
+        foreach (self::$availableOptions as $optionName) {
+            $optionsToSet[$optionName] = $commandData->commandObj->option($optionName);
         }
 
-        if (isset(self::$availableOptions['fromTable']) && $this->options['fromTable'] && !$this->options['tableName']) {
+        if (isset(self::$availableOptions['fromTable']) && $this->getOption('fromTable') && !$this->getOption('tableName')) {
             $commandData->commandObj->error('tableName required with fromTable option.');
             exit;
         }
 
-        if (empty($this->options['save'])) {
-            $this->options['save'] = config('app-generator.options.save_schema_file', true);
+        $optionsToSet = array_merge($optionsToSet, [
+            'softDelete' => config('app-generator.options.soft_delete', false),
+            'repositoryPattern' => config('app-generator.options.repository_pattern', false),
+            'seeder' => config('app-generator.options.generate_seeder', false),
+        ]);
+
+        if (empty($this->getOption('save'))) {
+            $optionsToSet['save'] = config('app-generator.options.save_schema_file', true);
         }
 
-        $this->options['softDelete'] = config('app-generator.options.soft_delete', false);
-        $this->options['repositoryPattern'] = config('app-generator.options.repository_pattern', false);
-        $this->options['seeder'] = config('app-generator.options.generate_seeder', false);
-
-        if (!empty($this->options['skip'])) {
-            $this->options['skip'] = array_map('trim', explode(',', $this->options['skip']));
+        if ($skip = $this->getOption('skip')) {
+            $optionsToSet['skip'] = array_map('trim', explode(',', $skip));
         }
+
+        $this->setOption($optionsToSet);
     }
 
+
+    /**
+     * Set $modelNames for multiple naming purposes
+     */
     public function prepareModelNames()
     {
         $modelPlural = $this->getOption('plural');
@@ -140,6 +187,9 @@ class GeneratorConfig
         $this->modelNames = array_merge($baseNames, $customNames);
     }
 
+    /**
+     * Prepare prefixes base on config file. It will define the custom paths where the generated files will be created
+     */
     public function preparePrefixes()
     {
         $this->prefixes['route'] = explode('/', config('app-generator.prefixes.route', ''));
@@ -171,6 +221,9 @@ class GeneratorConfig
         $this->prefixes['path'] = !empty($pathPrefix) ? substr($pathPrefix, 0, -1) : $pathPrefix;
     }
 
+    /**
+     * Load paths based on config file, defining default values just in case the config file was incorrectly edited
+     */
     public function loadPaths()
     {
         $prefix = $this->prefixes['path'];
@@ -210,6 +263,9 @@ class GeneratorConfig
         }
     }
 
+    /**
+     * Set tableName based on "tableName" command option or modelNames.
+     */
     public function prepareTableName()
     {
         $this->tableName = $this->getOption('tableName');
@@ -219,6 +275,9 @@ class GeneratorConfig
         }
     }
 
+    /**
+     * Set primary key name based on "primary" command option or 'id' as default.
+     */
     public function preparePrimaryKeyName()
     {
         $this->primaryKeyName = $this->getOption('primary');
@@ -228,6 +287,12 @@ class GeneratorConfig
         }
     }
 
+    /**
+     * Load all namespaces and set on $namespaces property based on config file and defining default values just in case
+     * the config file was incorrectly edited.
+     *
+     * @param CommandData $commandData
+     */
     public function loadNamespaces(CommandData &$commandData)
     {
         $prefix = $this->prefixes['namespace'];
@@ -266,6 +331,12 @@ class GeneratorConfig
 
     }
 
+    /**
+     * Load dynamic variables to be replaced on the generated files and setting them on CommandData object
+     *
+     * @param CommandData $commandData
+     * @return CommandData
+     */
     public function loadDynamicVariables(CommandData &$commandData)
     {
         $dynamicVars = [
@@ -316,6 +387,10 @@ class GeneratorConfig
         return $commandData;
     }
 
+    /**
+     * Overrides config options when geting inputs from GUI interface
+     * @param array $jsonData
+     */
     public function overrideOptionsFromJsonFile($jsonData)
     {
         foreach (self::$availableOptions as $option) {
@@ -339,16 +414,40 @@ class GeneratorConfig
         }
     }
 
+    /**
+     * Retrieves an option value from $options property
+     *
+     * @param string $option Option name
+     * @return bool|mixed
+     */
     public function getOption($option)
     {
         return $this->options[$option] ?? false;
     }
 
-    public function setOption($option, $value)
+    /**
+     * Set a single or an array of options
+     *
+     * @param array|string $optionNameOrArray
+     * @param array|null $value
+     */
+    public function setOption($optionNameOrArray, $value = null)
     {
-        $this->options[$option] = $value;
+        if (is_array($optionNameOrArray)) {
+            foreach ($optionNameOrArray as $optionName => $optionValue) {
+                $this->options[$optionName] = $optionValue;
+            }
+        } else {
+            $this->options[$optionNameOrArray] = $value;
+        }
     }
 
+    /**
+     * Get add-on by name
+     *
+     * @param string $addOn
+     * @return bool|mixed
+     */
     public function getAddOn($addOn)
     {
         return $this->addOns[$addOn] ?? false;
