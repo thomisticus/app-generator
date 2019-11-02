@@ -51,9 +51,7 @@ class BaseCommand extends Command
     public function handle()
     {
         $this->commandData->modelName = $this->argument('model');
-
-        $this->commandData->initCommandData();
-        $this->commandData->getFields();
+        $this->commandData->initCommandData()->setFieldsAndRelations();
     }
 
     /**
@@ -228,8 +226,8 @@ class BaseCommand extends Command
         }
 
         FileUtil::createFile($path, $fileName, json_encode($fileFields, JSON_PRETTY_PRINT));
-        $this->commandData->commandComment("\nSchema File saved: ");
-        $this->commandData->commandInfo($fileName);
+        $this->commandData->commandObj->comment("\nSchema File saved: ");
+        $this->commandData->commandObj->info($fileName);
     }
 
     /**

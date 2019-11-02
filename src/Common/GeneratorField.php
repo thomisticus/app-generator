@@ -42,6 +42,8 @@ class GeneratorField
             $this->dbInput = (!$column->getNotnull()) ? $this->dbInput . ':nullable' : $this->dbInput;
         }
         $this->prepareMigrationText();
+
+        return $this;
     }
 
     public function parseHtmlInput($htmlInput)
@@ -92,6 +94,8 @@ class GeneratorField
         if (in_array('iv', $optionsArr)) {
             $this->inView = false;
         }
+
+        return $this;
     }
 
     private function prepareMigrationText()

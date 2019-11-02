@@ -94,7 +94,7 @@ class GeneratorConfig
         }
 
         if (isset(self::$availableOptions['fromTable']) && $this->options['fromTable'] && !$this->options['tableName']) {
-            $commandData->commandError('tableName required with fromTable option.');
+            $commandData->commandObj->error('tableName required with fromTable option.');
             exit;
         }
 

@@ -50,8 +50,8 @@ class ModelGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandComment("\nModel created: ");
-        $this->commandData->commandInfo($this->fileName);
+        $this->commandData->commandObj->comment("\nModel created: ");
+        $this->commandData->commandObj->info($this->fileName);
     }
 
     private function fillTemplate($templateData)
@@ -461,7 +461,7 @@ class ModelGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandComment('Model file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->comment('Model file deleted: ' . $this->fileName);
         }
     }
 }

@@ -43,8 +43,8 @@ class APIRequestGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->createFileName, $templateData);
 
-        $this->commandData->commandComment("\nCreate Request created: ");
-        $this->commandData->commandInfo($this->createFileName);
+        $this->commandData->commandObj->comment("\nCreate Request created: ");
+        $this->commandData->commandObj->info($this->createFileName);
     }
 
     private function generateUpdateRequest()
@@ -59,18 +59,18 @@ class APIRequestGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->updateFileName, $templateData);
 
-        $this->commandData->commandComment("\nUpdate Request created: ");
-        $this->commandData->commandInfo($this->updateFileName);
+        $this->commandData->commandObj->comment("\nUpdate Request created: ");
+        $this->commandData->commandObj->info($this->updateFileName);
     }
 
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->createFileName)) {
-            $this->commandData->commandComment('Create API Request file deleted: ' . $this->createFileName);
+            $this->commandData->commandObj->comment('Create API Request file deleted: ' . $this->createFileName);
         }
 
         if ($this->rollbackFile($this->path, $this->updateFileName)) {
-            $this->commandData->commandComment('Update API Request file deleted: ' . $this->updateFileName);
+            $this->commandData->commandObj->comment('Update API Request file deleted: ' . $this->updateFileName);
         }
     }
 }

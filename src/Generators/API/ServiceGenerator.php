@@ -55,14 +55,14 @@ class ServiceGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandComment("\nService created: ");
-        $this->commandData->commandInfo($this->fileName);
+        $this->commandData->commandObj->comment("\nService created: ");
+        $this->commandData->commandObj->info($this->fileName);
     }
 
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandComment('Service file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->comment('Service file deleted: ' . $this->fileName);
         }
     }
 }

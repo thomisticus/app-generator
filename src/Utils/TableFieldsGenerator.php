@@ -136,6 +136,8 @@ class TableFieldsGenerator
 
             $this->fields[] = $field;
         }
+
+        return $this;
     }
 
     /**
@@ -263,6 +265,8 @@ class TableFieldsGenerator
     {
         $foreignKeys = $this->prepareForeignKeys();
         $this->checkForRelations($foreignKeys);
+
+        return $this;
     }
 
     /**

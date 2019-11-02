@@ -38,8 +38,8 @@ class SeederGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandComment("\nSeeder created: ");
-        $this->commandData->commandInfo($this->fileName);
+        $this->commandData->commandObj->comment("\nSeeder created: ");
+        $this->commandData->commandObj->info($this->fileName);
 
         return $this;
     }
@@ -73,7 +73,7 @@ class SeederGenerator extends BaseGenerator
         );
 
         file_put_contents($this->commandData->config->paths['database_seeder'], $mainSeederContent);
-        $this->commandData->commandComment('Main Seeder file updated.');
+        $this->commandData->commandObj->comment('Main Seeder file updated.');
 
         return $this;
     }

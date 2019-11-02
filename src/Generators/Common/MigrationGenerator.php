@@ -37,8 +37,8 @@ class MigrationGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $fileName, $templateData);
 
-        $this->commandData->commandComment("\nMigration created: ");
-        $this->commandData->commandInfo($fileName);
+        $this->commandData->commandObj->comment("\nMigration created: ");
+        $this->commandData->commandObj->info($fileName);
     }
 
     private function generateFields()
@@ -101,7 +101,7 @@ class MigrationGenerator extends BaseGenerator
         foreach ($files as $file) {
             if (Str::contains($file, $fileName)) {
                 if ($this->rollbackFile($this->path, $file)) {
-                    $this->commandData->commandComment('Migration file deleted: ' . $file);
+                    $this->commandData->commandObj->comment('Migration file deleted: ' . $file);
                 }
                 break;
             }
