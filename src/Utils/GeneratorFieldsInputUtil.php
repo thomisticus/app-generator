@@ -28,7 +28,7 @@ class GeneratorFieldsInputUtil
         /*
          * Field Input Format: field_name <space> db_type <space> html_type(optional) <space> options(optional)
          * Options are to skip the field from certain criteria like searchable, fillable, not in form, not in index
-         * Searchable (s), Fillable (f), In Form (if), In Index (ii)
+         * Searchable (searchable), Fillable (fillable), In Form (inForm), In Index (inIndex)
          * Sample Field Inputs
          *
          * title string text
@@ -36,7 +36,7 @@ class GeneratorFieldsInputUtil
          * name string,20 text
          * post_id integer:unsigned:nullable
          * post_id integer:unsigned:nullable:foreign,posts,id
-         * password string text if,ii,s - options will skip field from being added in form, in index and searchable
+         * password string text inForm,inIndex,searchable - options will skip field from being added in form, in index and searchable
          */
 
         $fieldInputsArr = explode(' ', $fieldInput);

@@ -70,10 +70,10 @@ class GeneratorField
     {
         $options = strtolower($options);
         $optionsArr = explode(',', $options);
-        if (in_array('s', $optionsArr)) {
+        if (in_array('searchable', $optionsArr)) {
             $this->isSearchable = false;
         }
-        if (in_array('p', $optionsArr)) {
+        if (in_array('primary', $optionsArr)) {
             // if field is primary key, then its not searchable, fillable, not in index & form
             $this->isPrimary = true;
             $this->isSearchable = false;
@@ -82,16 +82,16 @@ class GeneratorField
             $this->inIndex = false;
             $this->inView = false;
         }
-        if (in_array('f', $optionsArr)) {
+        if (in_array('fillable', $optionsArr)) {
             $this->isFillable = false;
         }
-        if (in_array('if', $optionsArr)) {
+        if (in_array('inForm', $optionsArr)) {
             $this->inForm = false;
         }
-        if (in_array('ii', $optionsArr)) {
+        if (in_array('inIndex', $optionsArr)) {
             $this->inIndex = false;
         }
-        if (in_array('iv', $optionsArr)) {
+        if (in_array('inView', $optionsArr)) {
             $this->inView = false;
         }
 

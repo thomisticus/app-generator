@@ -237,7 +237,7 @@ class CommandData
             $primaryKey->name = $primary;
         }
 
-        $primaryKey->parseDBType('increments')->parseOptions('s,f,p,if,ii');
+        $primaryKey->parseDBType('increments')->parseOptions('searchable,fillable,primary,inForm,inIndex');
 
         $this->fields[] = $primaryKey;
     }
@@ -255,7 +255,7 @@ class CommandData
         foreach ($timestamps as $timestampName) {
             $field = new GeneratorField();
             $field->name = config('app-generator.timestamps.' . $timestampName, $timestampName);
-            $field->parseDBType('timestamp')->parseOptions('s,f,if,ii');
+            $field->parseDBType('timestamp')->parseOptions('searchable,fillable,inForm,inIndex');
             $this->fields[] = $field;
         }
     }
