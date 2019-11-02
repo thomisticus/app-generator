@@ -28,8 +28,8 @@ class PublishTemplateCommand extends PublishBaseCommand
     public function handle()
     {
         $this->templatesDir = config(
-            'thomisticus.path.templates_dir',
-            base_path('resources/thomisticus/thomisticus-crud-templates/')
+            'app-generator.path.templates_dir',
+            base_path('resources/thomisticus/app-generator-templates/')
         );
 
         $this->publishGeneratorTemplates();
@@ -42,7 +42,7 @@ class PublishTemplateCommand extends PublishBaseCommand
     {
         $templatesPath = __DIR__ . '/../../../templates';
 
-        return $this->publishDirectory($templatesPath, $this->templatesDir, 'thomisticus-crud-templates');
+        return $this->publishDirectory($templatesPath, $this->templatesDir, 'app-generator-templates');
     }
 
     /**

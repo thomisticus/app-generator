@@ -90,8 +90,8 @@ if (!function_exists('get_template_file_path')) {
         $templateName = str_replace('.', '/', $templateName);
 
         $templatesPath = config(
-            'thomisticus.path.templates_dir',
-            base_path('resources/thomisticus/thomisticus-crud-templates/')
+            'app-generator.path.templates_dir',
+            base_path('resources/thomisticus/app-generator-templates/')
         );
 
         $path = $templatesPath . $templateName . '.stub';
