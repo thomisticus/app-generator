@@ -2,37 +2,112 @@
 
 namespace Thomisticus\Generator\Common;
 
+use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;
 
 class GeneratorField
 {
-    /** @var string */
+    /**
+     * Field name
+     * @var string
+     */
     public $name;
+
+    /**
+     * DB input for the column
+     * @var string
+     */
     public $dbInput;
+
+    /**
+     * Html input
+     * @var string
+     */
     public $htmlInput;
+
+    /**
+     * Html input type
+     * @var string
+     */
     public $htmlType;
+
+    /**
+     * Field type on database
+     * @var string
+     */
     public $fieldType;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public $htmlValues;
 
-    /** @var string */
+    /**
+     * Migration text to fill the database migration file
+     * @var string
+     */
     public $migrationText;
+
+    /**
+     * Foreign Key text for database migration file
+     * @var string
+     */
     public $foreignKeyText;
+
+    /**
+     * Field validations
+     * @var string
+     */
     public $validations;
 
-    /** @var bool */
+    /**
+     * Whether the field is searchable or not
+     * @var bool
+     */
     public $isSearchable = true;
+
+    /**
+     * Whether the field is fillable or not
+     * @var bool
+     */
     public $isFillable = true;
+
+    /**
+     * Whether the field is primary key or not
+     * @var bool
+     */
     public $isPrimary = false;
+
+    /**
+     * Whether the field is in the form or not
+     * @var bool
+     */
     public $inForm = true;
+
+    /**
+     * Whether the field is in index or not
+     * @var bool
+     */
     public $inIndex = true;
+
+    /**
+     * Whether the field is in the view or not
+     * @var bool
+     */
     public $inView = true;
+
+    /**
+     * Whether the field is null or not
+     * @var bool
+     */
     public $isNotNull = false;
 
     /**
-     * @param Column $column
-     * @param $dbInput
+     * Set $dbInput parsing the DB type from database columns
+     *
+     * @param string $dbInput
+     * @param Column|null $column
+     * @return $this
      */
     public function parseDBType($dbInput, $column = null)
     {
@@ -46,6 +121,11 @@ class GeneratorField
         return $this;
     }
 
+    /**
+     * Parse HTML input type setting $htmlInput, $htmlType and $htmlValues properties
+     *
+     * @param string $htmlInput
+     */
     public function parseHtmlInput($htmlInput)
     {
         $this->htmlInput = $htmlInput;
@@ -53,12 +133,10 @@ class GeneratorField
 
         if (empty($htmlInput)) {
             $this->htmlType = 'text';
-
             return;
         }
 
         $inputsArr = explode(',', $htmlInput);
-
         $this->htmlType = array_shift($inputsArr);
 
         if (count($inputsArr) > 0) {
@@ -66,38 +144,36 @@ class GeneratorField
         }
     }
 
+    /**
+     * Parse options when generating from console. Since majority of properties are "true" by default, all the properties
+     * passed here will be considered as false (primary is an exception).
+     *
+     * @param string $options Options string. Eg: searchable,fillable,inForm
+     * @return $this
+     */
     public function parseOptions($options)
     {
         $options = strtolower($options);
         $optionsArr = explode(',', $options);
-        if (in_array('searchable', $optionsArr)) {
-            $this->isSearchable = false;
-        }
+
+        $this->isSearchable = !in_array('searchable', $optionsArr);
+        $this->isFillable = !in_array('fillable', $optionsArr);
+        $this->inForm = !in_array('inForm', $optionsArr);
+        $this->inIndex = !in_array('inIndex', $optionsArr);
+        $this->inView = !in_array('inView', $optionsArr);
+
         if (in_array('primary', $optionsArr)) {
-            // if field is primary key, then its not searchable, fillable, not in index & form
+            // If field is primary key, then its not searchable, fillable, not in index nor in form
             $this->isPrimary = true;
-            $this->isSearchable = false;
-            $this->isFillable = false;
-            $this->inForm = false;
-            $this->inIndex = false;
-            $this->inView = false;
-        }
-        if (in_array('fillable', $optionsArr)) {
-            $this->isFillable = false;
-        }
-        if (in_array('inForm', $optionsArr)) {
-            $this->inForm = false;
-        }
-        if (in_array('inIndex', $optionsArr)) {
-            $this->inIndex = false;
-        }
-        if (in_array('inView', $optionsArr)) {
-            $this->inView = false;
+            $this->isSearchable = $this->isFillable = $this->inForm = $this->inIndex = $this->inView = false;
         }
 
         return $this;
     }
 
+    /**
+     * Generates migration file text and sets in $migrationText property
+     */
     private function prepareMigrationText()
     {
         $inputsArr = explode(':', $this->dbInput);
@@ -109,11 +185,12 @@ class GeneratorField
 
         if ($this->fieldType == 'enum') {
             $this->migrationText .= ', [';
+
             foreach ($fieldTypeParams as $param) {
                 $this->migrationText .= "'" . $param . "',";
             }
-            $this->migrationText = substr($this->migrationText, 0, strlen($this->migrationText) - 1);
-            $this->migrationText .= ']';
+
+            $this->migrationText = substr($this->migrationText, 0, strlen($this->migrationText) - 1) . ']';
         } else {
             foreach ($fieldTypeParams as $param) {
                 $this->migrationText .= ', ' . $param;
@@ -130,33 +207,42 @@ class GeneratorField
                 $foreignField = array_shift($inputParams);
                 $this->foreignKeyText .= "\$table->foreign('" . $this->name . "')->references('" . $foreignField . "')->on('" . $foreignTable . "');";
             } else {
-                $this->migrationText .= '->' . $functionName;
-                $this->migrationText .= '(';
-                $this->migrationText .= implode(', ', $inputParams);
-                $this->migrationText .= ')';
+                $this->migrationText .= '->' . $functionName . '(' . implode(', ', $inputParams) . ')';
             }
         }
 
         $this->migrationText .= ';';
     }
 
+    /**
+     * Parse fields from Json file
+     *
+     * @param array $fieldInput
+     * @return GeneratorField
+     */
     public static function parseFieldFromFile($fieldInput)
     {
         $field = new self();
         $field->name = $fieldInput['name'];
         $field->parseDBType($fieldInput['dbType']);
-        $field->parseHtmlInput(isset($fieldInput['htmlType']) ? $fieldInput['htmlType'] : '');
-        $field->validations = isset($fieldInput['validations']) ? $fieldInput['validations'] : '';
-        $field->isSearchable = isset($fieldInput['searchable']) ? $fieldInput['searchable'] : false;
-        $field->isFillable = isset($fieldInput['fillable']) ? $fieldInput['fillable'] : true;
-        $field->isPrimary = isset($fieldInput['primary']) ? $fieldInput['primary'] : false;
-        $field->inForm = isset($fieldInput['inForm']) ? $fieldInput['inForm'] : true;
-        $field->inIndex = isset($fieldInput['inIndex']) ? $fieldInput['inIndex'] : true;
-        $field->inView = isset($fieldInput['inView']) ? $fieldInput['inView'] : true;
+        $field->parseHtmlInput($fieldInput['htmlType'] ?? '');
+        $field->validations = $fieldInput['validations'] ?? '';
+        $field->isSearchable = $fieldInput['searchable'] ?? false;
+        $field->isFillable = $fieldInput['fillable'] ?? true;
+        $field->isPrimary = $fieldInput['primary'] ?? false;
+        $field->inForm = $fieldInput['inForm'] ?? true;
+        $field->inIndex = $fieldInput['inIndex'] ?? true;
+        $field->inView = $fieldInput['inView'] ?? true;
 
         return $field;
     }
 
+    /**
+     * Magic method to access GeneratorField properties
+     *
+     * @param $string $key   Property name
+     * @return mixed
+     */
     public function __get($key)
     {
         if ($key == 'fieldTitle') {
