@@ -18,6 +18,9 @@ class PublishTemplateCommand extends PublishBaseCommand
      */
     protected $description = 'Publishes api generator templates.';
 
+    /**
+     * @var string
+     */
     private $templatesDir;
 
     /**

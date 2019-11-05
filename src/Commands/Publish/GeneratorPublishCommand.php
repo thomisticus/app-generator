@@ -40,7 +40,6 @@ class GeneratorPublishCommand extends PublishBaseCommand
      * Replaces dynamic variables of template.
      *
      * @param string $templateData
-     *
      * @return string
      */
     private function fillTemplate($templateData)
@@ -59,6 +58,13 @@ class GeneratorPublishCommand extends PublishBaseCommand
         return str_replace(array_keys($replacers), $replacers, $templateData);
     }
 
+    /**
+     * Fills the template (replacing the keys) and creates the file
+     *
+     * @param string $templateName
+     * @param string $filePath
+     * @param string $fileName
+     */
     private function fillAndCreateFile($templateName, $filePath, $fileName)
     {
         $templateData = get_template($templateName, 'app-generator');
@@ -67,6 +73,9 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $this->createFile($filePath, $fileName, $templateData);
     }
 
+    /**
+     * Publishes the integration tests creating its files and folders
+     */
     private function publishTestCases()
     {
         $testsPath = config('app-generator.path.tests', base_path('tests/'));
@@ -85,18 +94,27 @@ class GeneratorPublishCommand extends PublishBaseCommand
         }
     }
 
+    /**
+     *  BaseController file publisher
+     */
     private function publishBaseController()
     {
         $controllerPath = config('app-generator.path.api_controller', app_path('Http/Controllers/'));
         $this->fillAndCreateFile('app_base_controller', $controllerPath, 'AppBaseController.php');
     }
 
+    /**
+     * BaseRepository file publisher
+     */
     private function publishBaseRepository()
     {
         $repositoriesPath = config('app-generator.path.repository', app_path('Repositories/'));
         $this->fillAndCreateFile('base_repository', $repositoriesPath, 'BaseRepository.php');
     }
 
+    /**
+     *  ReponseTrait file publisher
+     */
     private function publishResponseTrait()
     {
         $traitPath = config('app-generator.path.trait', app_path('Traits/'));

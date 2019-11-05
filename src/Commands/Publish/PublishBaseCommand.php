@@ -8,10 +8,20 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class PublishBaseCommand extends BaseCommand
 {
+    /**
+     * Ignoring BaseCommand's handle method
+     */
     public function handle()
     {
     }
 
+    /**
+     * Copies an already created file to the destination path
+     *
+     * @param string $sourceFile
+     * @param string $destinationFile
+     * @param string $fileName
+     */
     public function publishFile($sourceFile, $destinationFile, $fileName)
     {
         if (file_exists($destinationFile) && !$this->confirmOverwrite($destinationFile)) {
@@ -24,6 +34,13 @@ class PublishBaseCommand extends BaseCommand
         $this->info($destinationFile);
     }
 
+    /**
+     * Creates a specific file
+     *
+     * @param string $filePath
+     * @param string $fileName
+     * @param string $templateData
+     */
     public function createFile($filePath, $fileName, $templateData)
     {
         if (file_exists($filePath . $fileName) && !$this->confirmOverwrite($fileName)) {
@@ -36,9 +53,11 @@ class PublishBaseCommand extends BaseCommand
     }
 
     /**
-     * @param      $sourceDir
-     * @param      $destinationDir
-     * @param      $dirName
+     * Copies the whole directory with its files to a new path
+     *
+     * @param string $sourceDir
+     * @param string $destinationDir
+     * @param string $dirName
      * @param bool $force
      *
      * @return bool|void
