@@ -78,7 +78,7 @@ class GeneratorFieldRelation
     /**
      * Retrieves the relations attributes to fill the relationship method text (function, functionName and relationClass)
      *
-     * @param text|null $relationText
+     * @param string|null $relationText
      * @return array
      */
     public function getRelationAttributes($relationText = null)

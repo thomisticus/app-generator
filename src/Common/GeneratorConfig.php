@@ -12,7 +12,7 @@ class GeneratorConfig
     public $modelName;
 
     /**
-     * @var array Addons values based on config file
+     * @var array Add-ons values based on config file
      */
     public $addOns;
 
