@@ -281,27 +281,25 @@ class TableFieldsGenerator
         $fields = [];
 
         foreach ($tables as $table) {
-            $primaryKey = $table->getPrimaryKey();
-            if ($primaryKey) {
+            if ($primaryKey = $table->getPrimaryKey()) {
                 $primaryKey = $primaryKey->getColumns()[0];
             }
             $formattedForeignKeys = [];
             $tableForeignKeys = $table->getForeignKeys();
             foreach ($tableForeignKeys as $tableForeignKey) {
-                $generatorForeignKey = new GeneratorForeignKey();
-                $generatorForeignKey->name = $tableForeignKey->getName();
-                $generatorForeignKey->localField = $tableForeignKey->getLocalColumns()[0];
-                $generatorForeignKey->foreignField = $tableForeignKey->getForeignColumns()[0];
-                $generatorForeignKey->foreignTable = $tableForeignKey->getForeignTableName();
-                $generatorForeignKey->onUpdate = $tableForeignKey->onUpdate();
-                $generatorForeignKey->onDelete = $tableForeignKey->onDelete();
+                $tableForeignKey = [
+                    'name' => $tableForeignKey->getName(),
+                    'localField' => $tableForeignKey->getLocalColumns()[0],
+                    'foreignField' => $tableForeignKey->getForeignColumns()[0],
+                    'foreignTable' => $tableForeignKey->getForeignTableName(),
+                    'onUpdate' => $tableForeignKey->onUpdate(),
+                    'onDelete' => $tableForeignKey->onDelete(),
+                ];
 
-                $formattedForeignKeys[] = $generatorForeignKey;
+                $formattedForeignKeys[] = new GeneratorForeignKey(...array_values($tableForeignKey));
             }
 
-            $generatorTable = new GeneratorTable();
-            $generatorTable->primaryKey = $primaryKey;
-            $generatorTable->foreignKeys = $formattedForeignKeys;
+            $generatorTable = new GeneratorTable($primaryKey, $formattedForeignKeys);
 
             $fields[$table->getName()] = $generatorTable;
         }
