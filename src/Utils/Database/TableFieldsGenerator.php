@@ -196,9 +196,9 @@ class TableFieldsGenerator
         }
 
         return [
-            'createdAtName' => config('app-generator.timestamps.created_at', 'created_at'),
-            'updatedAtName' => config('app-generator.timestamps.updated_at', 'updated_at'),
-            'deletedAtName' => config('app-generator.timestamps.deleted_at', 'deleted_at'),
+            config('app-generator.timestamps.created_at', 'created_at'),
+            config('app-generator.timestamps.updated_at', 'updated_at'),
+            config('app-generator.timestamps.deleted_at', 'deleted_at')
         ];
     }
 
