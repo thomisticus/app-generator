@@ -11,11 +11,21 @@ use Thomisticus\Generator\Utils\FileUtil;
  */
 class SeederGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Database seeder file path
+     * @var string
+     */
     private $path;
+
+    /**
+     * Database seeder file name
+     * @var string
+     */
     private $fileName;
 
     /**
@@ -30,10 +40,13 @@ class SeederGenerator extends BaseGenerator
         $this->fileName = $this->commandData->config->modelNames['plural'] . 'TableSeeder.php';
     }
 
+    /**
+     * Generates the database seeder
+     * @return $this
+     */
     public function generate()
     {
         $templateData = get_template('seeds.model_seeder', 'app-generator');
-
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
@@ -44,15 +57,18 @@ class SeederGenerator extends BaseGenerator
         return $this;
     }
 
+    /**
+     *
+     * @return $this|void
+     */
     public function updateMainSeeder()
     {
         $mainSeederContent = file_get_contents($this->commandData->config->paths['database_seeder']);
 
         $newSeederStatement = '$this->call(' . $this->commandData->config->modelNames['plural'] . 'TableSeeder::class);';
 
-        if (strpos($mainSeederContent, $newSeederStatement) != false) {
+        if (strpos($mainSeederContent, $newSeederStatement)) {
             $this->commandData->commandObj->info($this->commandData->config->modelNames['plural'] . 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.');
-
             return;
         }
 

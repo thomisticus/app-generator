@@ -8,15 +8,28 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class RepositoryGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Repository file path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * Repository file name
+     * @var string
+     */
     private $fileName;
 
+
+    /**
+     * RepositoryGenerator constructor.
+     * @param CommandData $commandData
+     */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
@@ -24,14 +37,15 @@ class RepositoryGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'Repository.php';
     }
 
+    /**
+     * Generates the repository file
+     */
     public function generate()
     {
         $templateData = get_template('repository', 'app-generator');
-
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         $searchables = [];
-
         foreach ($this->commandData->fields as $field) {
             if ($field->isSearchable) {
                 $searchables[] = "'" . strtolower($field->name) . "'";
@@ -46,8 +60,8 @@ class RepositoryGenerator extends BaseGenerator
 
         $docsTemplate = get_template('docs.repository', 'app-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
-        $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
 
+        $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
         $templateData = str_replace('$DOCS$', $docsTemplate, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
@@ -56,6 +70,9 @@ class RepositoryGenerator extends BaseGenerator
         $this->commandData->commandObj->info($this->fileName);
     }
 
+    /**
+     * Rollback the repository generation
+     */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
