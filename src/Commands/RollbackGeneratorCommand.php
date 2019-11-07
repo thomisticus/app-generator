@@ -6,10 +6,10 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\API\APIControllerGenerator;
-use Thomisticus\Generator\Generators\API\APIRequestGenerator;
-use Thomisticus\Generator\Generators\API\APIRoutesGenerator;
-use Thomisticus\Generator\Generators\API\APITestGenerator;
+use Thomisticus\Generator\Generators\API\ControllerGenerator;
+use Thomisticus\Generator\Generators\API\RequestGenerator;
+use Thomisticus\Generator\Generators\API\RouteGenerator;
+use Thomisticus\Generator\Generators\API\TestGenerator;
 use Thomisticus\Generator\Generators\Common\MigrationGenerator;
 use Thomisticus\Generator\Generators\Common\ModelGenerator;
 use Thomisticus\Generator\Generators\Common\RepositoryGenerator;
@@ -70,13 +70,13 @@ class RollbackGeneratorCommand extends Command
         (new MigrationGenerator($this->commandData))->rollback();
         (new ModelGenerator($this->commandData))->rollback();
         (new RepositoryGenerator($this->commandData))->rollback();
-        (new APIRequestGenerator($this->commandData))->rollback();
-        (new APIControllerGenerator($this->commandData))->rollback();
-        (new APIRoutesGenerator($this->commandData))->rollback();
+        (new RequestGenerator($this->commandData))->rollback();
+        (new ControllerGenerator($this->commandData))->rollback();
+        (new RouteGenerator($this->commandData))->rollback();
 
         if ($this->commandData->getAddOn('tests')) {
             (new RepositoryTestGenerator($this->commandData))->rollback();
-            (new APITestGenerator($this->commandData))->rollback();
+            (new TestGenerator($this->commandData))->rollback();
         }
 
         $this->info('Generating autoload files');

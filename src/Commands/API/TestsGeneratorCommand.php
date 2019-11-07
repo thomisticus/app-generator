@@ -4,7 +4,7 @@ namespace Thomisticus\Generator\Commands\API;
 
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\API\APITestGenerator;
+use Thomisticus\Generator\Generators\API\TestGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 
 class TestsGeneratorCommand extends BaseCommand
@@ -14,7 +14,7 @@ class TestsGeneratorCommand extends BaseCommand
      *
      * @var string
      */
-    protected $name = 'thomisticus.api:tests';
+    protected $name = 'thomisticus.tests';
 
     /**
      * The console command description.
@@ -33,7 +33,7 @@ class TestsGeneratorCommand extends BaseCommand
         parent::handle();
 
         (new RepositoryTestGenerator($this->commandData))->generate();
-        (new APITestGenerator($this->commandData))->generate();
+        (new TestGenerator($this->commandData))->generate();
 
         $this->performPostActions();
     }

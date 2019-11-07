@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Commands\API;
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
 
-class APIGeneratorCommand extends BaseCommand
+class ApiGeneratorCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.

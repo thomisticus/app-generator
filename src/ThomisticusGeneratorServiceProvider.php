@@ -3,9 +3,9 @@
 namespace Thomisticus\Generator;
 
 use Illuminate\Support\ServiceProvider;
-use Thomisticus\Generator\Commands\API\APIControllerGeneratorCommand;
-use Thomisticus\Generator\Commands\API\APIGeneratorCommand;
-use Thomisticus\Generator\Commands\API\APIRequestsGeneratorCommand;
+use Thomisticus\Generator\Commands\API\ControllerGeneratorCommand;
+use Thomisticus\Generator\Commands\API\ApiGeneratorCommand;
+use Thomisticus\Generator\Commands\API\RequestGeneratorCommand;
 use Thomisticus\Generator\Commands\API\TestsGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\MigrationGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\ModelGeneratorCommand;
@@ -41,11 +41,11 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
         $commands = [
             'thomisticus:publish' => GeneratorPublishCommand::class,
             'thomisticus.publish:templates' => PublishTemplateCommand::class,
-            'thomisticus:api' => APIGeneratorCommand::class,
-            'thomisticus.api:controller' => APIControllerGeneratorCommand::class,
-            'thomisticus.api:requests' => APIRequestsGeneratorCommand::class,
+            'thomisticus:api' => ApiGeneratorCommand::class,
+            'thomisticus.controller' => ControllerGeneratorCommand::class,
+            'thomisticus.request' => RequestGeneratorCommand::class,
             'thomisticus:service' => ServiceGeneratorCommand::class,
-            'thomisticus.api:tests' => TestsGeneratorCommand::class,
+            'thomisticus.tests' => TestsGeneratorCommand::class,
             'thomisticus:migration' => MigrationGeneratorCommand::class,
             'thomisticus:model' => ModelGeneratorCommand::class,
             'thomisticus:repository' => RepositoryGeneratorCommand::class,

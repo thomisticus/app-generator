@@ -4,23 +4,23 @@ namespace Thomisticus\Generator\Commands\API;
 
 use Thomisticus\Generator\Commands\BaseCommand;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\API\APIControllerGenerator;
+use Thomisticus\Generator\Generators\API\RequestGenerator;
 
-class APIControllerGeneratorCommand extends BaseCommand
+class RequestGeneratorCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'thomisticus.api:controller';
+    protected $name = 'thomisticus.request';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create an api controller command';
+    protected $description = 'Create an api request command';
 
     /**
      * Execute the console command.
@@ -31,7 +31,7 @@ class APIControllerGeneratorCommand extends BaseCommand
     {
         parent::handle();
 
-        (new APIControllerGenerator($this->commandData))->generate();
+        (new RequestGenerator($this->commandData))->generate();
 
         $this->performPostActions();
     }

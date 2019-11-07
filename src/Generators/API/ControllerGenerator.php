@@ -6,7 +6,7 @@ use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
-class APIControllerGenerator extends BaseGenerator
+class ControllerGenerator extends BaseGenerator
 {
     /**
      * @var CommandData
@@ -25,7 +25,7 @@ class APIControllerGenerator extends BaseGenerator
     private $fileName;
 
     /**
-     * APIControllerGenerator constructor.
+     * ControllerGenerator constructor.
      * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)

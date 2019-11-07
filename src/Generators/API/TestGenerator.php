@@ -4,10 +4,9 @@ namespace Thomisticus\Generator\Generators\API;
 
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
-use Thomisticus\Generator\Generators\Common\ModelGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
-class APIRequestGenerator extends BaseGenerator
+class TestGenerator extends BaseGenerator
 {
     /**
      * @var CommandData
@@ -15,50 +14,50 @@ class APIRequestGenerator extends BaseGenerator
     private $commandData;
 
     /**
-     * Request file path
+     * Api test file path
      * @var string
      */
     private $path;
 
     /**
-     * Request file name
+     * Api test file name
      * @var string
      */
     private $fileName;
 
     /**
-     * APIRequestGenerator constructor.
-     *
+     * TestGenerator constructor.
      * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->paths['api_request'];
-        $this->fileName = $this->commandData->modelName . 'APIRequest.php';
+        $this->path = $commandData->config->paths['api_tests'];
+        $this->fileName = $this->commandData->modelName . 'ApiTest.php';
     }
 
     /**
-     * Generates the Request file
+     * Generates the Api test file
      */
     public function generate()
     {
-        $templateData = get_template('api.request.request', 'app-generator');
+        $templateData = get_template('api.test.api_test', 'app-generator');
+
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nRequest created: ");
+        $this->commandData->commandObj->comment("\nApiTest created: ");
         $this->commandData->commandObj->info($this->fileName);
     }
 
     /**
-     * Rollback file creation
+     * Rollback the test file creation
      */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('Create API Request file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->comment('API Test file deleted: ' . $this->fileName);
         }
     }
 }

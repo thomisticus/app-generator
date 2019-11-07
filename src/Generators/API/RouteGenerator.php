@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Thomisticus\Generator\Common\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 
-class APIRoutesGenerator extends BaseGenerator
+class RouteGenerator extends BaseGenerator
 {
     /**
      * @var CommandData
@@ -32,7 +32,7 @@ class APIRoutesGenerator extends BaseGenerator
     private $routesTemplate;
 
     /**
-     * APIRoutesGenerator constructor.
+     * RouteGenerator constructor.
      * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)

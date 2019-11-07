@@ -7,10 +7,10 @@ use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Thomisticus\Generator\Common\CommandData;
-use Thomisticus\Generator\Generators\API\APIControllerGenerator;
-use Thomisticus\Generator\Generators\API\APIRequestGenerator;
-use Thomisticus\Generator\Generators\API\APIRoutesGenerator;
-use Thomisticus\Generator\Generators\API\APITestGenerator;
+use Thomisticus\Generator\Generators\API\ControllerGenerator;
+use Thomisticus\Generator\Generators\API\RequestGenerator;
+use Thomisticus\Generator\Generators\API\RouteGenerator;
+use Thomisticus\Generator\Generators\API\TestGenerator;
 use Thomisticus\Generator\Generators\Common\FactoryGenerator;
 use Thomisticus\Generator\Generators\Common\MigrationGenerator;
 use Thomisticus\Generator\Generators\Common\ModelGenerator;
@@ -88,11 +88,11 @@ class BaseCommand extends Command
     public function generateAPIItems()
     {
         if (!$this->isSkip('requests') && !$this->isSkip('api_requests')) {
-            (new APIRequestGenerator($this->commandData))->generate();
+            (new RequestGenerator($this->commandData))->generate();
         }
 
         if (!$this->isSkip('controller') && !$this->isSkip('api_controller')) {
-            (new APIControllerGenerator($this->commandData))->generate();
+            (new ControllerGenerator($this->commandData))->generate();
         }
 
 //        if (!$this->isSkip('services') && !$this->isSkip('scaffold_service')) {
@@ -100,7 +100,7 @@ class BaseCommand extends Command
 //        }
 
         if (!$this->isSkip('routes') && !$this->isSkip('api_routes')) {
-            (new APIRoutesGenerator($this->commandData))->generate();
+            (new RouteGenerator($this->commandData))->generate();
         }
 
         if (!$this->isSkip('tests') && $this->commandData->getAddOn('tests')) {
@@ -108,7 +108,7 @@ class BaseCommand extends Command
                 (new RepositoryTestGenerator($this->commandData))->generate();
             }
 
-            (new APITestGenerator($this->commandData))->generate();
+            (new TestGenerator($this->commandData))->generate();
         }
     }
 
