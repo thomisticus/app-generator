@@ -2,14 +2,14 @@
 
 namespace Thomisticus\Generator\Generators\Common;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class RepositoryGenerator extends BaseGenerator
 {
     /**
-     * @var CommandData
+     * @var \Thomisticus\Generator\Utils\CommandData
      */
     private $commandData;
 
@@ -28,7 +28,7 @@ class RepositoryGenerator extends BaseGenerator
 
     /**
      * RepositoryGenerator constructor.
-     * @param CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {

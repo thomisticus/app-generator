@@ -3,7 +3,7 @@
 namespace Thomisticus\Generator\Generators\API;
 
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 
 class RouteGenerator extends BaseGenerator

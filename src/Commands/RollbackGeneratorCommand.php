@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\API\ControllerGenerator;
 use Thomisticus\Generator\Generators\API\RequestGenerator;
 use Thomisticus\Generator\Generators\API\RouteGenerator;

@@ -2,13 +2,13 @@
 
 namespace Thomisticus\Generator\Generators;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class RepositoryTestGenerator extends BaseGenerator
 {
     /**
-     * @var CommandData
+     * @var \Thomisticus\Generator\Utils\CommandData
      */
     private $commandData;
 

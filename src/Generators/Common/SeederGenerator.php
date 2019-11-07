@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\Common;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -12,7 +12,7 @@ use Thomisticus\Generator\Utils\FileUtil;
 class SeederGenerator extends BaseGenerator
 {
     /**
-     * @var CommandData
+     * @var \Thomisticus\Generator\Utils\CommandData
      */
     private $commandData;
 
@@ -31,9 +31,9 @@ class SeederGenerator extends BaseGenerator
     /**
      * ModelGenerator constructor.
      *
-     * @param CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
-    public function __construct(CommandData $commandData)
+    public function __construct(\Thomisticus\Generator\Utils\CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['seeder'];

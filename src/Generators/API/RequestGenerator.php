@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\API;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Generators\Common\ModelGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
@@ -29,7 +29,7 @@ class RequestGenerator extends BaseGenerator
     /**
      * RequestGenerator constructor.
      *
-     * @param CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {

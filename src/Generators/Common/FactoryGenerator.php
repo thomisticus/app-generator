@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\Common;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
@@ -13,7 +13,7 @@ use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
 class FactoryGenerator extends BaseGenerator
 {
     /**
-     * @var CommandData
+     * @var \Thomisticus\Generator\Utils\CommandData
      */
     private $commandData;
 
@@ -32,9 +32,9 @@ class FactoryGenerator extends BaseGenerator
     /**
      * FactoryGenerator constructor.
      *
-     * @param CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
-    public function __construct(CommandData $commandData)
+    public function __construct(\Thomisticus\Generator\Utils\CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['factory'];

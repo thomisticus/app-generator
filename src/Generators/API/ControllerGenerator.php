@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\API;
 
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -26,7 +26,7 @@ class ControllerGenerator extends BaseGenerator
 
     /**
      * ControllerGenerator constructor.
-     * @param CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {

@@ -3,7 +3,7 @@
 namespace Thomisticus\Generator\Generators\Common;
 
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Common\GeneratorFieldRelation;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
@@ -12,7 +12,7 @@ use Thomisticus\Generator\Utils\TableFieldsGenerator;
 class ModelGenerator extends BaseGenerator
 {
     /**
-     * @var CommandData
+     * @var \Thomisticus\Generator\Utils\CommandData
      */
     private $commandData;
 
@@ -31,9 +31,9 @@ class ModelGenerator extends BaseGenerator
     /**
      * ModelGenerator constructor.
      *
-     * @param \Thomisticus\Generator\Common\CommandData $commandData
+     * @param \Thomisticus\Generator\Utils\CommandData $commandData
      */
-    public function __construct(CommandData $commandData)
+    public function __construct(\Thomisticus\Generator\Utils\CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['model'];

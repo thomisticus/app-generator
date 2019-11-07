@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Generators\Common;
 use File;
 use Illuminate\Support\Str;
 use SplFileInfo;
-use Thomisticus\Generator\Common\CommandData;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 

@@ -3,6 +3,7 @@
 namespace Thomisticus\Generator\Common;
 
 use Illuminate\Support\Str;
+use Thomisticus\Generator\Utils\CommandData;
 
 class GeneratorConfig
 {

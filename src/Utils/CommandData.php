@@ -1,10 +1,13 @@
 <?php
 
-namespace Thomisticus\Generator\Common;
+namespace Thomisticus\Generator\Utils;
 
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Thomisticus\Generator\Common\GeneratorConfig;
+use Thomisticus\Generator\Common\GeneratorField;
+use Thomisticus\Generator\Common\GeneratorFieldRelation;
 use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
 use Thomisticus\Generator\Utils\TableFieldsGenerator;
 
