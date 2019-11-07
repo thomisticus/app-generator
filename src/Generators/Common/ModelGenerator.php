@@ -4,10 +4,10 @@ namespace Thomisticus\Generator\Generators\Common;
 
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Common\GeneratorFieldRelation;
+use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
-use Thomisticus\Generator\Utils\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
 
 class ModelGenerator extends BaseGenerator
 {
@@ -233,7 +233,7 @@ class ModelGenerator extends BaseGenerator
      * Retrieves the PHPDoc type for the field according to its database column type
      *
      * @param string $dbType
-     * @param GeneratorFieldRelation|null $relation
+     * @param \Thomisticus\Generator\Utils\Database\GeneratorFieldRelation|null $relation
      * @param string|null $relationText
      *
      * @return string

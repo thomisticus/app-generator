@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomisticus\Generator\Common;
+namespace Thomisticus\Generator\Utils;
 
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Utils\CommandData;

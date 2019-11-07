@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Utils;
 
-use Thomisticus\Generator\Common\GeneratorField;
+use Thomisticus\Generator\Utils\Database\GeneratorField;
 
 class GeneratorFieldsInputUtil
 {

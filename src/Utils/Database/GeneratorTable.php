@@ -1,8 +1,8 @@
 <?php
 
-namespace Thomisticus\Generator\Common;
+namespace Thomisticus\Generator\Utils\Database;
 
-use Thomisticus\Generator\Common\GeneratorForeignKey;
+use Thomisticus\Generator\Utils\Database\GeneratorForeignKey;
 
 class GeneratorTable
 {

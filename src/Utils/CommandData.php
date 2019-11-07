@@ -5,11 +5,11 @@ namespace Thomisticus\Generator\Utils;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Common\GeneratorConfig;
-use Thomisticus\Generator\Common\GeneratorField;
-use Thomisticus\Generator\Common\GeneratorFieldRelation;
+use Thomisticus\Generator\Utils\GeneratorConfig;
+use Thomisticus\Generator\Utils\Database\GeneratorField;
+use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
 use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
-use Thomisticus\Generator\Utils\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
 
 class CommandData
 {
@@ -31,7 +31,7 @@ class CommandData
     public $config;
 
     /**
-     * @var GeneratorField[]
+     * @var \Thomisticus\Generator\Utils\Database\GeneratorField[]
      */
     public $fields = [];
 
@@ -175,7 +175,7 @@ class CommandData
         $ignoredFields = !empty($ignoredFields) ? explode(',', trim($ignoredFields)) : [];
 
         $tableName = $this->dynamicVars['$TABLE_NAME$'];
-        $tableFieldsGenerator = (new TableFieldsGenerator($tableName, $ignoredFields))
+        $tableFieldsGenerator = (new Database\TableFieldsGenerator($tableName, $ignoredFields))
             ->prepareFieldsFromTable()
             ->prepareRelations();
 

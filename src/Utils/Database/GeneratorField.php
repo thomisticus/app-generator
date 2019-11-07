@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomisticus\Generator\Common;
+namespace Thomisticus\Generator\Utils\Database;
 
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;

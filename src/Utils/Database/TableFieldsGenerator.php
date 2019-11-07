@@ -1,15 +1,15 @@
 <?php
 
-namespace Thomisticus\Generator\Utils;
+namespace Thomisticus\Generator\Utils\Database;
 
 use DB;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Common\GeneratorField;
-use Thomisticus\Generator\Common\GeneratorFieldRelation;
-use Thomisticus\Generator\Common\GeneratorForeignKey;
-use Thomisticus\Generator\Common\GeneratorTable;
+use Thomisticus\Generator\Utils\Database\GeneratorField;
+use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
+use Thomisticus\Generator\Utils\Database\GeneratorForeignKey;
+use Thomisticus\Generator\Utils\Database\GeneratorTable;
 
 class TableFieldsGenerator
 {
@@ -29,7 +29,7 @@ class TableFieldsGenerator
     /** @var Column[] */
     private $columns;
 
-    /** @var GeneratorField[] */
+    /** @var \Thomisticus\Generator\Utils\Database\GeneratorField[] */
     public $fields;
 
     /** @var GeneratorFieldRelation[] */
@@ -179,7 +179,7 @@ class TableFieldsGenerator
      * @param string $dbType
      * @param Column $column
      *
-     * @return GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
      */
     private function generateIntFieldInput($column, $dbType)
     {
@@ -204,9 +204,9 @@ class TableFieldsGenerator
     /**
      * Check if key is primary key and sets field options.
      *
-     * @param GeneratorField $field
+     * @param \Thomisticus\Generator\Utils\Database\GeneratorField $field
      *
-     * @return GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
      */
     private function checkForPrimary(GeneratorField $field)
     {
@@ -228,7 +228,7 @@ class TableFieldsGenerator
      * @param                              $dbType
      * @param                              $htmlType
      *
-     * @return GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
      */
     private function generateField($column, $dbType, $htmlType)
     {
@@ -246,7 +246,7 @@ class TableFieldsGenerator
      * @param \Doctrine\DBAL\Schema\Column $column
      * @param string $dbType
      *
-     * @return GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
      */
     private function generateNumberInput($column, $dbType)
     {
@@ -272,7 +272,7 @@ class TableFieldsGenerator
     /**
      * Prepares foreign keys from table with required details.
      *
-     * @return GeneratorTable[]
+     * @return \Thomisticus\Generator\Utils\Database\GeneratorTable[]
      */
     public function prepareForeignKeys()
     {
@@ -387,7 +387,7 @@ class TableFieldsGenerator
      * @param GeneratorTable $modelTable
      * @param string $modelTableName
      *
-     * @return bool|GeneratorFieldRelation
+     * @return bool|\Thomisticus\Generator\Utils\Database\GeneratorFieldRelation
      */
     private function isManyToMany($tables, $tableName, $modelTable, $modelTableName)
     {
@@ -463,7 +463,7 @@ class TableFieldsGenerator
      * Also foreign key field is primary key of this table.
      *
      * @param string $primaryKey
-     * @param GeneratorForeignKey $foreignKey
+     * @param \Thomisticus\Generator\Utils\Database\GeneratorForeignKey $foreignKey
      * @param string $modelTablePrimary
      *
      * @return bool
@@ -485,7 +485,7 @@ class TableFieldsGenerator
      * Also foreign key field is not primary key of this table.
      *
      * @param string $primaryKey
-     * @param GeneratorForeignKey $foreignKey
+     * @param \Thomisticus\Generator\Utils\Database\GeneratorForeignKey $foreignKey
      * @param string $modelTablePrimary
      *
      * @return bool

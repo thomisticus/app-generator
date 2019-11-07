@@ -1,6 +1,6 @@
 <?php
 
-namespace Thomisticus\Generator\Common;
+namespace Thomisticus\Generator\Utils\Database;
 
 class GeneratorForeignKey
 {
