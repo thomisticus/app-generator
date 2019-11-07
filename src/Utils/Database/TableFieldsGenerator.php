@@ -13,31 +13,63 @@ use Thomisticus\Generator\Utils\Database\GeneratorTable;
 
 class TableFieldsGenerator
 {
-    /** @var string */
+    /**
+     * Database table name
+     * @var string
+     */
     public $tableName;
+
+    /**
+     * Primary key name
+     * @var string|null
+     */
     public $primaryKey;
 
-    /** @var bool */
+    /**
+     * Whether the field is searchable or not
+     * @var boolean
+     */
     public $defaultSearchable;
 
-    /** @var array */
+    /**
+     * Table timestamps
+     * @var array
+     */
     public $timestamps;
 
-    /** @var AbstractSchemaManager */
+    /**
+     * @var AbstractSchemaManager
+     */
     private $schemaManager;
 
-    /** @var Column[] */
+    /**
+     * @var Column[]
+     */
     private $columns;
 
-    /** @var \Thomisticus\Generator\Utils\Database\GeneratorField[] */
+    /**
+     * Table fields
+     * @var \Thomisticus\Generator\Utils\Database\GeneratorField[]
+     */
     public $fields;
 
-    /** @var GeneratorFieldRelation[] */
+    /**
+     * Table relationships
+     * @var GeneratorFieldRelation[]
+     */
     public $relations;
 
-    /** @var array */
+    /**
+     * Fields to be ignored
+     * @var array
+     */
     public $ignoredFields;
 
+    /**
+     * TableFieldsGenerator constructor.
+     * @param string $tableName
+     * @param array $ignoredFields
+     */
     public function __construct($tableName, $ignoredFields)
     {
         $this->tableName = $tableName;
@@ -125,12 +157,9 @@ class TableFieldsGenerator
             } elseif (strtolower($field->name) == 'email') {
                 $field->htmlType = 'email';
             } elseif (in_array(strtolower($field->name), array_map('strtolower', $this->timestamps))) {
-                $field->isSearchable = false;
-                $field->isFillable = false;
-                $field->inForm = false;
-                $field->inIndex = false;
-                $field->inView = false;
+                $field->isSearchable = $field->isFillable = $field->inForm = $field->inIndex = $field->inView = false;
             }
+
             $field->isNotNull = (bool)$column->getNotNull();
             $field->description = $column->getComment(); // get comments from table
 
@@ -166,11 +195,11 @@ class TableFieldsGenerator
             return [];
         }
 
-        $createdAtName = config('app-generator.timestamps.created_at', 'created_at');
-        $updatedAtName = config('app-generator.timestamps.updated_at', 'updated_at');
-        $deletedAtName = config('app-generator.timestamps.deleted_at', 'deleted_at');
-
-        return [$createdAtName, $updatedAtName, $deletedAtName];
+        return [
+            'createdAtName' => config('app-generator.timestamps.created_at', 'created_at'),
+            'updatedAtName' => config('app-generator.timestamps.updated_at', 'updated_at'),
+            'deletedAtName' => config('app-generator.timestamps.deleted_at', 'deleted_at'),
+        ];
     }
 
     /**
@@ -188,11 +217,7 @@ class TableFieldsGenerator
         $field->parseDBType($dbType);
         $field->htmlType = 'number';
 
-        if ($column->getAutoincrement()) {
-            $field->dbInput .= ',true';
-        } else {
-            $field->dbInput .= ',false';
-        }
+        $field->dbInput .= $column->getAutoincrement() ? ',true' : ',false';
 
         if ($column->getUnsigned()) {
             $field->dbInput .= ',true';
@@ -212,10 +237,7 @@ class TableFieldsGenerator
     {
         if ($field->name == $this->primaryKey) {
             $field->isPrimary = true;
-            $field->isFillable = false;
-            $field->isSearchable = false;
-            $field->inIndex = false;
-            $field->inForm = false;
+            $field->isFillable = $field->isSearchable = $field->inIndex = $field->inForm = false;
         }
 
         return $field;
@@ -260,6 +282,7 @@ class TableFieldsGenerator
 
     /**
      * Prepares relations (GeneratorFieldRelation) array from table foreign keys.
+     * @return $this
      */
     public function prepareRelations()
     {
