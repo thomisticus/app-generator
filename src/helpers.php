@@ -8,7 +8,6 @@ if (!function_exists('generate_tab')) {
      * Generates tab with spaces.
      *
      * @param int $spaces
-     *
      * @return string
      */
     function generate_tab($spaces = 4)
@@ -23,7 +22,6 @@ if (!function_exists('generate_tabs')) {
      *
      * @param int $tabs
      * @param int $spaces
-     *
      * @return string
      */
     function generate_tabs($tabs, $spaces = 4)
@@ -52,7 +50,6 @@ if (!function_exists('generate_new_lines')) {
      *
      * @param int $count
      * @param int $nls
-     *
      * @return string
      */
     function generate_new_lines($count, $nls = 1)
@@ -67,7 +64,6 @@ if (!function_exists('generate_new_line_tab')) {
      *
      * @param int $lns
      * @param int $tabs
-     *
      * @return string
      */
     function generate_new_line_tab($lns = 1, $tabs = 1)
@@ -78,11 +74,10 @@ if (!function_exists('generate_new_line_tab')) {
 
 if (!function_exists('get_template_file_path')) {
     /**
-     * get path for template file.
+     * Get path for template file.
      *
      * @param string $templateName
      * @param string $templateType
-     *
      * @return string
      */
     function get_template_file_path($templateName, $templateType)
@@ -106,11 +101,10 @@ if (!function_exists('get_template_file_path')) {
 
 if (!function_exists('get_template')) {
     /**
-     * get template contents.
+     * Get template contents.
      *
      * @param string $templateName
      * @param string $templateType
-     *
      * @return string
      */
     function get_template($templateName, $templateType)
@@ -123,11 +117,10 @@ if (!function_exists('get_template')) {
 
 if (!function_exists('fill_template')) {
     /**
-     * fill template with variable values.
+     * Fill template with variable values.
      *
      * @param array $variables
      * @param string $template
-     *
      * @return string
      */
     function fill_template($variables, $template)
@@ -142,12 +135,11 @@ if (!function_exists('fill_template')) {
 
 if (!function_exists('fill_field_template')) {
     /**
-     * fill field template with variable values.
+     * Fill field template with variable values.
      *
      * @param array $variables
      * @param string $template
      * @param \Thomisticus\Generator\Common\GeneratorField $field
-     *
      * @return string
      */
     function fill_field_template($variables, $template, $field)
@@ -162,13 +154,12 @@ if (!function_exists('fill_field_template')) {
 
 if (!function_exists('fill_template_with_field_data')) {
     /**
-     * fill template with field data.
+     * Fill template with field data.
      *
      * @param array $variables
      * @param array $fieldVariables
      * @param string $template
      * @param \Thomisticus\Generator\Common\GeneratorField $field
-     *
      * @return string
      */
     function fill_template_with_field_data($variables, $fieldVariables, $template, $field)
@@ -181,13 +172,12 @@ if (!function_exists('fill_template_with_field_data')) {
 
 if (!function_exists('fill_template_with_field_data')) {
     /**
-     * fill template with field data.
+     * Fill template with field data.
      *
      * @param array $variables
      * @param array $fieldVariables
      * @param string $template
      * @param \Thomisticus\Generator\Common\GeneratorField $field
-     *
      * @return string
      */
     function fill_template_with_field_data($variables, $fieldVariables, $template, $field)
@@ -200,10 +190,9 @@ if (!function_exists('fill_template_with_field_data')) {
 
 if (!function_exists('model_name_from_table_name')) {
     /**
-     * generates model name from table name.
+     * Generates model name from table name.
      *
      * @param string $tableName
-     *
      * @return string
      */
     function model_name_from_table_name($tableName)

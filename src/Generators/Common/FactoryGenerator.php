@@ -106,7 +106,7 @@ class FactoryGenerator extends BaseGenerator
                     break;
                 case 'enum':
                     $fakerData = 'randomElement(' .
-                        GeneratorFieldsInputUtil::prepareValuesArrayStr($field->htmlValues) .
+                        GeneratorFieldsInputUtil::prepareValuesArrayString($field->htmlValues) .
                         ')';
                     break;
                 default:

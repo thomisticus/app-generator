@@ -7,15 +7,27 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class RepositoryTestGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Repository test file path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * Repository test file name
+     * @var string
+     */
     private $fileName;
 
+    /**
+     * RepositoryTestGenerator constructor.
+     * @param $commandData
+     */
     public function __construct($commandData)
     {
         $this->commandData = $commandData;
@@ -23,11 +35,13 @@ class RepositoryTestGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'RepositoryTest.php';
     }
 
+    /**
+     * Generates the repository test file
+     */
     public function generate()
     {
         $templateData = get_template('test.repository_test', 'app-generator');
-
-        $templateData = $this->fillTemplate($templateData);
+        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
@@ -35,13 +49,9 @@ class RepositoryTestGenerator extends BaseGenerator
         $this->commandData->commandObj->info($this->fileName);
     }
 
-    private function fillTemplate($templateData)
-    {
-        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
-
-        return $templateData;
-    }
-
+    /**
+     * Rollback file creation
+     */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {

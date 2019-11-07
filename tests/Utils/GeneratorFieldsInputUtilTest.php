@@ -103,7 +103,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['a' => 'A', 'b' => 'B'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayStr($arr);
+        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayString($arr);
         $expected = '[\'A\' => \'a\', \'B\' => \'b\']';
 
         $this->assertEquals($expected, $res);
@@ -113,7 +113,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['A', 'B', 'C'];
 
-        $res = GeneratorFieldsInputUtil::prepareValuesArrayStr($arr);
+        $res = GeneratorFieldsInputUtil::prepareValuesArrayString($arr);
         $expected = '[\'A\', \'B\', \'C\']';
 
         $this->assertEquals($expected, $res);
@@ -123,14 +123,14 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['A', 'B', 'C'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrFromLabelValueStr($arr);
+        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
         $expected = ['A' => 'A', 'B' => 'B', 'C' => 'C'];
 
         $this->assertEquals($expected, $res);
 
         $arr = ['A:aa', 'B:bb', 'C:cc'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrFromLabelValueStr($arr);
+        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
         $expected = ['A' => 'aa', 'B' => 'bb', 'C' => 'cc'];
 
         $this->assertEquals($expected, $res);
