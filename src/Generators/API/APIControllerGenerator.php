@@ -8,15 +8,26 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class APIControllerGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * File path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $fileName;
 
+    /**
+     * APIControllerGenerator constructor.
+     * @param CommandData $commandData
+     */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
@@ -24,14 +35,12 @@ class APIControllerGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'APIController.php';
     }
 
+    /**
+     * Generates the API Controller
+     */
     public function generate()
     {
-        if ($this->commandData->getOption('repositoryPattern')) {
-            $templateName = 'api_controller';
-        } else {
-            $templateName = 'model_api_controller';
-        }
-
+        $templateName = $this->commandData->getOption('repositoryPattern') ? 'api_controller' : 'model_api_controller';
         $templateData = get_template("api.controller.$templateName", 'app-generator');
 
 //        $paginate = $this->commandData->getOption('paginate');
@@ -51,6 +60,12 @@ class APIControllerGenerator extends BaseGenerator
         $this->commandData->commandObj->info($this->fileName);
     }
 
+    /**
+     * Returns the file content after adding the PHPDoc blocks
+     *
+     * @param string $templateData
+     * @return string
+     */
     private function fillDocs($templateData)
     {
         $methods = ['controller', 'index', 'store', 'show', 'update', 'destroy'];
@@ -68,6 +83,9 @@ class APIControllerGenerator extends BaseGenerator
         return $templateData;
     }
 
+    /**
+     * Rollback file creation
+     */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {

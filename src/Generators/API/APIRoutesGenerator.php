@@ -8,18 +8,33 @@ use Thomisticus\Generator\Generators\BaseGenerator;
 
 class APIRoutesGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * API routes file path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * Current content of routes/api.php file
+     * @var false|string
+     */
     private $routeContents;
 
-    /** @var string */
+    /**
+     * Routes template content
+     * @var string
+     */
     private $routesTemplate;
 
+    /**
+     * APIRoutesGenerator constructor.
+     * @param CommandData $commandData
+     */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
@@ -27,15 +42,15 @@ class APIRoutesGenerator extends BaseGenerator
 
         $this->routeContents = file_get_contents($this->path);
 
-        if (!empty($this->commandData->config->prefixes['route'])) {
-            $routesTemplate = get_template('api.routes.prefix_routes', 'app-generator');
-        } else {
-            $routesTemplate = get_template('api.routes.routes', 'app-generator');
-        }
+        $templateName = !empty($this->commandData->config->prefixes['route']) ? 'prefix_routes' : 'routes';
+        $routesTemplate = get_template('api.routes.' . $templateName, 'app-generator');
 
         $this->routesTemplate = fill_template($this->commandData->dynamicVars, $routesTemplate);
     }
 
+    /**
+     * Generates the routes in the route file
+     */
     public function generate()
     {
         $this->routeContents .= "\n\n" . $this->routesTemplate;
@@ -45,6 +60,9 @@ class APIRoutesGenerator extends BaseGenerator
         $this->commandData->commandObj->comment("\n" . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.');
     }
 
+    /**
+     * Rollback the routes in the api.php file
+     */
     public function rollback()
     {
         if (Str::contains($this->routeContents, $this->routesTemplate)) {

@@ -8,15 +8,27 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class APITestGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Api test file path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * Api test file name
+     * @var string
+     */
     private $fileName;
 
+    /**
+     * APITestGenerator constructor.
+     * @param CommandData $commandData
+     */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
@@ -24,6 +36,9 @@ class APITestGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'ApiTest.php';
     }
 
+    /**
+     * Generates the Api test file
+     */
     public function generate()
     {
         $templateData = get_template('api.test.api_test', 'app-generator');
@@ -36,6 +51,9 @@ class APITestGenerator extends BaseGenerator
         $this->commandData->commandObj->info($this->fileName);
     }
 
+    /**
+     * Rollback the test file creation
+     */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {

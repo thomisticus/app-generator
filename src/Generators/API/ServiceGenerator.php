@@ -8,15 +8,27 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class ServiceGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Service file path
+     * @var string
+     */
     private $path;
 
-    /** @var string */
+    /**
+     * Service file name
+     * @var string
+     */
     private $fileName;
 
+    /**
+     * ServiceGenerator constructor.
+     * @param CommandData $commandData
+     */
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
@@ -24,17 +36,17 @@ class ServiceGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'Service.php';
     }
 
+    /**
+     * Generates the service file
+     */
     public function generate()
     {
         $templateData = get_template('services.service', 'app-generator');
 
         $paginate = $this->commandData->getOption('paginate');
+        $renderType = $paginate ? 'paginate(' . $paginate . ')' : 'all()';
 
-        if ($paginate) {
-            $templateData = str_replace('$RENDER_TYPE$', 'paginate(' . $paginate . ')', $templateData);
-        } else {
-            $templateData = str_replace('$RENDER_TYPE$', 'all()', $templateData);
-        }
+        $templateData = str_replace('$RENDER_TYPE$', $renderType, $templateData);
 
         $relationships = [];
         foreach ($this->commandData->relations as $relation) {
@@ -59,6 +71,9 @@ class ServiceGenerator extends BaseGenerator
         $this->commandData->commandObj->info($this->fileName);
     }
 
+    /**
+     * Rollback file creation
+     */
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
