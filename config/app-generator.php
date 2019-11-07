@@ -115,7 +115,8 @@ return [
 
         'generate_seeder' => true,
 
-        'excluded_fields' => ['id'], // Array of columns that doesn't required while creating module
+        // Array of columns that doesn't required while creating module
+        'excluded_fields' => ['id', 'created_at', 'updated_at'],
     ],
 
     /*
