@@ -11,24 +11,34 @@ use Thomisticus\Generator\Utils\FileUtil;
 
 class MigrationGenerator extends BaseGenerator
 {
-    /** @var CommandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string */
+    /**
+     * Migration file path
+     * @var string
+     */
     private $path;
 
+    /**
+     * MigrationGenerator constructor.
+     * @param $commandData
+     */
     public function __construct($commandData)
     {
         $this->commandData = $commandData;
         $this->path = config('app-generator.path.migration', base_path('database/migrations/'));
     }
 
+    /**
+     * Generates the migration file
+     */
     public function generate()
     {
         $templateData = get_template('migration', 'app-generator');
-
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
-
         $templateData = str_replace('$FIELDS$', $this->generateFields(), $templateData);
 
         $tableName = $this->commandData->dynamicVars['$TABLE_NAME$'];
@@ -41,6 +51,10 @@ class MigrationGenerator extends BaseGenerator
         $this->commandData->commandObj->info($fileName);
     }
 
+    /**
+     * Generates the field lines for the migration file
+     * @return string
+     */
     private function generateFields()
     {
         $fields = [];
@@ -83,6 +97,9 @@ class MigrationGenerator extends BaseGenerator
         return implode(generate_new_line_tab(1, 3), array_merge($fields, $foreignKeys));
     }
 
+    /**
+     * Rollback migration file creation
+     */
     public function rollback()
     {
         $fileName = 'create_' . $this->commandData->config->tableName . '_table.php';
@@ -91,7 +108,6 @@ class MigrationGenerator extends BaseGenerator
         $allFiles = File::allFiles($this->path);
 
         $files = [];
-
         foreach ($allFiles as $file) {
             $files[] = $file->getFilename();
         }

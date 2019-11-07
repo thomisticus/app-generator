@@ -33,7 +33,6 @@ class MigrationGeneratorCommand extends BaseCommand
 
         if ($this->commandData->getOption('fromTable')) {
             $this->error('fromTable option is not allowed to use with migration generator');
-
             return;
         }
 

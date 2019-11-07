@@ -31,9 +31,7 @@ class APIGeneratorCommand extends BaseCommand
         parent::handle();
 
         $this->generateCommonItems();
-
         $this->generateAPIItems();
-
         $this->performPostActions(true);
     }
 

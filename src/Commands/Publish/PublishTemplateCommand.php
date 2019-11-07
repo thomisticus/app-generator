@@ -25,8 +25,6 @@ class PublishTemplateCommand extends PublishBaseCommand
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {

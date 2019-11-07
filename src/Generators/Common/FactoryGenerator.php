@@ -12,13 +12,21 @@ use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
  */
 class FactoryGenerator extends BaseGenerator
 {
-    /** @var CommandData $commandData */
+    /**
+     * @var CommandData
+     */
     private $commandData;
 
-    /** @var string $path */
+    /**
+     * Factory file path
+     * @var string
+     */
     private $path;
 
-    /** @var string $fileName */
+    /**
+     * Factory file name
+     * @var string
+     */
     private $fileName;
 
     /**
@@ -33,10 +41,12 @@ class FactoryGenerator extends BaseGenerator
         $this->fileName = $this->commandData->modelName . 'Factory.php';
     }
 
+    /**
+     * Generates the factory file
+     */
     public function generate()
     {
         $templateData = get_template('factories.model_factory', 'app-generator');
-
         $templateData = $this->fillTemplate($templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
@@ -46,6 +56,8 @@ class FactoryGenerator extends BaseGenerator
     }
 
     /**
+     * Fills the factory template
+     *
      * @param string $templateData
      *
      * @return mixed|string
@@ -54,19 +66,19 @@ class FactoryGenerator extends BaseGenerator
     {
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-        $templateData = str_replace(
+        return str_replace(
             '$FIELDS$',
-            implode(',' . generate_new_line_tab(1, 2), $this->generateFields()),
+            implode(',' . generate_new_line_tab(1, 2), $this->generateFakerFields()),
             $templateData
         );
 
-        return $templateData;
     }
 
     /**
+     * Generate faker fields
      * @return array
      */
-    private function generateFields()
+    private function generateFakerFields()
     {
         $fields = [];
 
@@ -77,7 +89,7 @@ class FactoryGenerator extends BaseGenerator
 
             $fieldData = "'" . $field->name . "' => " . '$faker->';
 
-            switch ($field->fieldType) {
+            switch (strtolower($field->fieldType)) {
                 case 'integer':
                 case 'float':
                     $fakerData = 'randomDigitNotNull';
