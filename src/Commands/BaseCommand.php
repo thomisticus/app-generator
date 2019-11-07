@@ -72,7 +72,9 @@ class BaseCommand extends Command
             (new RepositoryGenerator($this->commandData))->generate();
         }
 
-        if ($this->commandData->getOption('factory') || (!$this->isSkip('tests') && $this->commandData->getAddOn('tests'))) {
+        if ($this->commandData->getOption('factory')
+            || (!$this->isSkip('tests') && $this->commandData->getAddOn('tests'))
+        ) {
             (new FactoryGenerator($this->commandData))->generate();
         }
 
@@ -253,6 +255,10 @@ class BaseCommand extends Command
      */
     public function getOptions()
     {
+        $skipText = 'Skip Specific Items to Generate (migration, model, controller, api_controller, 
+        scaffold_controller, repository, requests, api_requests, scaffold_requests, routes, api_routes,
+         scaffold_routes, tests, dump-autoload)';
+
         return [
             ['fieldsFile', null, InputOption::VALUE_REQUIRED, 'Fields input as json file'],
             ['jsonFromGUI', null, InputOption::VALUE_REQUIRED, 'Direct Json string while using GUI interface'],
@@ -264,12 +270,7 @@ class BaseCommand extends Command
             ['primary', null, InputOption::VALUE_REQUIRED, 'Custom primary key'],
             ['prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for all files'],
             ['paginate', null, InputOption::VALUE_REQUIRED, 'Pagination for index.blade.php'],
-            [
-                'skip',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Skip Specific Items to Generate (migration,model,controller,api_controller,scaffold_controller,repository,requests,api_requests,scaffold_requests,routes,api_routes,scaffold_routes,tests,dump-autoload)'
-            ],
+            ['skip', null, InputOption::VALUE_REQUIRED, $skipText],
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
             ['softDelete', null, InputOption::VALUE_NONE, 'Soft Delete Option'],
             ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],

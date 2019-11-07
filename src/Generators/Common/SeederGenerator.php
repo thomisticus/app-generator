@@ -64,11 +64,14 @@ class SeederGenerator extends BaseGenerator
     public function updateMainSeeder()
     {
         $mainSeederContent = file_get_contents($this->commandData->config->paths['database_seeder']);
-
-        $newSeederStatement = '$this->call(' . $this->commandData->config->modelNames['plural'] . 'TableSeeder::class);';
+        $pluralModelName = $this->commandData->config->modelNames['plural'];
+        $newSeederStatement = '$this->call(' . $pluralModelName . 'TableSeeder::class);';
 
         if (strpos($mainSeederContent, $newSeederStatement)) {
-            $this->commandData->commandObj->info($this->commandData->config->modelNames['plural'] . 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.');
+            $infoText = $this->commandData->config->modelNames['plural'];
+            $infoText .= 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.';
+
+            $this->commandData->commandObj->info($infoText);
             return;
         }
 

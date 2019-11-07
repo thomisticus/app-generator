@@ -145,7 +145,8 @@ class GeneratorField
     }
 
     /**
-     * Parse options when generating from console. Since majority of properties are "true" by default, all the properties
+     * Parse options when generating from console.
+     * Since majority of properties are "true" by default, all the properties
      * passed here will be considered as false (primary is an exception).
      *
      * @param string $options Options string. Eg: searchable,fillable,inForm
@@ -205,7 +206,8 @@ class GeneratorField
             if ($functionName == 'foreign') {
                 $foreignTable = array_shift($inputParams);
                 $foreignField = array_shift($inputParams);
-                $this->foreignKeyText .= "\$table->foreign('" . $this->name . "')->references('" . $foreignField . "')->on('" . $foreignTable . "');";
+                $this->foreignKeyText .= "\$table->foreign('" . $this->name . "')";
+                $this->foreignKeyText .= "->references('" . $foreignField . "')->on('" . $foreignTable . "');";
             } else {
                 $this->migrationText .= '->' . $functionName . '(' . implode(', ', $inputParams) . ')';
             }

@@ -34,7 +34,8 @@ class GeneratorFieldRelation
      *                              One to Many (Eg: 1tm,Comment,post_id,id)
      *                              Many to One (Eg: mt1,Post,post_id)
      *                              Many to Many (Eg: mtm,Role,user_roles,user_id,role_id)
-     * @param array $additionalParams Array with params like 'foreignKey', 'ownerKey','localKey','foreignPivotKey','relatedPivotKey'
+     * @param array $additionalParams Array with params like 'foreignKey', 'ownerKey','localKey',
+     *                                'foreignPivotKey','relatedPivotKey'
      * @return GeneratorFieldRelation
      */
     public static function parseRelation($relationInput, $additionalParams = [])
@@ -76,7 +77,8 @@ class GeneratorFieldRelation
     }
 
     /**
-     * Retrieves the relations attributes to fill the relationship method text (function, functionName and relationClass)
+     * Retrieves the relations attributes to fill the relationship method text
+     * (function, functionName and relationClass)
      *
      * @param string|null $relationText
      * @return array

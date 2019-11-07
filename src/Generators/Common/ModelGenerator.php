@@ -79,7 +79,8 @@ class ModelGenerator extends BaseGenerator
 
         if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
             $primaryDocs = get_template('docs.model_primary', 'app-generator');
-            $primary = $primaryDocs . generate_new_line_tab() . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+            $primary = $primaryDocs . generate_new_line_tab();
+            $primary .= "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
             $primary = '';
         }
@@ -153,7 +154,8 @@ class ModelGenerator extends BaseGenerator
 
         foreach ($this->commandData->fields as $field) {
             if ($field->isFillable) {
-                $fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . strtolower($field->name) . PHP_EOL;
+                $fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType);
+                $fillables .= ' ' . strtolower($field->name) . PHP_EOL;
             }
         }
 

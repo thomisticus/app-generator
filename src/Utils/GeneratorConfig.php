@@ -133,7 +133,9 @@ class GeneratorConfig
             $optionsToSet[$optionName] = $commandData->commandObj->option($optionName);
         }
 
-        if (isset(self::$availableOptions['fromTable']) && $this->getOption('fromTable') && !$this->getOption('tableName')) {
+        if (isset(self::$availableOptions['fromTable'])
+            && $this->getOption('fromTable') && !$this->getOption('tableName')
+        ) {
             $commandData->commandObj->error('tableName required with fromTable option.');
             exit;
         }
@@ -250,11 +252,10 @@ class GeneratorConfig
             'service' => app_path('Services/'),
         ];
 
+        $arr = ['api_routes', 'api_test', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'];
         foreach ($defaultPaths as $key => $defaultPath) {
             $this->paths[$key] = $defaultPath;
-
-            if (!in_array($key,
-                ['api_routes', 'api_test', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'])) {
+            if (!in_array($key, $arr)) {
                 $this->paths[$key] .= $prefix;
             }
         }
@@ -329,7 +330,6 @@ class GeneratorConfig
         if (config('app-generator.ignore_model_prefix', false)) {
             $this->namespaces['model'] = config('app-generator.namespace.model', 'App\Models');
         }
-
     }
 
     /**

@@ -71,7 +71,6 @@ class FactoryGenerator extends BaseGenerator
             implode(',' . generate_new_line_tab(1, 2), $this->generateFakerFields()),
             $templateData
         );
-
     }
 
     /**

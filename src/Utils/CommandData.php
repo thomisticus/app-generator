@@ -122,7 +122,6 @@ class CommandData
             $jsonData = json_decode(file_get_contents($filePath), true);
 
             $this->treatInputFields($jsonData);
-
         } catch (Exception $e) {
             $this->commandObj->error($e->getMessage());
             exit;
@@ -190,7 +189,8 @@ class CommandData
      */
     private function getInputFromConsole()
     {
-        $this->commandObj->info('Specify fields for the model (skip id & timestamp fields, we will add it automatically)');
+        $this->commandObj
+            ->info('Specify fields for the model (skip id & timestamp fields, we will add it automatically)');
         $this->commandObj->info('Read docs carefully to specify field inputs)');
         $this->commandObj->info('Enter "exit" to finish');
 
@@ -282,7 +282,8 @@ class CommandData
     }
 
     /**
-     * Retrieves an option value from GeneratorConfig (that basically fills its options with the the app-generator config file)
+     * Retrieves an option value from GeneratorConfig
+     * (that basically fills its options with the the app-generator config file)
      *
      * @param string $option
      * @return bool|mixed
@@ -319,5 +320,4 @@ class CommandData
             $this->dynamicVars[$nameOrArray] = $val;
         }
     }
-
 }

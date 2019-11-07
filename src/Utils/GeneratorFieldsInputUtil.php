@@ -34,7 +34,8 @@ class GeneratorFieldsInputUtil
      * name string,20 text
      * post_id integer:unsigned:nullable
      * post_id integer:unsigned:nullable:foreign,posts,id
-     * password string text inForm,inIndex,searchable - options will skip field from being added in form, in index and searchable
+     * password string text inForm,inIndex,searchable - options will skip field from being added in form,
+     * in index and searchable
      *
      * @param string $fieldInput
      * @param string $validations
