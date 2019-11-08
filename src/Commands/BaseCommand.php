@@ -72,7 +72,8 @@ class BaseCommand extends Command
             (new RepositoryGenerator($this->commandData))->generate();
         }
 
-        if ($this->commandData->getOption('factory')
+        if (
+            $this->commandData->getOption('factory')
             || (!$this->isSkip('tests') && $this->commandData->getAddOn('tests'))
         ) {
             (new FactoryGenerator($this->commandData))->generate();
@@ -164,7 +165,8 @@ class BaseCommand extends Command
         if (!$this->commandData->getOption('fromTable') && !$this->isSkip('migration')) {
             $requestFromConsole = (php_sapi_name() == 'cli');
 
-            if ($requestFromConsole &&
+            if (
+                $requestFromConsole &&
                 ($this->commandData->getOption('jsonFromGUI') ||
                     $this->confirm("\nDo you want to migrate database? [y|N]", false))
             ) {

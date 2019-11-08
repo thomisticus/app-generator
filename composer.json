@@ -57,11 +57,9 @@
   "prefer-stable": true,
   "scripts": {
     "complete-cs-check": [
-      "@check-cs-psr2",
       "@check-cs-psr12"
     ],
     "complete-cs-fix": [
-      "@fix-cs-psr2",
       "@fix-cs-psr12"
     ],
     "complete-test": [

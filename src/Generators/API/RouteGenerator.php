@@ -57,7 +57,8 @@ class RouteGenerator extends BaseGenerator
 
         file_put_contents($this->path, $this->routeContents);
 
-        $this->commandData->commandObj->comment("\n" . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.');
+        $commentText = "\n" . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.';
+        $this->commandData->commandObj->comment($commentText);
     }
 
     /**

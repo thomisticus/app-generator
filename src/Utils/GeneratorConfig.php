@@ -133,7 +133,8 @@ class GeneratorConfig
             $optionsToSet[$optionName] = $commandData->commandObj->option($optionName);
         }
 
-        if (isset(self::$availableOptions['fromTable'])
+        if (
+            isset(self::$availableOptions['fromTable'])
             && $this->getOption('fromTable') && !$this->getOption('tableName')
         ) {
             $commandData->commandObj->error('tableName required with fromTable option.');
