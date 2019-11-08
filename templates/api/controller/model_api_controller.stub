@@ -1,9 +1,9 @@
 <?php
 
-namespace $NAMESPACE_API_CONTROLLER$;
+namespace $NAMESPACE_CONTROLLER$;
 
-use $NAMESPACE_API_REQUEST$\Create$MODEL_NAME$APIRequest;
-use $NAMESPACE_API_REQUEST$\Update$MODEL_NAME$APIRequest;
+use $NAMESPACE_REQUEST$\Create$MODEL_NAME$APIRequest;
+use $NAMESPACE_REQUEST$\Update$MODEL_NAME$APIRequest;
 use $NAMESPACE_MODEL$\$MODEL_NAME$;
 use Illuminate\Http\Request;
 use $NAMESPACE_APP$\Http\Controllers\AppBaseController;

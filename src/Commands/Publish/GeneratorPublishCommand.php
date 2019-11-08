@@ -99,7 +99,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
      */
     private function publishBaseController()
     {
-        $controllerPath = config('app-generator.path.api_controller', app_path('Http/Controllers/'));
+        $controllerPath = config('app-generator.path.controller', app_path('Http/Controllers/'));
         $this->fillAndCreateFile('app_base_controller', $controllerPath, 'AppBaseController.php');
     }
 

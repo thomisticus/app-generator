@@ -237,8 +237,8 @@ class GeneratorConfig
         }
 
         $defaultPaths = [
-            'api_controller' => app_path('Http/Controllers/API/'),
-            'api_request' => app_path('Http/Requests/API/'),
+            'controller' => app_path('Http/Controllers/'),
+            'request' => app_path('Http/Requests/'),
             'api_routes' => base_path('routes/api.php'),
             'api_tests' => base_path('tests/'),
             'test_trait' => base_path('tests/traits/'),
@@ -307,8 +307,8 @@ class GeneratorConfig
         $this->namespaces['app'] = rtrim($commandData->commandObj->getLaravel()->getNamespace(), '\\');
 
         $defaultNamespaces = [
-            'api_controller' => 'App\Http\Controllers\API',
-            'api_request' => 'App\Http\Requests\API',
+            'controller' => 'App\Http\Controllers',
+            'request' => 'App\Http\Requests',
             'api_tests' => 'Tests\APIs',
             'model' => 'App\Models',
             'model_extend_class' => 'Illuminate\Database\Eloquent\Model',
@@ -348,8 +348,8 @@ class GeneratorConfig
             '$NAMESPACE_TRAIT$' => $this->namespaces['trait'],
             '$NAMESPACE_MODEL$' => $this->namespaces['model'],
             '$NAMESPACE_MODEL_EXTEND$' => $this->namespaces['model_extend_class'],
-            '$NAMESPACE_API_CONTROLLER$' => $this->namespaces['api_controller'],
-            '$NAMESPACE_API_REQUEST$' => $this->namespaces['api_request'],
+            '$NAMESPACE_CONTROLLER$' => $this->namespaces['controller'],
+            '$NAMESPACE_REQUEST$' => $this->namespaces['request'],
             '$NAMESPACE_REQUEST$' => $this->namespaces['request'],
             '$NAMESPACE_API_TESTS$' => $this->namespaces['api_tests'],
             '$NAMESPACE_REPOSITORIES_TESTS$' => $this->namespaces['repository_tests'],

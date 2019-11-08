@@ -92,11 +92,11 @@ class BaseCommand extends Command
      */
     public function generateAPIItems()
     {
-        if (!$this->isSkip('requests') && !$this->isSkip('api_requests')) {
+        if (!$this->isSkip('requests') && !$this->isSkip('request')) {
             (new RequestGenerator($this->commandData))->generate();
         }
 
-        if (!$this->isSkip('controller') && !$this->isSkip('api_controller')) {
+        if (!$this->isSkip('controller') && !$this->isSkip('controller')) {
             (new ControllerGenerator($this->commandData))->generate();
         }
 
@@ -259,8 +259,8 @@ class BaseCommand extends Command
      */
     public function getOptions()
     {
-        $skipText = 'Skip Specific Items to Generate (migration, model, controller, api_controller, 
-        scaffold_controller, repository, requests, api_requests, scaffold_requests, routes, api_routes,
+        $skipText = 'Skip Specific Items to Generate (migration, model, controller, controller, 
+        scaffold_controller, repository, requests, request, scaffold_requests, routes, api_routes,
          scaffold_routes, tests, dump-autoload)';
 
         return [

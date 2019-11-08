@@ -11,9 +11,9 @@ return [
 
     'path' => [
 
-        'api_controller' => app_path('Http/Controllers/API/'),
+        'controller' => app_path('Http/Controllers/'),
 
-        'api_request' => app_path('Http/Requests/API/'),
+        'request' => app_path('Http/Requests/'),
 
         'api_routes' => base_path('routes/api.php'),
 
@@ -61,9 +61,9 @@ return [
 
     'namespace' => [
 
-        'api_controller' => 'App\Http\Controllers\API',
+        'controller' => 'App\Http\Controllers',
 
-        'api_request' => 'App\Http\Requests\API',
+        'request' => 'App\Http\Requests',
 
         'api_test' => 'Tests\APIs',
 

@@ -34,7 +34,7 @@ class RequestGenerator extends BaseGenerator
     public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
-        $this->path = $commandData->config->paths['api_request'];
+        $this->path = $commandData->config->paths['request'];
         $this->fileName = $this->commandData->modelName . 'APIRequest.php';
     }
 
