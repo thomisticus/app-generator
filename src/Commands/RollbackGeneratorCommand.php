@@ -3,6 +3,7 @@
 namespace Thomisticus\Generator\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Composer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Thomisticus\Generator\Utils\CommandData;

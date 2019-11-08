@@ -312,6 +312,7 @@ class ModelGenerator extends BaseGenerator
         $dontRequireFields = config('app-generator.options.hidden_fields', [])
             + config('app-generator.options.excluded_fields', []);
 
+        $rules = [];
         foreach ($this->commandData->fields as $field) {
             if (
                 !$field->isPrimary && $field->isNotNull && empty($field->validations)

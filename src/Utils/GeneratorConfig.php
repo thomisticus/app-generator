@@ -43,12 +43,12 @@ class GeneratorConfig
     public $paths;
 
     /**
-     * @var string
+     * @var string|boolean
      */
     public $tableName;
 
     /**
-     * @var string
+     * @var string|boolean
      */
     protected $primaryKeyName;
 
@@ -90,7 +90,7 @@ class GeneratorConfig
      * Initialize GeneratorConfig, loading all config properties
      *
      * @param CommandData $commandData
-     * @param null $options
+     * @param array|null $options
      */
     public function init(CommandData &$commandData, $options = null)
     {

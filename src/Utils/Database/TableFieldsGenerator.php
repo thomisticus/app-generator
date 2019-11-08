@@ -122,7 +122,6 @@ class TableFieldsGenerator
                     $field = $this->generateIntFieldInput($column, 'bigInteger');
                     break;
                 case 'boolean':
-                    $name = Str::title(str_replace('_', ' ', $column->getName()));
                     $field = $this->generateField($column, 'boolean', 'checkbox,1');
                     break;
                 case 'datetime':
@@ -464,7 +463,6 @@ class TableFieldsGenerator
                 // then it can not be many to many
                 if ($foreignField != $foreignTable->primaryKey) {
                     return false;
-                    break;
                 }
 
                 // if foreign field is primary key of this table

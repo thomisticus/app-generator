@@ -9,7 +9,7 @@ class GeneratorFieldsInputUtil
     /**
      * Validates the inputs added in the console command
      *
-     * @param array $fieldInputStr
+     * @param string $fieldInputStr
      * @return bool
      */
     public static function validateFieldInput($fieldInputStr)

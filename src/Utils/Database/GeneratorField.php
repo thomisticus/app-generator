@@ -103,6 +103,12 @@ class GeneratorField
     public $isNotNull = false;
 
     /**
+     * Field description (comments from table)
+     * @var string
+     */
+    public $description;
+
+    /**
      * Set $dbInput parsing the DB type from database columns
      *
      * @param string $dbInput
@@ -242,8 +248,8 @@ class GeneratorField
     /**
      * Magic method to access GeneratorField properties
      *
-     * @param $string $key   Property name
-     * @return mixed
+     * @param string $key Property name
+     * @return mixed|string
      */
     public function __get($key)
     {

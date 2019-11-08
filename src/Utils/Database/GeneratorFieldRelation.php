@@ -26,6 +26,11 @@ class GeneratorFieldRelation
     public $relationName;
 
     /**
+     * @var array
+     */
+    public $additionalParams;
+
+    /**
      * Parse and returns the database relationships of a field
      *
      *

@@ -31,6 +31,12 @@ class CommandData
     public $config;
 
     /**
+     * Primary key name added on command
+     * @var string|
+     */
+    public $primaryKey;
+
+    /**
      * @var \Thomisticus\Generator\Utils\Database\GeneratorField[]
      */
     public $fields = [];
