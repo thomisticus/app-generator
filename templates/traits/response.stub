@@ -2,42 +2,42 @@
 
 namespace $NAMESPACE_TRAIT$;
 
-use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 trait ResponseTrait
 {
     /**
-     * Return a new JSON response from the application.
+     * Return a new success JSON response from the application.
      *
-     * @param mixed $result
-     * @param string $successMessage
-     * @param int $status Status code
+     * @param mixed $data
+     * @param string $message
+     * @param int $code Status code
      * @param bool $sendWithArrayStructure true to makeResponseArray
-     * @param string $resultCallableMethod method name to $result execute
-     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendResponse(
-        $result,
-        $successMessage = '',
-        $status = Response::HTTP_OK,
-        $sendWithArrayStructure = true,
-        $resultCallableMethod = ''
-    ) {
-        if ($result instanceof Exception) {
-            $body = $this->makeResponseArray(false, '', $result->getMessage(), $result->getCode());
-
-            return response()->json($body, Response::HTTP_BAD_REQUEST);
+    public function sendResponse($data, $message = '', $code = Response::HTTP_OK, $sendWithArrayStructure = true)
+    {
+        $body = $data;
+        if ($sendWithArrayStructure && !($data instanceof LengthAwarePaginator)) {
+            $body = $this->makeResponseArray(true, $message, $code, $data);
         }
 
-        $body = !empty($resultCallableMethod) ? $result->{$resultCallableMethod}() : $result;
-        if ($sendWithArrayStructure && !($body instanceof LengthAwarePaginator)) {
-            $body = $this->makeResponseArray(true, $body, $successMessage);
-        }
+        return response()->json($body, $code);
+    }
 
-        return response()->json($body, $status);
+    /**
+     * Return a new error JSON response from the application.
+     *
+     * @param string $message
+     * @param int $code Error status code
+     * @param bool $sendWithArrayStructure true to makeResponseArray
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendError($message = '', $code = Response::HTTP_BAD_REQUEST, $sendWithArrayStructure = true)
+    {
+        $body = $sendWithArrayStructure ? $this->makeResponseArray(false, $message, $code) : $message;
+        return response()->json($body, $code);
     }
 
     /**
@@ -50,7 +50,7 @@ trait ResponseTrait
      *
      * @return array
      */
-    public function makeResponseArray($success = true, $data = [], $message = '', $code = '')
+    private function makeResponseArray($success = true, $message = '', $code = '', $data = [])
     {
         $response = [
             'success' => $success,
@@ -58,8 +58,7 @@ trait ResponseTrait
         ];
 
         if (!empty($code)) {
-            $codeKey = $success ? 'code' : 'error_code';
-            $response[$codeKey] = $code;
+            $response['code'] = $code;
         }
 
         if (!empty($data)) {
