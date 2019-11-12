@@ -12,7 +12,7 @@ use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
 class ModelGenerator extends BaseGenerator
 {
     /**
-     * @var \Thomisticus\Generator\Utils\CommandData
+     * @var CommandData
      */
     private $commandData;
 
@@ -31,9 +31,9 @@ class ModelGenerator extends BaseGenerator
     /**
      * ModelGenerator constructor.
      *
-     * @param \Thomisticus\Generator\Utils\CommandData $commandData
+     * @param CommandData $commandData
      */
-    public function __construct(\Thomisticus\Generator\Utils\CommandData $commandData)
+    public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['model'];
@@ -79,8 +79,8 @@ class ModelGenerator extends BaseGenerator
 
         if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
             $primaryDocs = get_template('docs.model_primary', 'app-generator');
-            $primary = $primaryDocs . generate_new_line_tab();
-            $primary .= "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+            $primaryDocs = $primaryDocs . generate_new_line_tab();
+            $primary = $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
             $primary = '';
         }
