@@ -18,12 +18,11 @@ trait ResponseTrait
      */
     public function sendResponse($data, $message = '', $code = Response::HTTP_OK, $sendWithArrayStructure = true)
     {
-        $body = $data;
         if ($sendWithArrayStructure && !($data instanceof LengthAwarePaginator)) {
-            $body = $this->makeResponseArray(true, $message, $code, $data);
+            $data = $this->makeResponseArray(true, $message, $code, $data);
         }
 
-        return response()->json($body, $code);
+        return response()->json($data, $code);
     }
 
     /**
@@ -36,8 +35,8 @@ trait ResponseTrait
      */
     public function sendError($message = '', $code = Response::HTTP_BAD_REQUEST, $sendWithArrayStructure = true)
     {
-        $body = $sendWithArrayStructure ? $this->makeResponseArray(false, $message, $code) : $message;
-        return response()->json($body, $code);
+        $data = $sendWithArrayStructure ? $this->makeResponseArray(false, $message, $code) : $message;
+        return response()->json($data, $code);
     }
 
     /**
@@ -62,7 +61,8 @@ trait ResponseTrait
         }
 
         if (!empty($data)) {
-            $response['data'] = $data;
+            $dataKey = $success ? 'data' : 'errors';
+            $response[$dataKey] = $data;
         }
 
         return $response;
