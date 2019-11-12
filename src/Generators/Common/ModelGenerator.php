@@ -81,8 +81,7 @@ class ModelGenerator extends BaseGenerator
         if (!empty($primary) && $primary !== 'id') {
             $primaryDocs = get_template('docs.model_primary', 'app-generator');
             $primaryDocs = $primaryDocs . generate_new_line_tab();
-            $primary = generate_new_line_tab(1,
-                    1) . $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+            $primary = $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
             $primary = '';
         }
@@ -98,7 +97,9 @@ class ModelGenerator extends BaseGenerator
             '$GENERATE_DATE$' => date('F j, Y, g:i a T')
         ];
 
-        return str_replace(array_keys($replacers), $replacers, $templateData);
+        $templateData = str_replace(array_keys($replacers), $replacers, $templateData);
+
+        return remove_duplicated_empty_lines($templateData);
     }
 
     /**
@@ -121,8 +122,8 @@ class ModelGenerator extends BaseGenerator
             $softDeleteVariables,
             [
                 "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
-                "use SoftDeletes;\n",
-                generate_new_line_tab() . "protected \$dates = ['" . $deletedAtTimestamp . "'];\n"
+                generate_tab() . "use SoftDeletes;",
+                generate_new_line_tab() . "protected \$dates = ['" . $deletedAtTimestamp . "'];"
             ],
             $templateData
         );
@@ -302,6 +303,10 @@ class ModelGenerator extends BaseGenerator
             if ($deletedAt !== "'deleted_at'") {
                 $replace .= get_template('docs.model_deleted_at', 'app-generator');
                 $replace .= generate_new_line_tab() . "const DELETED_AT = $deletedAt;";
+            }
+
+            if (!empty($replace)) {
+                $replace = generate_tab() . $replace;
             }
         }
 

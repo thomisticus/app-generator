@@ -7,15 +7,18 @@ $SOFT_DELETE_IMPORT$
 $DOCS$
 class $MODEL_NAME$ extends Model
 {
-    $SOFT_DELETE$
+$SOFT_DELETE$
+
     /**
      * The table associated with the model.
      *
      * @var string
      */
     public $table = '$TABLE_NAME$';
-    $TIMESTAMPS$
-    $PRIMARY$
+
+$TIMESTAMPS$
+$PRIMARY$
+
     /**
      * The attributes that should be casted to native types.
      *

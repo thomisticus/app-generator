@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Str;
-use ICanBoogie\Inflector;
 
 if (!function_exists('generate_tab')) {
     /**
@@ -209,6 +208,19 @@ if (!function_exists('model_name_from_table_name')) {
 //
 //      return ucfirst(camel_case($tableName));
         return Str::ucfirst(Str::camel(Str::singular($tableName)));
+    }
+
+}
+
+if (!function_exists('remove_duplicated_empty_lines')) {
+    /**
+     * Removes duplicated empty lines by a single empty line
+     * @param string $templateDate
+     * @return string|string[]|null
+     */
+    function remove_duplicated_empty_lines($templateDate)
+    {
+        return preg_replace("/\n\n+/s", "\n\n", $templateDate);
     }
 
 }
