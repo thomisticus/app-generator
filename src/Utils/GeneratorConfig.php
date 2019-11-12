@@ -350,7 +350,6 @@ class GeneratorConfig
             '$NAMESPACE_MODEL_EXTEND$' => $this->namespaces['model_extend_class'],
             '$NAMESPACE_CONTROLLER$' => $this->namespaces['controller'],
             '$NAMESPACE_REQUEST$' => $this->namespaces['request'],
-            '$NAMESPACE_REQUEST$' => $this->namespaces['request'],
             '$NAMESPACE_API_TESTS$' => $this->namespaces['api_tests'],
             '$NAMESPACE_REPOSITORIES_TESTS$' => $this->namespaces['repository_tests'],
             '$NAMESPACE_TESTS$' => $this->namespaces['tests'],

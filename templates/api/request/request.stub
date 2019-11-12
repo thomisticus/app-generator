@@ -3,9 +3,9 @@
 namespace $NAMESPACE_REQUEST$;
 
 use $NAMESPACE_MODEL$\$MODEL_NAME$;
-use Illuminate\Foundation\Http\FormRequest;
+use $NAMESPACE_REQUEST$\BaseRequest;
 
-class $MODEL_NAME$Request extends FormRequest
+class $MODEL_NAME$Request extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.

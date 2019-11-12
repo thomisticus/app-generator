@@ -29,6 +29,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         $this->publishTestCases();
         $this->publishBaseController();
+        $this->publishBaseRequest();
         $this->publishBaseService();
         $this->publishResponseTrait();
 
@@ -51,6 +52,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
             '$NAMESPACE_APP$' => rtrim($this->getLaravel()->getNamespace(), '\\'),
             '$NAMESPACE_REPOSITORY$' => config('app-generator.namespace.repository', 'App\Repositories'),
             '$NAMESPACE_SERVICE$' => config('app-generator.namespace.service', 'App\Services'),
+            '$NAMESPACE_REQUEST$' => config('app-generator.namespace.request', 'App\Http\Requests'),
             '$NAMESPACE_TRAIT$' => config('app-generator.namespace.trait', 'App\Traits'),
             '$NAMESPACE_TESTS$' => config('app-generator.namespace.tests', 'Tests'),
             '$TEST_TIMESTAMPS$' => "['" . config('app-generator.timestamps.created_at', 'created_at') . "', '" .
@@ -103,6 +105,15 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         $controllerPath = config('app-generator.path.controller', app_path('Http/Controllers/'));
         $this->fillAndCreateFile('api_base_controller', $controllerPath, 'ApiBaseController.php');
+    }
+
+    /**
+     *  BaseRequest file publisher
+     */
+    private function publishBaseRequest()
+    {
+        $requestPath = config('app-generator.path.request', app_path('Http/Requests/'));
+        $this->fillAndCreateFile('base_request', $requestPath, 'BaseRequest.php');
     }
 
     /**
