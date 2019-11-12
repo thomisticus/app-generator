@@ -30,6 +30,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $this->publishTestCases();
         $this->publishBaseController();
         $this->publishBaseRequest();
+        $this->publishBaseModel();
         $this->publishBaseService();
         $this->publishResponseTrait();
 
@@ -53,6 +54,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
             '$NAMESPACE_REPOSITORY$' => config('app-generator.namespace.repository', 'App\Repositories'),
             '$NAMESPACE_SERVICE$' => config('app-generator.namespace.service', 'App\Services'),
             '$NAMESPACE_REQUEST$' => config('app-generator.namespace.request', 'App\Http\Requests'),
+            '$NAMESPACE_MODEL$' => config('app-generator.namespace.model', 'App\Models'),
             '$NAMESPACE_TRAIT$' => config('app-generator.namespace.trait', 'App\Traits'),
             '$NAMESPACE_TESTS$' => config('app-generator.namespace.tests', 'Tests'),
             '$TEST_TIMESTAMPS$' => "['" . config('app-generator.timestamps.created_at', 'created_at') . "', '" .
@@ -114,6 +116,15 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         $requestPath = config('app-generator.path.request', app_path('Http/Requests/'));
         $this->fillAndCreateFile('base_request', $requestPath, 'BaseRequest.php');
+    }
+
+    /**
+     *  BaseRequest file publisher
+     */
+    private function publishBaseModel()
+    {
+        $modelPath = config('app-generator.path.model', app_path('Http/Models/'));
+        $this->fillAndCreateFile('base_model', $modelPath, 'BaseModel.php');
     }
 
     /**

@@ -1,0 +1,30 @@
+<?php
+
+namespace $NAMESPACE_MODEL$;
+
+use Thomisticus\MappableModels\MappableModel;
+
+class BaseModel extends MappableModel
+{
+    use HasNestedAttributes;
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'pivot'
+    ];
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [
+        self::CREATED_AT,
+        self::UPDATED_AT,
+        self::DELETED_AT
+    ];
+}

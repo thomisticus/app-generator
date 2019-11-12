@@ -67,8 +67,8 @@ return [
 
         'model' => 'App\Models',
 
-        // Model extend class
-        'model_extend_class' => 'Illuminate\Database\Eloquent\Model',
+        // Model extend class. E.g.: Illuminate\Database\Eloquent\Model
+        'model_extend_class' => 'App\Models\BaseModel',
 
         'repository' => 'App\Repositories',
 
