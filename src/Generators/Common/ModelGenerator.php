@@ -3,11 +3,10 @@
 namespace Thomisticus\Generator\Generators\Common;
 
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
 use Thomisticus\Generator\Generators\BaseGenerator;
-use Thomisticus\Generator\Utils\FileUtil;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\FileUtil;
 
 class ModelGenerator extends BaseGenerator
 {
@@ -77,10 +76,13 @@ class ModelGenerator extends BaseGenerator
         $templateData = $this->fillDocs($templateData);
         $templateData = $this->fillTimestamps($templateData);
 
-        if ($primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey) {
+        $primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey;
+
+        if (!empty($primary) && $primary !== 'id') {
             $primaryDocs = get_template('docs.model_primary', 'app-generator');
             $primaryDocs = $primaryDocs . generate_new_line_tab();
-            $primary = $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
+            $primary = generate_new_line_tab(1,
+                    1) . $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
             $primary = '';
         }
@@ -88,7 +90,6 @@ class ModelGenerator extends BaseGenerator
         $replacers = [
             '$PRIMARY$' => $primary,
             '$FIELDS$' => implode(',' . generate_new_line_tab(1, 2), $fillables),
-            '$RULES$' => implode(',' . generate_new_line_tab(1, 2), $this->generateRules()),
             '$CAST$' => implode(',' . generate_new_line_tab(1, 2), $this->generateCasts()),
             '$RELATIONS$' => fill_template(
                 $this->commandData->dynamicVars,
@@ -284,114 +285,27 @@ class ModelGenerator extends BaseGenerator
         }
 
         if ($this->commandData->getOption('fromTable') && !empty($timestamps)) {
-            list($created_at, $updated_at, $deleted_at) = collect($timestamps)->map(function ($field) {
+            list($createdAt, $updatedAt, $deletedAt) = collect($timestamps)->map(function ($field) {
                 return !empty($field) ? "'$field'" : 'null';
             });
 
-            $replace .= get_template('docs.model_created_at', 'app-generator');
-            $replace .= generate_new_line_tab() . "const CREATED_AT = $created_at;\n\n";
-            $replace .= get_template('docs.model_updated_at', 'app-generator');
-            $replace .= generate_new_line_tab() . "const UPDATED_AT = $updated_at;\n\n";
-            $replace .= get_template('docs.model_deleted_at', 'app-generator');
-            $replace .= generate_new_line_tab() . "const DELETED_AT = $deleted_at;";
+            if ($createdAt !== "'created_at'") {
+                $replace .= get_template('docs.model_created_at', 'app-generator');
+                $replace .= generate_new_line_tab() . "const CREATED_AT = $createdAt;\n\n";
+            }
+
+            if ($updatedAt !== "'updated_at'") {
+                $replace .= get_template('docs.model_updated_at', 'app-generator');
+                $replace .= generate_new_line_tab() . "const UPDATED_AT = $updatedAt;\n\n";
+            }
+
+            if ($deletedAt !== "'deleted_at'") {
+                $replace .= get_template('docs.model_deleted_at', 'app-generator');
+                $replace .= generate_new_line_tab() . "const DELETED_AT = $deletedAt;";
+            }
         }
 
         return str_replace('$TIMESTAMPS$', $replace, $templateData);
-    }
-
-    /**
-     * Generates the validation rules
-     * @return array
-     */
-    private function generateRules()
-    {
-        if ($this->commandData->getOption('fromTable')) {
-            return $this->generateRulesFromTable();
-        }
-
-        $dontRequireFields = config('app-generator.options.hidden_fields', [])
-            + config('app-generator.options.excluded_fields', []);
-
-        $rules = [];
-        foreach ($this->commandData->fields as $field) {
-            if (
-                !$field->isPrimary && $field->isNotNull && empty($field->validations)
-                && !in_array($field->name, $dontRequireFields)
-            ) {
-                $field->validations = 'required';
-            }
-
-            if (!empty($field->validations)) {
-                if (Str::contains($field->validations, 'unique:')) {
-                    $rule = explode('|', $field->validations);
-
-                    // move unique rule to last
-                    usort($rule, function ($record) {
-                        return (Str::contains($record, 'unique:')) ? 1 : 0;
-                    });
-
-                    $field->validations = implode('|', $rule);
-                }
-
-                $rule = "'" . $field->name . "' => '" . $field->validations . "'";
-                $rules[] = $rule;
-            }
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Generate validation rules when the command '--fromTable' is present
-     * @return array
-     */
-    private function generateRulesFromTable()
-    {
-        $rules = [];
-        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
-
-        foreach ($this->commandData->fields as $field) {
-            if (in_array($field->name, $timestamps) || !$field->isFillable) {
-                continue;
-            }
-
-            $rule = "'" . $field->name . "' => ";
-            switch ($field->fieldType) {
-                case 'integer':
-                    $rule .= "'required|integer'";
-                    break;
-                case 'decimal':
-                case 'double':
-                case 'float':
-                    $rule .= "'required|numeric'";
-                    break;
-                case 'boolean':
-                    $rule .= "'required|boolean'";
-                    break;
-                case 'dateTime':
-                case 'dateTimeTz':
-                    $rule .= "'required|datetime'";
-                    break;
-                case 'date':
-                    $rule .= "'required|date'";
-                    break;
-                case 'enum':
-                case 'string':
-                case 'char':
-                case 'text':
-                    $rule .= "'required|max:45'";
-                    break;
-                default:
-                    $rule = '';
-                    break;
-            }
-
-            if (!empty($rule)) {
-                $rules[] = $rule;
-            }
-        }
-
-        return $rules;
     }
 
     /**

@@ -24,6 +24,8 @@ class $MODEL_NAME$Request extends BaseRequest
      */
     public function rules()
     {
-        return $MODEL_NAME$::$rules;
+        return [
+            $RULES$
+        ];
     }
 }
