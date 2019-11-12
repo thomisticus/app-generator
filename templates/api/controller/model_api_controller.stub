@@ -2,40 +2,43 @@
 
 namespace $NAMESPACE_CONTROLLER$;
 
-use $NAMESPACE_REQUEST$\Create$MODEL_NAME$APIRequest;
-use $NAMESPACE_REQUEST$\Update$MODEL_NAME$APIRequest;
+use $NAMESPACE_REQUEST$\$MODEL_NAME$Request;
+use $NAMESPACE_SERVICE$\$MODEL_NAME$Service;
 use $NAMESPACE_MODEL$\$MODEL_NAME$;
 use Illuminate\Http\Request;
-use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
-use Response;
+use $NAMESPACE_APP$\Http\Controllers\ApiBaseController;
 
 $DOC_CONTROLLER$
-class $MODEL_NAME$APIController extends AppBaseController
+class $MODEL_NAME$Controller extends ApiBaseController
 {
+	/**
+	 * @var $MODEL_NAME$Service $$MODEL_NAME_CAMEL$Service
+	 */
+	protected $$MODEL_NAME_CAMEL$Service;
+
+	/**
+	 * $MODEL_NAME$Controller constructor.
+	 *
+	 * @param $MODEL_NAME$Service $$MODEL_NAME_CAMEL$Service
+	 */
+    public function __construct($MODEL_NAME$Service $$MODEL_NAME_CAMEL$Service)
+    {
+        $this->$MODEL_NAME_CAMEL$Service = $$MODEL_NAME_CAMEL$Service;
+    }
+
     $DOC_INDEX$
     public function index(Request $request)
     {
-        $query = $MODEL_NAME$::query();
-
-        if ($request->get('skip')) {
-            $query->skip($request->get('skip'));
-        }
-        if ($request->get('limit')) {
-            $query->limit($request->get('limit'));
-        }
-
-        $$MODEL_NAME_PLURAL_CAMEL$ = $query->get();
+        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->all();
 
         return $this->sendResponse($$MODEL_NAME_PLURAL_CAMEL$->toArray(), '$MODEL_NAME_PLURAL_HUMAN$ retrieved successfully');
     }
 
     $DOC_STORE$
-    public function store(Create$MODEL_NAME$APIRequest $request)
+    public function store($MODEL_NAME$Request $request)
     {
-        $input = $request->all();
-
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $MODEL_NAME$::create($input);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->create($request->all());
 
         return $this->sendResponse($$MODEL_NAME_CAMEL$->toArray(), '$MODEL_NAME_HUMAN$ saved successfully');
     }
@@ -44,7 +47,7 @@ class $MODEL_NAME$APIController extends AppBaseController
     public function show($id)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $MODEL_NAME$::find($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError('$MODEL_NAME_HUMAN$ not found');
@@ -54,17 +57,14 @@ class $MODEL_NAME$APIController extends AppBaseController
     }
 
     $DOC_UPDATE$
-    public function update($id, Update$MODEL_NAME$APIRequest $request)
+    public function update($id, $MODEL_NAME$Request $request)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $MODEL_NAME$::find($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError('$MODEL_NAME_HUMAN$ not found');
         }
-
-        $$MODEL_NAME_CAMEL$->fill($request->all());
-        $$MODEL_NAME_CAMEL$->save();
 
         return $this->sendResponse($$MODEL_NAME_CAMEL$->toArray(), '$MODEL_NAME$ updated successfully');
     }
@@ -73,13 +73,11 @@ class $MODEL_NAME$APIController extends AppBaseController
     public function destroy($id)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $MODEL_NAME$::find($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError('$MODEL_NAME_HUMAN$ not found');
         }
-
-        $$MODEL_NAME_CAMEL$->delete();
 
         return $this->sendResponse($id, '$MODEL_NAME_HUMAN$ deleted successfully');
     }

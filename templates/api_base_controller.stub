@@ -1,0 +1,21 @@
+<?php
+
+namespace $NAMESPACE_APP$\Http\Controllers;
+
+use $NAMESPACE_TRAIT$\ResponseTrait;
+
+/**
+ * @SWG\Swagger(
+ *   basePath="/$API_PREFIX$/$API_VERSION$",
+ *   @SWG\Info(
+ *     title="Crud Generator APIs",
+ *     version="1.0.0",
+ *   )
+ * )
+ * This class should be parent class for other API controllers
+ * Class ApiBaseController
+ */
+class ApiBaseController extends Controller
+{
+    use ResponseTrait;
+}

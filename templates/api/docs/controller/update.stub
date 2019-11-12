@@ -3,7 +3,7 @@
      * PUT/PATCH /$MODEL_NAME_PLURAL_CAMEL$/{id}
      *
      * @param  int $id
-     * @param Update$MODEL_NAME$APIRequest $request
+     * @param $MODEL_NAME$Request $request
      *
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
      */

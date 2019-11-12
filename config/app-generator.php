@@ -31,8 +31,6 @@ return [
 
         'repository_test' => base_path('tests/Repositories/'),
 
-        'request' => app_path('Http/Requests/'),
-
         'routes' => base_path('routes/web.php'),
 
         'schema_files' => resource_path('model_schemas/'),
@@ -76,8 +74,6 @@ return [
 
         'repository_test' => 'Tests\Repositories',
 
-        'request' => 'App\Http\Requests',
-
         'service' => 'App\Services',
 
         'tests' => 'Tests',
@@ -111,7 +107,7 @@ return [
 
         'tables_searchable_default' => false,
 
-        'repository_pattern' => true,
+        'repository_pattern' => false,
 
         'generate_seeder' => true,
 

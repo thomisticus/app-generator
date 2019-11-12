@@ -100,9 +100,9 @@ class BaseCommand extends Command
             (new ControllerGenerator($this->commandData))->generate();
         }
 
-//        if (!$this->isSkip('services') && !$this->isSkip('scaffold_service')) {
-//            (new ServiceGenerator($this->commandData))->generate();
-//        }
+        if (!$this->isSkip('services') && !$this->isSkip('service')) {
+            (new ServiceGenerator($this->commandData))->generate();
+        }
 
         if (!$this->isSkip('routes') && !$this->isSkip('api_routes')) {
             (new RouteGenerator($this->commandData))->generate();

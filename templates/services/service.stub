@@ -2,16 +2,10 @@
 
 namespace $NAMESPACE_SERVICE$;
 
-use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
-use Illuminate\Http\Request;
+use $NAMESPACE_SERVICE$\BaseService;
+use $NAMESPACE_MODEL$\$MODEL_NAME$;
 
-/**
- * Class $MODEL_NAME$Service.
- * Contains business logics of $MODEL_NAME$Controller
- *
- * @package namespace $NAMESPACE_SERVICE$;
- */
-class $MODEL_NAME$Service
+class $MODEL_NAME$Service extends BaseService
 {
 	/**
 	 * @var array
@@ -20,84 +14,17 @@ class $MODEL_NAME$Service
 		$RELATIONSHIPS$
 	];
 
-	/**
-	 * @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
-	 */
-	private $$MODEL_NAME_CAMEL$Repository;
+    /**
+     * @var $MODEL_NAME$
+     */
+    protected $model;
 
-	/**
-	 * $MODEL_NAME$Service constructor
-	 * Dependencies injection
-	 *
-	 * @param $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository
-	 */
-	public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository)
-	{
-		$this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
-	}
-
-	/**
-	 * Returns a paginated list of $MODEL_NAME$.
-	 *
-	 * @return mixed
-	 * @throws \Prettus\Repository\Exceptions\RepositoryException
-	 */
-	public function get$MODEL_NAME$s()
-	{
-		$this->$MODEL_NAME_CAMEL$Repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
-
-		return $this->$MODEL_NAME_CAMEL$Repository->with($this->repositories)->paginate();
-	}
-
-	/**
-	 * Data of a $MODEL_NAME$ by primary key
-	 *
-	 * @param int|string $id
-	 *
-	 * @return mixed
-	 */
-	public function get$MODEL_NAME$ById($id)
-	{
-		return $this->$MODEL_NAME_CAMEL$Repository->with($this->repositories)->find($id);
-	}
-
-	/**
-	 * Store a newly created $MODEL_NAME$ in storage.
-	 *
-	 * @param Request $request
-	 *
-	 * @return mixed
-	 * @throws \Prettus\Validator\Exceptions\ValidatorException
-	 */
-	public function create(Request $request)
-	{
-		return $this->$MODEL_NAME_CAMEL$Repository->create($request->all());
-	}
-
-	/**
-	 * Update the specified $MODEL_NAME$ in storage.
-	 *
-	 * @param Request    $request
-	 * @param int|string $id
-	 *
-	 * @return mixed
-	 * @throws \Prettus\Validator\Exceptions\ValidatorException
-	 */
-	public function update(Request $request, $id)
-	{
-		return $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
-	}
-
-	/**
-	 * Remove the specified $MODEL_NAME$ from storage.
-	 *
-	 * @param int|string $id
-	 *
-	 * @return null
-	 * @throws \Exception
-	 */
-	public function destroy($id)
-	{
-		return $this->$MODEL_NAME_CAMEL$Repository->delete($id);
-	}
+    /**
+     * $MODEL_NAME$Service constructor.
+     * @param $MODEL_NAME$ $$MODEL_NAME_CAMEL$
+     */
+    public function __construct($MODEL_NAME$ $$MODEL_NAME_CAMEL$)
+    {
+        $this->model = $$MODEL_NAME_CAMEL$;
+    }
 }

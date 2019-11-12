@@ -2,16 +2,15 @@
 
 namespace $NAMESPACE_CONTROLLER$;
 
-use $NAMESPACE_REQUEST$\Create$MODEL_NAME$APIRequest;
-use $NAMESPACE_REQUEST$\Update$MODEL_NAME$APIRequest;
+use $NAMESPACE_REQUEST$\$MODEL_NAME$Request;
 use $NAMESPACE_MODEL$\$MODEL_NAME$;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
 use Illuminate\Http\Request;
-use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
+use $NAMESPACE_APP$\Http\Controllers\ApiBaseController;
 use Response;
 
 $DOC_CONTROLLER$
-class $MODEL_NAME$APIController extends AppBaseController
+class $MODEL_NAME$Controller extends ApiBaseController
 {
     /** @var  $MODEL_NAME$Repository */
     private $$MODEL_NAME_CAMEL$Repository;
@@ -34,7 +33,7 @@ class $MODEL_NAME$APIController extends AppBaseController
     }
 
     $DOC_STORE$
-    public function store(Create$MODEL_NAME$APIRequest $request)
+    public function store($MODEL_NAME$Request $request)
     {
         $input = $request->all();
 
@@ -57,7 +56,7 @@ class $MODEL_NAME$APIController extends AppBaseController
     }
 
     $DOC_UPDATE$
-    public function update($id, Update$MODEL_NAME$APIRequest $request)
+    public function update($id, $MODEL_NAME$Request $request)
     {
         $input = $request->all();
 

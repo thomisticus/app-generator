@@ -50,7 +50,7 @@ trait ResponseTrait
      *
      * @return array
      */
-    private function makeResponseArray($success = true, $message = '', $code = '', $data = [])
+    public function makeResponseArray($success = true, $message = '', $code = '', $data = [])
     {
         $response = [
             'success' => $success,

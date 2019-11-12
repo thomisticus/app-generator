@@ -32,7 +32,7 @@ class ControllerGenerator extends BaseGenerator
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['controller'];
-        $this->fileName = $this->commandData->modelName . 'APIController.php';
+        $this->fileName = $this->commandData->modelName . 'Controller.php';
     }
 
     /**
@@ -40,7 +40,8 @@ class ControllerGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateName = $this->commandData->getOption('repositoryPattern') ? 'controller' : 'model_controller';
+//        $templateName = $this->commandData->getOption('repositoryPattern') ? 'controller' : 'model_api_controller';
+        $templateName = 'model_api_controller';
         $templateData = get_template("api.controller.$templateName", 'app-generator');
 
 //        $paginate = $this->commandData->getOption('paginate');
