@@ -2,11 +2,33 @@
 
 namespace $NAMESPACE_MODEL$;
 
-use Thomisticus\MappableModels\MappableModel;
+use Eloquent\NestedAttributes\Traits\HasNestedAttributesTrait;
+use Illuminate\Database\Eloquent\Model as Model;
 
-class BaseModel extends MappableModel
+class BaseModel extends Model
 {
-    use HasNestedAttributes;
+    use HasNestedAttributesTrait;
+
+    /**
+     * The name of the "created at" column.
+     *
+     * @var string
+     */
+    const CREATED_AT = '$CREATED_AT_COLUMN$';
+
+    /**
+     * The name of the "updated at" column.
+     *
+     * @var string
+     */
+    const UPDATED_AT = '$UPDATED_AT_COLUMN$';
+
+    /**
+     * The name of the "deleted at" column.
+     *
+     * @var string
+     */
+    const DELETED_AT = '$DELETED_AT_COLUMN$';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -28,3 +50,4 @@ class BaseModel extends MappableModel
         self::DELETED_AT
     ];
 }
+

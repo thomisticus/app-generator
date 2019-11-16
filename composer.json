@@ -22,15 +22,21 @@
       "email": "igor.sgm@gmail.com"
     }
   ],
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:igorsgm/eloquent-nested-attributes.git"
+    }
+  ],
   "require": {
     "php": ">=7.0",
-    "illuminate/support": "^6.0.0",
-    "laracasts/flash": "~3.0",
-    "icanboogie/inflector": "^1.4"
+    "illuminate/support": "^5.6|^6.0",
+    "icanboogie/inflector": "^1.4",
+    "igorsgm/eloquent-nested-attributes": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0",
-    "mockery/mockery": "~0.9",
+    "mockery/mockery": "~1.0",
     "squizlabs/php_codesniffer": "^3.5"
   },
   "autoload": {
@@ -56,21 +62,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "scripts": {
-    "complete-cs-check": [
-      "@check-cs-psr12"
-    ],
-    "complete-cs-fix": [
-      "@fix-cs-psr12"
-    ],
-    "complete-test": [
-      "@test-unit",
-      "@test-coverage"
-    ],
-    "check-cs-psr2": "./vendor/bin/phpcs --standard=PSR2 --colors src/",
-    "check-cs-psr12": "./vendor/bin/phpcs --standard=PSR12 --colors src/",
-    "fix-cs-psr2": "./vendor/bin/phpcbf --standard=PSR2 --colors src/",
-    "fix-cs-psr12": "./vendor/bin/phpcbf --standard=PSR12 --colors src/",
-    "test-unit": "./vendor/bin/phpunit",
+    "phpcs": "./vendor/bin/phpcs --standard=PSR12 --colors src/",
+    "phpcbf": "./vendor/bin/phpcbf --standard=PSR12 --colors src/",
+    "test": "./vendor/bin/phpunit",
     "test-coverage": "./vendor/bin/phpunit --coverage-html storage/phpunit"
   }
 }
