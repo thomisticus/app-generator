@@ -113,6 +113,15 @@ class RequestGenerator extends BaseGenerator
             }
 
             $rule = [];
+
+            if ($field->isNotNull) {
+                $rule[] = 'required';
+            }
+
+            if ($field->isUnique) {
+                $rule[] = 'unique';
+            }
+
             switch ($field->fieldType) {
                 case 'integer':
                     $rule[] = 'integer';
@@ -144,15 +153,6 @@ class RequestGenerator extends BaseGenerator
             }
 
             if (!empty($rule)) {
-
-                if ($field->isNotNull) {
-                    $rule[] = 'required';
-                }
-
-                if ($field->isUnique) {
-                    $rule[] = 'unique';
-                }
-
                 $rule = "'" . $field->name . "' => '" . implode('|', $rule) . "'";
                 $rules[] = $rule;
             }

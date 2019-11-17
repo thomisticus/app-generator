@@ -29,9 +29,10 @@
     }
   ],
   "require": {
-    "php": ">=7.0",
+    "php": ">=7.1",
     "illuminate/support": "^5.6|^6.0",
     "icanboogie/inflector": "^1.4",
+    "doctrine/dbal": "^2.6",
     "thomisticus/laravel-nested-attributes": "dev-master"
   },
   "require-dev": {

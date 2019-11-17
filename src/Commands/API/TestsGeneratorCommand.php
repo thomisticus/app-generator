@@ -14,7 +14,7 @@ class TestsGeneratorCommand extends BaseCommand
      *
      * @var string
      */
-    protected $name = 'thomisticus.tests';
+    protected $name = 'thomisticus:tests';
 
     /**
      * The console command description.

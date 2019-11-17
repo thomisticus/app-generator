@@ -13,7 +13,7 @@ class RequestGeneratorCommand extends BaseCommand
      *
      * @var string
      */
-    protected $name = 'thomisticus.request';
+    protected $name = 'thomisticus:request';
 
     /**
      * The console command description.
