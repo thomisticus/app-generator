@@ -79,6 +79,12 @@ class GeneratorField
     public $isPrimary = false;
 
     /**
+     * Whether the field is unique key or not
+     * @var bool
+     */
+    public $isUnique = false;
+
+    /**
      * Whether the field is in the form or not
      * @var bool
      */
@@ -109,6 +115,12 @@ class GeneratorField
     public $description;
 
     /**
+     * Field lenght
+     * @var int|null
+     */
+    public $lenght;
+
+    /**
      * Set $dbInput parsing the DB type from database columns
      *
      * @param string $dbInput
@@ -119,7 +131,8 @@ class GeneratorField
     {
         $this->dbInput = $dbInput;
         if (!is_null($column)) {
-            $this->dbInput = ($column->getLength() > 0) ? $this->dbInput . ',' . $column->getLength() : $this->dbInput;
+            $this->lenght = $column->getLength();
+            $this->dbInput = ($this->lenght > 0) ? $this->dbInput . ',' . $this->lenght : $this->dbInput;
             $this->dbInput = (!$column->getNotnull()) ? $this->dbInput . ':nullable' : $this->dbInput;
         }
         $this->prepareMigrationText();

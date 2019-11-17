@@ -89,18 +89,33 @@ class TableFieldsGenerator
             $platform->registerDoctrineTypeMapping($dbType, $doctrineType);
         }
 
-        $columns = $this->schemaManager->listTableColumns($tableName);
-
-        $this->columns = [];
-        foreach ($columns as $column) {
-            if (!in_array($column->getName(), $ignoredFields)) {
-                $this->columns[] = $column;
-            }
-        }
-
+        $this->prepareColumns();
         $this->primaryKey = static::getPrimaryKeyOfTable($tableName);
         $this->timestamps = static::getTimestampFieldNames();
         $this->defaultSearchable = config('app-generator.options.tables_searchable_default', false);
+    }
+
+    /**
+     * Sets $columns property checking if a specific column is of single unique value
+     */
+    private function prepareColumns()
+    {
+        $tableColumns = $this->schemaManager->listTableColumns($this->tableName);
+        $indexes = $this->schemaManager->listTableIndexes($this->tableName);
+
+        foreach ($indexes as $index) {
+            $columnsIndex = $index->getColumns();
+            if ($index->isUnique() && count($columnsIndex) == 1) {
+                $tableColumns[$columnsIndex[0]]->isUnique = true;
+            }
+        }
+
+        $this->columns = [];
+        foreach ($tableColumns as $column) {
+            if (!in_array($column->getName(), $this->ignoredFields)) {
+                $this->columns[] = $column;
+            }
+        }
     }
 
     /**
@@ -222,6 +237,8 @@ class TableFieldsGenerator
             $field->dbInput .= ',true';
         }
 
+        $field->isUnique = $column->isUnique ?? false;
+
         return $this->checkForPrimary($field);
     }
 
@@ -257,6 +274,7 @@ class TableFieldsGenerator
         $field->name = $column->getName();
         $field->parseDBType($dbType, $column);
         $field->parseHtmlInput($htmlType);
+        $field->isUnique = $column->isUnique ?? false;
 
         return $this->checkForPrimary($field);
     }

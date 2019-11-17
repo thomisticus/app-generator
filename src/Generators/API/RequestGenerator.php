@@ -112,38 +112,48 @@ class RequestGenerator extends BaseGenerator
                 continue;
             }
 
-            $rule = "'" . $field->name . "' => ";
+            $rule = [];
             switch ($field->fieldType) {
                 case 'integer':
-                    $rule .= "'required|integer'";
+                    $rule[] = 'integer';
                     break;
                 case 'decimal':
                 case 'double':
                 case 'float':
-                    $rule .= "'required|numeric'";
+                    $rule[] = 'numeric';
                     break;
                 case 'boolean':
-                    $rule .= "'required|boolean'";
+                    $rule[] = 'boolean';
                     break;
                 case 'dateTime':
                 case 'dateTimeTz':
-                    $rule .= "'required|datetime'";
+                    $rule[] = 'datetime';
                     break;
                 case 'date':
-                    $rule .= "'required|date'";
+                    $rule[] = 'date';
                     break;
                 case 'enum':
                 case 'string':
                 case 'char':
                 case 'text':
-                    $rule .= "'required|max:45'";
+                    $rule[] = 'max:' . ($field->lenght ?? '45');
                     break;
                 default:
-                    $rule = '';
+                    $rule = [];
                     break;
             }
 
             if (!empty($rule)) {
+
+                if ($field->isNotNull) {
+                    $rule[] = 'required';
+                }
+
+                if ($field->isUnique) {
+                    $rule[] = 'unique';
+                }
+
+                $rule = "'" . $field->name . "' => '" . implode('|', $rule) . "'";
                 $rules[] = $rule;
             }
         }
