@@ -7,6 +7,7 @@ use Thomisticus\Generator\Commands\API\ControllerGeneratorCommand;
 use Thomisticus\Generator\Commands\API\ApiGeneratorCommand;
 use Thomisticus\Generator\Commands\API\RequestGeneratorCommand;
 use Thomisticus\Generator\Commands\API\TestsGeneratorCommand;
+use Thomisticus\Generator\Commands\Common\FactoryGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\MigrationGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\ModelGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\RepositoryGeneratorCommand;
@@ -47,6 +48,7 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus:service' => ServiceGeneratorCommand::class,
             'thomisticus:tests' => TestsGeneratorCommand::class,
             'thomisticus:migration' => MigrationGeneratorCommand::class,
+            'thomisticus:factory' => FactoryGeneratorCommand::class,
             'thomisticus:model' => ModelGeneratorCommand::class,
             'thomisticus:repository' => RepositoryGeneratorCommand::class,
             'thomisticus:rollback' => RollbackGeneratorCommand::class,

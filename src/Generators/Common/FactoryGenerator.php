@@ -2,8 +2,9 @@
 
 namespace Thomisticus\Generator\Generators\Common;
 
-use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
+use Thomisticus\Generator\Utils\CommandData;
+use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
 use Thomisticus\Generator\Utils\FileUtil;
 use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
 
@@ -13,7 +14,7 @@ use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
 class FactoryGenerator extends BaseGenerator
 {
     /**
-     * @var \Thomisticus\Generator\Utils\CommandData
+     * @var CommandData
      */
     private $commandData;
 
@@ -32,9 +33,9 @@ class FactoryGenerator extends BaseGenerator
     /**
      * FactoryGenerator constructor.
      *
-     * @param \Thomisticus\Generator\Utils\CommandData $commandData
+     * @param CommandData $commandData
      */
-    public function __construct(\Thomisticus\Generator\Utils\CommandData $commandData)
+    public function __construct(CommandData $commandData)
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->paths['factory'];
@@ -80,9 +81,10 @@ class FactoryGenerator extends BaseGenerator
     private function generateFakerFields()
     {
         $fields = [];
+        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
 
         foreach ($this->commandData->fields as $field) {
-            if ($field->isPrimary) {
+            if (in_array($field->name, $timestamps) || $field->isPrimary) {
                 continue;
             }
 
@@ -90,18 +92,25 @@ class FactoryGenerator extends BaseGenerator
 
             switch (strtolower($field->fieldType)) {
                 case 'integer':
+                case 'biginteger':
                 case 'float':
                     $fakerData = 'randomDigitNotNull';
                     break;
                 case 'string':
+                case 'char':
                     $fakerData = 'word';
                     break;
                 case 'text':
+                case 'mediumtext':
+                case 'longtext':
                     $fakerData = 'text';
                     break;
                 case 'datetime':
                 case 'timestamp':
                     $fakerData = "date('Y-m-d H:i:s')";
+                    break;
+                case 'boolean':
+                    $fakerData = "boolean";
                     break;
                 case 'enum':
                     $fakerData = 'randomElement(' .
