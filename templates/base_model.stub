@@ -2,12 +2,22 @@
 
 namespace $NAMESPACE_MODEL$;
 
-use Eloquent\NestedAttributes\Traits\HasNestedAttributesTrait;
+use Thomisticus\NestedAttributes\Traits\HasNestedAttributes;
 use Illuminate\Database\Eloquent\Model as Model;
 
 class BaseModel extends Model
 {
-    use HasNestedAttributesTrait;
+    /*
+     * @codingStandardsIgnoreFile
+     * Make nested attributes for model.
+     *
+     * Nested attributes allow you to save attributes on associated records through the parent.
+     * By default nested attribute updating is turned off and you can enable it using the $nested array.
+     * When you enable nested attributes an attribute writer is defined on the model.
+     *
+     * @see Thomisticus\NestedAttributes\Traits\HasNestedAttributes
+     */
+    use HasNestedAttributes;
 
     /**
      * The name of the "created at" column.
