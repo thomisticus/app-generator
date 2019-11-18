@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Utils\Database;
 use ICanBoogie\Inflector;
 use Illuminate\Support\Str;
 
-class GeneratorFieldRelation
+class Relationship
 {
     /**
      * Relationship type: '1t1' (One to One), '1tm' (One to Many), 'mt1' (Many to One), 'mtm' (Many to Many)
@@ -41,7 +41,7 @@ class GeneratorFieldRelation
      *                              Many to Many (Eg: mtm,Role,user_roles,user_id,role_id)
      * @param array $additionalParams Array with params like 'foreignKey', 'ownerKey','localKey',
      *                                'foreignPivotKey','relatedPivotKey'
-     * @return GeneratorFieldRelation
+     * @return Relationship
      */
     public static function parseRelation($relationInput, $additionalParams = [])
     {

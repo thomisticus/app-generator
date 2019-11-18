@@ -6,12 +6,8 @@ use DB;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Utils\Database\GeneratorField;
-use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
-use Thomisticus\Generator\Utils\Database\GeneratorForeignKey;
-use Thomisticus\Generator\Utils\Database\GeneratorTable;
 
-class TableFieldsGenerator
+class Table
 {
     /**
      * Database table name
@@ -49,13 +45,13 @@ class TableFieldsGenerator
 
     /**
      * Table fields
-     * @var \Thomisticus\Generator\Utils\Database\GeneratorField[]
+     * @var \Thomisticus\Generator\Utils\Database\Field[]
      */
     public $fields;
 
     /**
      * Table relationships
-     * @var GeneratorFieldRelation[]
+     * @var Relationship[]
      */
     public $relations;
 
@@ -66,7 +62,7 @@ class TableFieldsGenerator
     public $ignoredFields;
 
     /**
-     * TableFieldsGenerator constructor.
+     * Table constructor.
      * @param string $tableName
      * @param array $ignoredFields
      */
@@ -119,7 +115,7 @@ class TableFieldsGenerator
     }
 
     /**
-     * Prepares array of GeneratorField from table columns.
+     * Prepares array of Field from table columns.
      */
     public function prepareFieldsFromTable()
     {
@@ -222,11 +218,11 @@ class TableFieldsGenerator
      * @param string $dbType
      * @param Column $column
      *
-     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\Field
      */
     private function generateIntFieldInput($column, $dbType)
     {
-        $field = new GeneratorField();
+        $field = new Field();
         $field->name = $column->getName();
         $field->parseDBType($dbType);
         $field->htmlType = 'number';
@@ -245,11 +241,11 @@ class TableFieldsGenerator
     /**
      * Check if key is primary key and sets field options.
      *
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorField $field
+     * @param \Thomisticus\Generator\Utils\Database\Field $field
      *
-     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\Field
      */
-    private function checkForPrimary(GeneratorField $field)
+    private function checkForPrimary(Field $field)
     {
         if ($field->name == $this->primaryKey) {
             $field->isPrimary = true;
@@ -266,11 +262,11 @@ class TableFieldsGenerator
      * @param                              $dbType
      * @param                              $htmlType
      *
-     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\Field
      */
     private function generateField($column, $dbType, $htmlType)
     {
-        $field = new GeneratorField();
+        $field = new Field();
         $field->name = $column->getName();
         $field->parseDBType($dbType, $column);
         $field->parseHtmlInput($htmlType);
@@ -285,11 +281,11 @@ class TableFieldsGenerator
      * @param \Doctrine\DBAL\Schema\Column $column
      * @param string $dbType
      *
-     * @return \Thomisticus\Generator\Utils\Database\GeneratorField
+     * @return \Thomisticus\Generator\Utils\Database\Field
      */
     private function generateNumberInput($column, $dbType)
     {
-        $field = new GeneratorField();
+        $field = new Field();
         $field->name = $column->getName();
         $field->parseDBType($dbType . ',' . $column->getPrecision() . ',' . $column->getScale());
         $field->htmlType = 'number';
@@ -298,33 +294,34 @@ class TableFieldsGenerator
     }
 
     /**
-     * Prepares relations (GeneratorFieldRelation) array from table foreign keys.
+     * Prepares relations (FieldRelation) array from table foreign keys.
      * @return $this
      */
     public function prepareRelations()
     {
-        $foreignKeys = $this->prepareForeignKeys();
-        $this->checkForRelations($foreignKeys);
+        $tablesToCheckForRelations = $this->prepareForeignKeys();
+        $this->checkForRelations($tablesToCheckForRelations);
 
         return $this;
     }
 
     /**
      * Prepares foreign keys from table with required details.
+     * It will go through all database tables.
      *
-     * @return \Thomisticus\Generator\Utils\Database\GeneratorTable[]
+     * @return array
      */
     public function prepareForeignKeys()
     {
         $tables = $this->schemaManager->listTables();
 
-        $fields = [];
+        $tablesToSearchForeignKeys = [];
 
         foreach ($tables as $table) {
             if ($primaryKey = $table->getPrimaryKey()) {
                 $primaryKey = $primaryKey->getColumns()[0];
             }
-            $formattedForeignKeys = [];
+            $foreignKeys = [];
             $tableForeignKeys = $table->getForeignKeys();
             foreach ($tableForeignKeys as $tableForeignKey) {
                 $tableForeignKey = [
@@ -336,21 +333,19 @@ class TableFieldsGenerator
                     'onDelete' => $tableForeignKey->onDelete(),
                 ];
 
-                $formattedForeignKeys[] = new GeneratorForeignKey(...array_values($tableForeignKey));
+                $foreignKeys[] = new ForeignKey(...array_values($tableForeignKey));
             }
 
-            $generatorTable = new GeneratorTable($primaryKey, $formattedForeignKeys);
-
-            $fields[$table->getName()] = $generatorTable;
+            $tablesToSearchForeignKeys[$table->getName()] = compact('primaryKey', 'foreignKeys');
         }
 
-        return $fields;
+        return $tablesToSearchForeignKeys;
     }
 
     /**
      * Prepares relations array from table foreign keys.
      *
-     * @param GeneratorTable[] $tables
+     * @param array $tables Array of tables with primary key and foreign keys
      */
     private function checkForRelations($tables)
     {
@@ -369,8 +364,8 @@ class TableFieldsGenerator
         }
 
         foreach ($tables as $tableName => $table) {
-            $foreignKeys = $table->foreignKeys;
-            $primary = $table->primaryKey;
+            $foreignKeys = $table['foreignKeys'];
+            $primary = $table['primaryKey'];
 
             // if foreign key count is 2 then check if many to many relationship is there
             if (count($foreignKeys) == 2) {
@@ -386,15 +381,15 @@ class TableFieldsGenerator
                 // check if foreign key is on the model table for which we are using generator command
                 if ($foreignKey->foreignTable == $modelTableName) {
                     // detect if one to one relationship is there
-                    $isOneToOne = $this->isOneToOne($primary, $foreignKey, $modelTable->primaryKey);
+                    $isOneToOne = $this->isOneToOne($primary, $foreignKey, $modelTable['primaryKey']);
                     if ($isOneToOne) {
                         $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = GeneratorFieldRelation::parseRelation('1t1,' . $modelName);
+                        $this->relations[] = Relationship::parseRelation('1t1,' . $modelName);
                         continue;
                     }
 
                     // detect if one to many relationship is there
-                    $isOneToMany = $this->isOneToMany($primary, $foreignKey, $modelTable->primaryKey);
+                    $isOneToMany = $this->isOneToMany($primary, $foreignKey, $modelTable['primaryKey']);
                     if ($isOneToMany) {
                         $additionalParams = [];
                         if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
@@ -405,7 +400,7 @@ class TableFieldsGenerator
                         }
 
                         $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = GeneratorFieldRelation::parseRelation(
+                        $this->relations[] = Relationship::parseRelation(
                             '1tm,' . $modelName,
                             $additionalParams
                         );
@@ -422,12 +417,12 @@ class TableFieldsGenerator
      * Both foreign keys are primary key in foreign table
      * Also one is from model table and one is from diff table.
      *
-     * @param GeneratorTable[] $tables
+     * @param Table[] $tables
      * @param string $tableName
-     * @param GeneratorTable $modelTable
+     * @param Table $modelTable
      * @param string $modelTableName
      *
-     * @return bool|\Thomisticus\Generator\Utils\Database\GeneratorFieldRelation
+     * @return bool|\Thomisticus\Generator\Utils\Database\Relationship
      */
     private function isManyToMany($tables, $tableName, $modelTable, $modelTableName)
     {
@@ -439,8 +434,8 @@ class TableFieldsGenerator
         // many to many model table name
         $manyToManyTable = '';
 
-        $foreignKeys = $table->foreignKeys;
-        $primary = $table->primaryKey;
+        $foreignKeys = $table['foreignKeys'];
+        $primary = $table['primaryKey'];
 
         // check if any foreign key is there from model table
         foreach ($foreignKeys as $foreignKey) {
@@ -493,7 +488,7 @@ class TableFieldsGenerator
 
         $modelName = model_name_from_table_name($manyToManyTable);
 
-        return GeneratorFieldRelation::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams);
+        return Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams);
     }
 
     /**
@@ -502,7 +497,7 @@ class TableFieldsGenerator
      * Also foreign key field is primary key of this table.
      *
      * @param string $primaryKey
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorForeignKey $foreignKey
+     * @param \Thomisticus\Generator\Utils\Database\ForeignKey $foreignKey
      * @param string $modelTablePrimary
      *
      * @return bool
@@ -524,7 +519,7 @@ class TableFieldsGenerator
      * Also foreign key field is not primary key of this table.
      *
      * @param string $primaryKey
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorForeignKey $foreignKey
+     * @param \Thomisticus\Generator\Utils\Database\ForeignKey $foreignKey
      * @param string $modelTablePrimary
      *
      * @return bool
@@ -544,8 +539,8 @@ class TableFieldsGenerator
      * Detect many to one relationship on model table
      * If foreign key of model table is primary key of foreign table.
      *
-     * @param GeneratorTable[] $tables
-     * @param GeneratorTable $modelTable
+     * @param Table[] $tables
+     * @param Table $modelTable
      *
      * @return array
      */
@@ -553,7 +548,7 @@ class TableFieldsGenerator
     {
         $manyToOneRelations = [];
 
-        $foreignKeys = $modelTable->foreignKeys;
+        $foreignKeys = $modelTable['foreignKeys'];
 
         foreach ($foreignKeys as $foreignKey) {
             $foreignTable = $foreignKey->foreignTable;
@@ -563,7 +558,7 @@ class TableFieldsGenerator
                 continue;
             }
 
-            if ($foreignField == $tables[$foreignTable]->primaryKey) {
+            if ($foreignField == $tables[$foreignTable]['primaryKey']) {
                 $additionalParams = [];
                 if (!empty($foreignKey->localField)) {
                     $additionalParams = [
@@ -573,7 +568,7 @@ class TableFieldsGenerator
                 }
 
                 $modelName = model_name_from_table_name($foreignTable);
-                $manyToOneRelations[] = GeneratorFieldRelation::parseRelation('mt1,' . $modelName, $additionalParams);
+                $manyToOneRelations[] = Relationship::parseRelation('mt1,' . $modelName, $additionalParams);
             }
         }
 

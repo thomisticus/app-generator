@@ -6,10 +6,10 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Utils\GeneratorConfig;
-use Thomisticus\Generator\Utils\Database\GeneratorField;
-use Thomisticus\Generator\Utils\Database\GeneratorFieldRelation;
-use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
-use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\Field;
+use Thomisticus\Generator\Utils\Database\Relationship;
+use Thomisticus\Generator\Utils\FieldsInputUtil;
+use Thomisticus\Generator\Utils\Database\Table;
 
 class CommandData
 {
@@ -37,12 +37,12 @@ class CommandData
     public $primaryKey;
 
     /**
-     * @var \Thomisticus\Generator\Utils\Database\GeneratorField[]
+     * @var \Thomisticus\Generator\Utils\Database\Field[]
      */
     public $fields = [];
 
     /**
-     * @var GeneratorFieldRelation[]
+     * @var Relationship[]
      */
     public $relations = [];
 
@@ -180,13 +180,13 @@ class CommandData
         $ignoredFields = !empty($ignoredFields) ? explode(',', trim($ignoredFields)) : [];
 
         $tableName = $this->dynamicVars['$TABLE_NAME$'];
-        $tableFieldsGenerator = (new Database\TableFieldsGenerator($tableName, $ignoredFields))
+        $table = (new Table($tableName, $ignoredFields))
             ->prepareFieldsFromTable()
             ->prepareRelations();
 
-        $this->primaryKey = $tableFieldsGenerator->primaryKey;
-        $this->fields = $tableFieldsGenerator->fields;
-        $this->relations = $tableFieldsGenerator->relations;
+        $this->primaryKey = $table->primaryKey;
+        $this->fields = $table->fields;
+        $this->relations = $table->relations;
     }
 
     /**
@@ -209,7 +209,7 @@ class CommandData
                 break;
             }
 
-            if (!GeneratorFieldsInputUtil::validateFieldInput($fieldInputStr)) {
+            if (!FieldsInputUtil::validateFieldInput($fieldInputStr)) {
                 $this->commandObj->error('Invalid Input. Try again');
                 continue;
             }
@@ -222,10 +222,10 @@ class CommandData
                 $relation = $this->commandObj->ask('Enter relationship (Leave Blank to skip):', false);
             }
 
-            $this->fields[] = GeneratorFieldsInputUtil::processFieldInput($fieldInputStr, $validations);
+            $this->fields[] = FieldsInputUtil::processFieldInput($fieldInputStr, $validations);
 
             if (!empty($relation)) {
-                $this->relations[] = GeneratorFieldRelation::parseRelation($relation);
+                $this->relations[] = Relationship::parseRelation($relation);
             }
         }
 
@@ -239,7 +239,7 @@ class CommandData
      */
     private function addPrimaryKey()
     {
-        $primaryKey = new GeneratorField();
+        $primaryKey = new Field();
 
         $primaryKey->name = 'id';
         if ($primary = $this->getOption('primary')) {
@@ -262,7 +262,7 @@ class CommandData
         }
 
         foreach ($timestamps as $timestampName) {
-            $field = new GeneratorField();
+            $field = new Field();
             $field->name = config('app-generator.timestamps.' . $timestampName, $timestampName);
             $field->parseDBType('timestamp')->parseOptions('searchable,fillable,inForm,inIndex');
             $this->fields[] = $field;
@@ -277,11 +277,11 @@ class CommandData
     {
         foreach ($data as $field) {
             if (isset($field['type']) && $field['relation']) {
-                $this->relations[] = GeneratorFieldRelation::parseRelation($field['relation']);
+                $this->relations[] = Relationship::parseRelation($field['relation']);
             } else {
-                $this->fields[] = GeneratorField::parseFieldFromFile($field);
+                $this->fields[] = Field::parseFieldFromFile($field);
                 if (isset($field['relation'])) {
-                    $this->relations[] = GeneratorFieldRelation::parseRelation($field['relation']);
+                    $this->relations[] = Relationship::parseRelation($field['relation']);
                 }
             }
         }

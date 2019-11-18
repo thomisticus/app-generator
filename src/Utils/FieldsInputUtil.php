@@ -2,9 +2,9 @@
 
 namespace Thomisticus\Generator\Utils;
 
-use Thomisticus\Generator\Utils\Database\GeneratorField;
+use Thomisticus\Generator\Utils\Database\Field;
 
-class GeneratorFieldsInputUtil
+class FieldsInputUtil
 {
     /**
      * Validates the inputs added in the console command
@@ -40,13 +40,13 @@ class GeneratorFieldsInputUtil
      * @param string $fieldInput
      * @param string $validations
      *
-     * @return GeneratorField
+     * @return Field
      */
     public static function processFieldInput($fieldInput, $validations)
     {
         $fieldInputsArr = explode(' ', $fieldInput);
 
-        $field = new GeneratorField();
+        $field = new Field();
         $field->name = $fieldInputsArr[0];
         $field->parseDBType($fieldInputsArr[1]);
 

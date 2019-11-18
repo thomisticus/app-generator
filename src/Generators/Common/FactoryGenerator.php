@@ -4,9 +4,9 @@ namespace Thomisticus\Generator\Generators\Common;
 
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
-use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
+use Thomisticus\Generator\Utils\FieldsInputUtil;
 
 /**
  * Class FactoryGenerator.
@@ -81,7 +81,7 @@ class FactoryGenerator extends BaseGenerator
     private function generateFakerFields()
     {
         $fields = [];
-        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
+        $timestamps = Table::getTimestampFieldNames();
 
         foreach ($this->commandData->fields as $field) {
             if (in_array($field->name, $timestamps) || $field->isPrimary) {
@@ -114,7 +114,7 @@ class FactoryGenerator extends BaseGenerator
                     break;
                 case 'enum':
                     $fakerData = 'randomElement(' .
-                        GeneratorFieldsInputUtil::prepareValuesArrayString($field->htmlValues) .
+                        FieldsInputUtil::prepareValuesArrayString($field->htmlValues) .
                         ')';
                     break;
                 default:

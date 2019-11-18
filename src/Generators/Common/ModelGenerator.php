@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Generators\Common;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class ModelGenerator extends BaseGenerator
@@ -237,7 +237,7 @@ class ModelGenerator extends BaseGenerator
      * Retrieves the PHPDoc type for the field according to its database column type
      *
      * @param string $dbType
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorFieldRelation|null $relation
+     * @param \Thomisticus\Generator\Utils\Database\Relationship|null $relation
      * @param string|null $relationText
      *
      * @return string
@@ -278,7 +278,7 @@ class ModelGenerator extends BaseGenerator
      */
     private function fillTimestamps($templateData)
     {
-        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
+        $timestamps = Table::getTimestampFieldNames();
 
         $replace = '';
         if (empty($timestamps)) {
@@ -321,7 +321,7 @@ class ModelGenerator extends BaseGenerator
     {
         $casts = [];
 
-        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
+        $timestamps = Table::getTimestampFieldNames();
 
         foreach ($this->commandData->fields as $field) {
             if (in_array($field->name, $timestamps)) {

@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Utils\Database;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Str;
 
-class GeneratorField
+class Field
 {
     /**
      * Field name
@@ -239,7 +239,7 @@ class GeneratorField
      * Parse fields from Json file
      *
      * @param array $fieldInput
-     * @return GeneratorField
+     * @return Field
      */
     public static function parseFieldFromFile($fieldInput)
     {
@@ -259,7 +259,7 @@ class GeneratorField
     }
 
     /**
-     * Magic method to access GeneratorField properties
+     * Magic method to access Field properties
      *
      * @param string $key Property name
      * @return mixed|string

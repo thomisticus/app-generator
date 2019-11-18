@@ -5,7 +5,7 @@ namespace Thomisticus\Generator\Generators\API;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Utils\Database\TableFieldsGenerator;
+use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class RequestGenerator extends BaseGenerator
@@ -105,7 +105,7 @@ class RequestGenerator extends BaseGenerator
     private function generateRulesFromTable()
     {
         $rules = [];
-        $timestamps = TableFieldsGenerator::getTimestampFieldNames();
+        $timestamps = Table::getTimestampFieldNames();
 
         foreach ($this->commandData->fields as $field) {
             if (in_array($field->name, $timestamps) || !$field->isFillable) {

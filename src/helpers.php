@@ -138,7 +138,7 @@ if (!function_exists('fill_field_template')) {
      *
      * @param array $variables
      * @param string $template
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorField $field
+     * @param \Thomisticus\Generator\Utils\Database\Field $field
      * @return string
      */
     function fill_field_template($variables, $template, $field)
@@ -158,7 +158,7 @@ if (!function_exists('fill_template_with_field_data')) {
      * @param array $variables
      * @param array $fieldVariables
      * @param string $template
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorField $field
+     * @param \Thomisticus\Generator\Utils\Database\Field $field
      * @return string
      */
     function fill_template_with_field_data($variables, $fieldVariables, $template, $field)
@@ -176,7 +176,7 @@ if (!function_exists('fill_template_with_field_data')) {
      * @param array $variables
      * @param array $fieldVariables
      * @param string $template
-     * @param \Thomisticus\Generator\Utils\Database\GeneratorField $field
+     * @param \Thomisticus\Generator\Utils\Database\Field $field
      * @return string
      */
     function fill_template_with_field_data($variables, $fieldVariables, $template, $field)

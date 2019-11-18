@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Thomisticus\Generator\Utils\GeneratorFieldsInputUtil;
+use Thomisticus\Generator\Utils\FieldsInputUtil;
 
 class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,13 +11,13 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
         // invalid, only name, without database type
         $input = 'title';
 
-        $res = GeneratorFieldsInputUtil::validateFieldInput($input);
+        $res = FieldsInputUtil::validateFieldInput($input);
         $this->assertFalse($res);
 
         // valid, with database type
         $input = 'title string';
 
-        $res = GeneratorFieldsInputUtil::validateFieldInput($input);
+        $res = FieldsInputUtil::validateFieldInput($input);
         $this->assertTrue($res);
     }
 
@@ -27,7 +27,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
         $input = 'title string text';
         $validations = 'required';
 
-        $res = GeneratorFieldsInputUtil::processFieldInput($input, $validations);
+        $res = FieldsInputUtil::processFieldInput($input, $validations);
         $this->assertEquals($validations, $res->validations);
         $this->assertEquals('title', $res->name);
 
@@ -46,7 +46,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
 
         // name string,20 textarea
         $input = 'name string,20 textarea';
-        $res = GeneratorFieldsInputUtil::processFieldInput($input, '');
+        $res = FieldsInputUtil::processFieldInput($input, '');
         $this->assertEquals('name', $res->name);
 
         $this->assertEquals('string,20', $res->dbInput);
@@ -57,7 +57,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
 
         // post_id integer:unsigned:nullable
         $input = 'post_id integer:unsigned:nullable';
-        $res = GeneratorFieldsInputUtil::processFieldInput($input, '');
+        $res = FieldsInputUtil::processFieldInput($input, '');
         $this->assertEquals('post_id', $res->name);
 
         $this->assertEquals('integer:unsigned:nullable', $res->dbInput);
@@ -68,7 +68,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
 
         // post_id integer:unsigned:nullable:foreign,posts,id
         $input = 'post_id integer:unsigned:nullable:foreign,posts,id';
-        $res = GeneratorFieldsInputUtil::processFieldInput($input, '');
+        $res = FieldsInputUtil::processFieldInput($input, '');
         $this->assertEquals('post_id', $res->name);
 
         $this->assertEquals('integer:unsigned:nullable:foreign,posts,id', $res->dbInput);
@@ -81,7 +81,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
         $input = 'title string text if,s';
         $validations = 'required';
 
-        $res = GeneratorFieldsInputUtil::processFieldInput($input, $validations);
+        $res = FieldsInputUtil::processFieldInput($input, $validations);
         $this->assertEquals($validations, $res->validations);
         $this->assertEquals('title', $res->name);
 
@@ -103,7 +103,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['a' => 'A', 'b' => 'B'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayString($arr);
+        $res = FieldsInputUtil::prepareKeyValueArrayString($arr);
         $expected = '[\'A\' => \'a\', \'B\' => \'b\']';
 
         $this->assertEquals($expected, $res);
@@ -113,7 +113,7 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['A', 'B', 'C'];
 
-        $res = GeneratorFieldsInputUtil::prepareValuesArrayString($arr);
+        $res = FieldsInputUtil::prepareValuesArrayString($arr);
         $expected = '[\'A\', \'B\', \'C\']';
 
         $this->assertEquals($expected, $res);
@@ -123,14 +123,14 @@ class GeneratorFieldsInputUtilTest extends \PHPUnit_Framework_TestCase
     {
         $arr = ['A', 'B', 'C'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
+        $res = FieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
         $expected = ['A' => 'A', 'B' => 'B', 'C' => 'C'];
 
         $this->assertEquals($expected, $res);
 
         $arr = ['A:aa', 'B:bb', 'C:cc'];
 
-        $res = GeneratorFieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
+        $res = FieldsInputUtil::prepareKeyValueArrayFromLabelValueString($arr);
         $expected = ['A' => 'aa', 'B' => 'bb', 'C' => 'cc'];
 
         $this->assertEquals($expected, $res);

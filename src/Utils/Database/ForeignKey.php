@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Utils\Database;
 
-class GeneratorForeignKey
+class ForeignKey
 {
     /** @var string */
     public $name;
@@ -13,7 +13,7 @@ class GeneratorForeignKey
     public $onDelete;
 
     /**
-     * GeneratorForeignKey constructor.
+     * ForeignKey constructor.
      *
      * @param string $name
      * @param string $localField
