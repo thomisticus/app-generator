@@ -34,7 +34,7 @@ class FactoryGeneratorCommand extends BaseCommand
 
         (new FactoryGenerator($this->commandData))->generate();
 
-        $this->performPostActions(false, true);
+        $this->performPostActions();
     }
 
     /**

@@ -1,26 +1,25 @@
 <?php
 
-namespace Thomisticus\Generator\Commands\API;
+namespace Thomisticus\Generator\Commands\Common;
 
 use Thomisticus\Generator\Commands\BaseCommand;
-use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Generators\API\ControllerGenerator;
+use Thomisticus\Generator\Generators\Common\SeederGenerator;
 
-class ControllerGeneratorCommand extends BaseCommand
+class SeederGeneratorCommand extends BaseCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $name = 'thomisticus:controller';
+    protected $name = 'thomisticus:seeder';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Create an api controller command';
+    protected $description = 'Create seeder command';
 
     /**
      * Execute the console command.
@@ -31,7 +30,9 @@ class ControllerGeneratorCommand extends BaseCommand
     {
         parent::handle();
 
-        (new ControllerGenerator($this->commandData))->generate();
+        (new SeederGenerator($this->commandData))
+            ->generate()
+            ->updateMainSeeder();
 
         $this->performPostActions();
     }

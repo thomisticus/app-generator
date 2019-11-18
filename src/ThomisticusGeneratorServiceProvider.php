@@ -11,6 +11,7 @@ use Thomisticus\Generator\Commands\Common\FactoryGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\MigrationGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\ModelGeneratorCommand;
 use Thomisticus\Generator\Commands\Common\RepositoryGeneratorCommand;
+use Thomisticus\Generator\Commands\Common\SeederGeneratorCommand;
 use Thomisticus\Generator\Commands\Publish\GeneratorPublishCommand;
 use Thomisticus\Generator\Commands\Publish\PublishTemplateCommand;
 use Thomisticus\Generator\Commands\RollbackGeneratorCommand;
@@ -49,6 +50,7 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus:tests' => TestsGeneratorCommand::class,
             'thomisticus:migration' => MigrationGeneratorCommand::class,
             'thomisticus:factory' => FactoryGeneratorCommand::class,
+            'thomisticus:seeder' => SeederGeneratorCommand::class,
             'thomisticus:model' => ModelGeneratorCommand::class,
             'thomisticus:repository' => RepositoryGeneratorCommand::class,
             'thomisticus:rollback' => RollbackGeneratorCommand::class,

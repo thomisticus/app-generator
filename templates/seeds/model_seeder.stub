@@ -11,6 +11,6 @@ class $MODEL_NAME_PLURAL$TableSeeder extends Seeder
      */
     public function run()
     {
-
+        factory($NAMESPACE_MODEL$\$MODEL_NAME$::class, 5)->create();
     }
 }
