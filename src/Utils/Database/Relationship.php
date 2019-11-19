@@ -2,7 +2,7 @@
 
 namespace Thomisticus\Generator\Utils\Database;
 
-use ICanBoogie\Inflector;
+//use ICanBoogie\Inflector;
 use Illuminate\Support\Str;
 
 class Relationship
@@ -64,11 +64,12 @@ class Relationship
      * Retrieves the relationship function text
      *
      * @param string|null $relationText Relationship's custom name
+     * @param string|null $modelOwnerName Model name of the class that owns the relationship method
      * @return mixed|string
      */
-    public function getRelationFunctionText($relationText = null)
+    public function getRelationFunctionText($relationText = null, $modelOwnerName = null)
     {
-        $relationAttr = $this->getRelationAttributes($relationText);
+        $relationAttr = $this->getRelationAttributes($relationText, $modelOwnerName);
 
         if (!empty($relationAttr['functionName']) && !empty($relationAttr['relation'])) {
             return $this->generateRelation(
@@ -82,19 +83,46 @@ class Relationship
     }
 
     /**
+     * Treats the name of the relationship method, removing the name of the Model whom owns the method.
+     * It's useful to create relationship names more similar to a real case.
+     *
+     * @param string $relationText
+     * @param string $modelOwnerName Model name of the class that owns the relationship method
+     * @param bool $plural If it's to generate a plural method name or not
+     * @return string
+     */
+    private function treatRelationFunctionName($relationText, $modelOwnerName, $plural = false)
+    {
+        if (!empty($this->relationName)) {
+            return $this->relationName;
+        }
+
+        if ($modelOwnerName) {
+            $modelOwnerNameCamelLength = strlen($modelOwnerName);
+            if (substr($relationText, 0, $modelOwnerNameCamelLength) == $modelOwnerName) {
+                $relationText = substr($relationText, $modelOwnerNameCamelLength);
+            }
+        }
+
+        // $inflector = Inflector::get('pt');
+        // $relationText = $plural ? $inflector->pluralize($relationText) : $relationText;
+        $relationText = $plural ? Str::plural($relationText) : $relationText;
+
+        return Str::camel($relationText);
+    }
+
+    /**
      * Retrieves the relations attributes to fill the relationship method text
      * (function, functionName and relationClass)
      *
      * @param string|null $relationText
+     * @param string|null $modelOwnerName Model name of the class that owns the relationship method
      * @return array
      */
-    public function getRelationAttributes($relationText = null)
+    public function getRelationAttributes($relationText = null, $modelOwnerName = null)
     {
-//        $inflector = Inflector::get('pt');
-//        $modelName = $this->inputs[0];
-//        $pluralRelation = !empty($modelName) ? Str::camel($inflector->pluralize($modelName)) : Str::camel($modelName);
-        $singularRelation = (!empty($this->relationName)) ? $this->relationName : Str::camel($relationText);
-        $pluralRelation = (!empty($this->relationName)) ? $this->relationName : Str::camel(Str::plural($relationText));
+        $singularRelation = $this->treatRelationFunctionName($relationText, $modelOwnerName);
+        $pluralRelation = $this->treatRelationFunctionName($relationText, $modelOwnerName, true);
 
         $relationTypeFunctions = [
             '1t1' => [$singularRelation, 'hasOne'],

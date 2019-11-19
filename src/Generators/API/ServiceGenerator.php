@@ -50,7 +50,7 @@ class ServiceGenerator extends BaseGenerator
 
         $relationships = [];
         foreach ($this->commandData->relations as $relation) {
-            $attributes = $relation->getRelationAttributes($relation->inputs[0]);
+            $attributes = $relation->getRelationAttributes($relation->inputs[0], $this->commandData->modelName);
 
             if (!empty($attributes['functionName'])) {
                 $relationships[] = "'" . $attributes['functionName'] . "'";

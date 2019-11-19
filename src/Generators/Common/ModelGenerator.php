@@ -392,7 +392,7 @@ class ModelGenerator extends BaseGenerator
                 $count++;
             }
 
-            $relationText = $relation->getRelationFunctionText($relationShipText);
+            $relationText = $relation->getRelationFunctionText($relationShipText, $this->commandData->modelName);
             if (!empty($relationText)) {
                 $fieldsArr[] = $field;
                 $relations[] = $relationText;

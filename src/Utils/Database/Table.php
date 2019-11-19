@@ -381,16 +381,14 @@ class Table
                 // check if foreign key is on the model table for which we are using generator command
                 if ($foreignKey->foreignTable == $modelTableName) {
                     // detect if one to one relationship is there
-                    $isOneToOne = $this->isOneToOne($primary, $foreignKey, $modelTable['primaryKey']);
-                    if ($isOneToOne) {
+                    if ($this->isOneToOne($primary, $foreignKey, $modelTable['primaryKey'])) {
                         $modelName = model_name_from_table_name($tableName);
                         $this->relations[] = Relationship::parseRelation('1t1,' . $modelName);
                         continue;
                     }
 
                     // detect if one to many relationship is there
-                    $isOneToMany = $this->isOneToMany($primary, $foreignKey, $modelTable['primaryKey']);
-                    if ($isOneToMany) {
+                    if ($this->isOneToMany($primary, $foreignKey, $modelTable['primaryKey'])) {
                         $additionalParams = [];
                         if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
                             $additionalParams = [
@@ -400,10 +398,7 @@ class Table
                         }
 
                         $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = Relationship::parseRelation(
-                            '1tm,' . $modelName,
-                            $additionalParams
-                        );
+                        $this->relations[] = Relationship::parseRelation('1tm,' . $modelName, $additionalParams);
                         continue;
                     }
                 }
@@ -426,43 +421,43 @@ class Table
      */
     private function isManyToMany($tables, $tableName, $modelTable, $modelTableName)
     {
-        // get table details
+        // Get table details
         $table = $tables[$tableName];
 
         $isAnyKeyOnModelTable = false;
 
-        // many to many model table name
+        // Many to many model table name
         $manyToManyTable = '';
 
         $foreignKeys = $table['foreignKeys'];
         $primary = $table['primaryKey'];
 
-        // check if any foreign key is there from model table
+        // Check if any foreign key is there from model table
         foreach ($foreignKeys as $foreignKey) {
             if ($foreignKey->foreignTable == $modelTableName) {
                 $isAnyKeyOnModelTable = true;
             }
         }
 
-        // if foreign key is there
+        // If foreign key is there
         if (!$isAnyKeyOnModelTable) {
             return false;
         }
 
         $additionalParams = [];
 
-        // if foreign key is there
+        // If foreign key is there
         if ($isAnyKeyOnModelTable) {
             foreach ($foreignKeys as $foreignKey) {
                 $foreignField = $foreignKey->foreignField; // cd_fabrica_software
                 $foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
 
-                // if foreign table is model table
+                // If foreign table is model table
                 if ($foreignTableName == $modelTableName) {
                     $foreignTable = $modelTable;
                 } else {
                     $foreignTable = $tables[$foreignTableName];
-                    // get the many to many model table name
+                    // Get the many to many model table name
                     $manyToManyTable = $foreignTableName;
                 }
 
@@ -472,15 +467,13 @@ class Table
                     $additionalParams['relatedPivotKey'] = $foreignKey->localField;
                 }
 
-                // if foreign field is not primary key of foreign table
-                // then it can not be many to many
-                if ($foreignField != $foreignTable->primaryKey) {
+                // If foreign field is not primary key of foreign table then it can not be many to many
+                if ($foreignField != $foreignTable['primaryKey']) {
                     return false;
                 }
 
-                // if foreign field is primary key of this table
-                // then it can not be many to many
-                if ($foreignField == $primary) {
+                // If foreign field is primary key of this table then it can not be many to many
+                if ($foreignField == $primary && $primary != 'id') {
                     return false;
                 }
             }
@@ -504,13 +497,7 @@ class Table
      */
     private function isOneToOne($primaryKey, $foreignKey, $modelTablePrimary)
     {
-        if ($foreignKey->foreignField == $modelTablePrimary) {
-            if ($foreignKey->localField == $primaryKey) {
-                return true;
-            }
-        }
-
-        return false;
+        return $foreignKey->foreignField == $modelTablePrimary && $foreignKey->localField == $primaryKey;
     }
 
     /**
@@ -526,13 +513,7 @@ class Table
      */
     private function isOneToMany($primaryKey, $foreignKey, $modelTablePrimary)
     {
-        if ($foreignKey->foreignField == $modelTablePrimary) {
-            if ($foreignKey->localField != $primaryKey) {
-                return true;
-            }
-        }
-
-        return false;
+        return $foreignKey->foreignField == $modelTablePrimary && $foreignKey->localField != $primaryKey;
     }
 
     /**
