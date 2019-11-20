@@ -93,12 +93,16 @@ class FactoryGenerator extends BaseGenerator
             switch (strtolower($field->fieldType)) {
                 case 'integer':
                 case 'biginteger':
-                case 'float':
                     $fakerData = 'randomDigitNotNull';
                     break;
+                case 'float':
+                    $fakerData = 'randomFloat';
+                    break;
                 case 'string':
-                case 'char':
                     $fakerData = 'word';
+                    break;
+                case 'char':
+                    $fakerData = 'randomLetter';
                     break;
                 case 'text':
                 case 'mediumtext':
