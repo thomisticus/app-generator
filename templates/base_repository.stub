@@ -11,7 +11,7 @@ abstract class BaseRepository
     /**
      * @var Model
      */
-    protected $model;
+    public $model;
 
     /**
      * @var Application

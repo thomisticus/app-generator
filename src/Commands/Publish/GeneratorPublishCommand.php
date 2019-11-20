@@ -2,6 +2,7 @@
 
 namespace Thomisticus\Generator\Commands\Publish;
 
+use Thomisticus\Generator\Utils\FieldsInputUtil;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class GeneratorPublishCommand extends PublishBaseCommand
@@ -57,8 +58,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
             '$NAMESPACE_MODEL$' => config('app-generator.namespace.model', 'App\Models'),
             '$NAMESPACE_TRAIT$' => config('app-generator.namespace.trait', 'App\Traits'),
             '$NAMESPACE_TESTS$' => config('app-generator.namespace.tests', 'Tests'),
-            '$TEST_TIMESTAMPS$' => "['" . config('app-generator.timestamps.created_at', 'created_at') . "', '" .
-                config('app-generator.timestamps.updated_at', 'updated_at') . "']",
+            '$TEST_TIMESTAMPS$' => FieldsInputUtil::prepareValuesArrayString(config('app-generator.timestamps')),
             '$CREATED_AT_COLUMN$' => config('app-generator.timestamps.created_at', 'created_at'),
             '$UPDATED_AT_COLUMN$' => config('app-generator.timestamps.updated_at', 'updated_at'),
             '$DELETED_AT_COLUMN$' => config('app-generator.timestamps.deleted_at', 'deleted_at'),

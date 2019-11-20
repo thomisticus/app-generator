@@ -240,7 +240,7 @@ class GeneratorConfig
             'controller' => app_path('Http/Controllers/'),
             'request' => app_path('Http/Requests/'),
             'api_routes' => base_path('routes/api.php'),
-            'api_tests' => base_path('tests/'),
+            'api_tests' => base_path('tests/APIs/'),
             'test_trait' => base_path('tests/traits/'),
             'controller' => app_path('Http/Controllers/'),
             'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
@@ -253,10 +253,10 @@ class GeneratorConfig
             'service' => app_path('Services/'),
         ];
 
-        $arr = ['api_routes', 'api_test', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'];
+        $notPrefixedPaths = ['api_routes', 'api_test', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'];
         foreach ($defaultPaths as $key => $defaultPath) {
-            $this->paths[$key] = $defaultPath;
-            if (!in_array($key, $arr)) {
+            $this->paths[$key] = config('app-generator.path.' . $key, $defaultPath);
+            if (!in_array($key, $notPrefixedPaths)) {
                 $this->paths[$key] .= $prefix;
             }
         }

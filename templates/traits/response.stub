@@ -33,7 +33,7 @@ trait ResponseTrait
      * @param bool $sendWithArrayStructure true to makeResponseArray
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendError($message = '', $code = Response::HTTP_BAD_REQUEST, $sendWithArrayStructure = true)
+    public function sendError($message = '', $code = Response::HTTP_NOT_FOUND, $sendWithArrayStructure = true)
     {
         $data = $sendWithArrayStructure ? $this->makeResponseArray(false, $message, $code) : $message;
         return response()->json($data, $code);

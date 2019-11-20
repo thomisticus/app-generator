@@ -17,7 +17,7 @@ class $MODEL_NAME$Service extends BaseService
     /**
      * @var $MODEL_NAME$
      */
-    protected $model;
+    public $model;
 
     /**
      * $MODEL_NAME$Service constructor.

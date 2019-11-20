@@ -89,7 +89,9 @@ class FieldsInputUtil
     {
         $arrStr = '[';
         foreach ($array as $item) {
-            $arrStr .= "'$item', ";
+            if (!empty($item)) {
+                $arrStr .= "'$item', ";
+            }
         }
 
         return substr($arrStr, 0, strlen($arrStr) - 2) . ']';

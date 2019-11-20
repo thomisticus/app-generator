@@ -5,4 +5,5 @@
      * @param  int $id
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
