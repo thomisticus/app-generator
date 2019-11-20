@@ -3,7 +3,6 @@
 namespace Thomisticus\Generator\Commands\API;
 
 use Thomisticus\Generator\Commands\BaseCommand;
-use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\API\TestGenerator;
 use Thomisticus\Generator\Generators\RepositoryTestGenerator;
 
@@ -25,14 +24,15 @@ class TestsGeneratorCommand extends BaseCommand
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {
         parent::handle();
 
-        (new RepositoryTestGenerator($this->commandData))->generate();
+        if ($this->commandData->getOption('repositoryPattern')) {
+            (new RepositoryTestGenerator($this->commandData))->generate();
+        }
+
         (new TestGenerator($this->commandData))->generate();
 
         $this->performPostActions();
