@@ -151,7 +151,7 @@ return [
 
     'timestamps' => [
 
-        'enabled' => false,
+        'enabled' => true,
 
         'created_at' => 'created_at',
 
