@@ -33,6 +33,7 @@
     "illuminate/support": "^5.6|^6.0",
     "icanboogie/inflector": "^1.4",
     "doctrine/dbal": "^2.6",
+    "mpociot/laravel-apidoc-generator": "^4.0",
     "thomisticus/laravel-nested-attributes": "dev-master"
   },
   "require-dev": {

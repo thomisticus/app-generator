@@ -16,6 +16,7 @@ use Thomisticus\Generator\Commands\Publish\GeneratorPublishCommand;
 use Thomisticus\Generator\Commands\Publish\PublishTemplateCommand;
 use Thomisticus\Generator\Commands\RollbackGeneratorCommand;
 use Thomisticus\Generator\Commands\API\ServiceGeneratorCommand;
+use Thomisticus\Generator\Commands\PostmanGeneratorCommand;
 
 class ThomisticusGeneratorServiceProvider extends ServiceProvider
 {
@@ -54,6 +55,7 @@ class ThomisticusGeneratorServiceProvider extends ServiceProvider
             'thomisticus:model' => ModelGeneratorCommand::class,
             'thomisticus:repository' => RepositoryGeneratorCommand::class,
             'thomisticus:rollback' => RollbackGeneratorCommand::class,
+            'thomisticus:postman' => PostmanGeneratorCommand::class,
         ];
 
         $this->commands($commands);
