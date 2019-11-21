@@ -44,7 +44,6 @@ class BaseCommand extends Command
 
         $this->commandData = new CommandData($this, CommandData::$COMMAND_TYPE_API);
         $this->composer = app()['composer'];
-        $this->composer = $this->composer;
     }
 
     /**
