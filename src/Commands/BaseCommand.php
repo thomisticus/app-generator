@@ -96,7 +96,7 @@ class BaseCommand extends Command
             (new RequestGenerator($this->commandData))->generate();
         }
 
-        if (!$this->isSkip('controller') && !$this->isSkip('controller')) {
+        if (!$this->isSkip('controller')) {
             (new ControllerGenerator($this->commandData))->generate();
         }
 
