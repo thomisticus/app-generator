@@ -4,6 +4,5 @@
      *
      * @param  int $id
      * @param $MODEL_NAME$Request $request
-     *
      * @return \Illuminate\Http\JsonResponse
      */

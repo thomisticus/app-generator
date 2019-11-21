@@ -66,13 +66,13 @@ class RequestGenerator extends BaseGenerator
         }
 
         if (empty($rules)) {
-            $dontRequireFields = config('app-generator.options.hidden_fields', [])
+            $notRequiredFields = config('app-generator.options.hidden_fields', [])
                 + config('app-generator.options.excluded_fields', []);
 
             foreach ($this->commandData->fields as $field) {
                 if (
                     !$field->isPrimary && $field->isNotNull && empty($field->validations)
-                    && !in_array($field->name, $dontRequireFields)
+                    && !in_array($field->name, $notRequiredFields)
                 ) {
                     $field->validations = 'required';
                 }

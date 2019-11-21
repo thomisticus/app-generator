@@ -3,6 +3,5 @@
      * POST /$MODEL_NAME_PLURAL_CAMEL$
      *
      * @param $MODEL_NAME$Request $request
-     *
      * @return \Illuminate\Http\JsonResponse
      */

@@ -3,6 +3,5 @@
      * GET|HEAD /$MODEL_NAME_PLURAL_CAMEL$/{id}
      *
      * @param  int $id
-     *
      * @return \Illuminate\Http\JsonResponse
      */
