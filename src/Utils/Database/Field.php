@@ -115,7 +115,7 @@ class Field
     public $description;
 
     /**
-     * Field lenght
+     * Field length
      * @var int|null
      */
     public $length;
