@@ -239,16 +239,16 @@ class CommandData
      */
     private function addPrimaryKey()
     {
-        $primaryKey = new Field();
+        $primaryKeyField = new Field();
 
-        $primaryKey->name = 'id';
+        $primaryKeyField->name = 'id';
         if ($primary = $this->getOption('primary')) {
-            $primaryKey->name = $primary;
+            $primaryKeyField->name = $primary;
         }
 
-        $primaryKey->parseDBType('increments')->parseOptions('searchable,fillable,primary,inForm,inIndex');
+        $primaryKeyField->parseDBType('increments')->parseOptions('searchable,fillable,primary,inForm,inIndex');
 
-        $this->fields[] = $primaryKey;
+        $this->fields[] = $primaryKeyField;
     }
 
     /**

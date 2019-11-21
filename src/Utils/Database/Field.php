@@ -118,7 +118,7 @@ class Field
      * Field lenght
      * @var int|null
      */
-    public $lenght;
+    public $length;
 
     /**
      * Set $dbInput parsing the DB type from database columns
@@ -131,8 +131,8 @@ class Field
     {
         $this->dbInput = $dbInput;
         if (!is_null($column)) {
-            $this->lenght = $column->getLength();
-            $this->dbInput = ($this->lenght > 0) ? $this->dbInput . ',' . $this->lenght : $this->dbInput;
+            $this->length = $column->getLength();
+            $this->dbInput = ($this->length > 0) ? $this->dbInput . ',' . $this->length : $this->dbInput;
             $this->dbInput = (!$column->getNotnull()) ? $this->dbInput . ':nullable' : $this->dbInput;
         }
         $this->prepareMigrationText();

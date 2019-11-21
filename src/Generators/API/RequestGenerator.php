@@ -145,7 +145,7 @@ class RequestGenerator extends BaseGenerator
                 case 'string':
                 case 'char':
                 case 'text':
-                    $rule[] = 'max:' . ($field->lenght ?? '45');
+                    $rule[] = 'max:' . ($field->length ?? '45');
                     break;
                 default:
                     $rule = [];
