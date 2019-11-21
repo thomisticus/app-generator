@@ -16,7 +16,8 @@ class CommandData
     public static $COMMAND_TYPE_API = 'api';
 
     /**
-     * @var string Model name
+     * Model name added on command
+     * @var string
      */
     public $modelName;
 
