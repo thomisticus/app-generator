@@ -1,6 +1,6 @@
 /**
      * Display a listing of $MODEL_NAME$.
-     * GET|HEAD /$MODEL_NAME_PLURAL_CAMEL$
+     * GET|HEAD /$MODEL_NAME_PLURAL_DASHED$
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
