@@ -276,54 +276,8 @@ return [
                     'headers' => [
                         'Content-Type' => 'application/json',
                         'Accept' => 'application/json',
-                        // 'Authorization' => 'Bearer {token}',
+                        //'Authorization' => 'Bearer {token}',
                         // 'Api-Version' => 'v2',
-                    ],
-
-                    /*
-                     * If no @response or @transformer declarations are found for the route,
-                     * we'll try to get a sample response by attempting an API call.
-                     * Configure the settings for the API call here.
-                     */
-                    'response_calls' => [
-                        /*
-                         * API calls will be made only for routes in this group matching these HTTP methods (GET, POST, etc).
-                         * List the methods here or use '*' to mean all methods. Leave empty to disable API calls.
-                         */
-                        'methods' => ['GET'],
-
-                        /*
-                         * Laravel config variables which should be set for the API call.
-                         * This is a good place to ensure that notifications, emails
-                         * and other external services are not triggered
-                         * during the documentation API calls
-                         */
-                        'config' => [
-                            'app.env' => 'documentation',
-                            'app.debug' => false,
-                            // 'service.key' => 'value',
-                        ],
-
-                        /*
-                         * Cookies which should be sent with the API call.
-                         */
-                        'cookies' => [
-                            // 'name' => 'value'
-                        ],
-
-                        /*
-                         * Query parameters which should be sent with the API call.
-                         */
-                        'queryParams' => [
-                            // 'key' => 'value',
-                        ],
-
-                        /*
-                         * Body parameters which should be sent with the API call.
-                         */
-                        'bodyParams' => [
-                            // 'key' => 'value',
-                        ],
                     ],
                 ],
             ],
