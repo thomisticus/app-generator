@@ -66,7 +66,6 @@ class PostmanGenerator
             'model' => config('app-generator.path.model', app_path('Models/')),
             'factory' => config('app-generator.path.factory', database_path('factories/'))
         ];
-
     }
 
     /**
@@ -135,7 +134,6 @@ class PostmanGenerator
                 $this->commandObj->warn(
                     sprintf($messageFormat, 'Skipping', $routeMethods, $routePath) . ' - ' . $e->getMessage()
                 );
-
             }
         }
 
@@ -246,7 +244,7 @@ class PostmanGenerator
 
     /**
      * Generates the request body.
-     * First it will try to find a factory with the same name of the routes group (which is based in the controller name)
+     * First it will try to find a factory with the same name of the route group (which is based in the controller name)
      * Eg: if the group is "User", it will try to create he body based on UserFactory.
      * Otherwise will get the cleanBodyParameters of each method.
      *
