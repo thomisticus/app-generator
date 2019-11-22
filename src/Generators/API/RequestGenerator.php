@@ -44,7 +44,7 @@ class RequestGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('api.request.request', 'app-generator');
+        $templateData = get_template('api.requests.request', 'app-generator');
         $this->commandData->addDynamicVariable('$RULES$', $this->generateRules());
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 

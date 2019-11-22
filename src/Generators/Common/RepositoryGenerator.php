@@ -42,7 +42,7 @@ class RepositoryGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('repository', 'app-generator');
+        $templateData = get_template('api.repositories.repository', 'app-generator');
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         $searchables = [];
@@ -58,7 +58,7 @@ class RepositoryGenerator extends BaseGenerator
             $templateData
         );
 
-        $docsTemplate = get_template('docs.repository', 'app-generator');
+        $docsTemplate = get_template('api.docs.repository', 'app-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
 
         $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);

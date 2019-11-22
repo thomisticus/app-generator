@@ -40,7 +40,7 @@ class RepositoryTestGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('test.repository_test', 'app-generator');
+        $templateData = get_template('tests.repository_test', 'app-generator');
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);

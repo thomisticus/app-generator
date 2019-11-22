@@ -253,7 +253,7 @@ class GeneratorConfig
             'service' => app_path('Services/'),
         ];
 
-        $notPrefixedPaths = ['api_routes', 'api_test', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'];
+        $notPrefixedPaths = ['api_routes', 'api_tests', 'test_trait', 'database_seeder', 'factory', 'routes', 'seeder'];
         foreach ($defaultPaths as $key => $defaultPath) {
             $this->paths[$key] = config('app-generator.path.' . $key, $defaultPath);
             if (!in_array($key, $notPrefixedPaths)) {

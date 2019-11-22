@@ -41,7 +41,7 @@ class ServiceGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('services.service', 'app-generator');
+        $templateData = get_template('api.services.service', 'app-generator');
 
         $paginate = $this->commandData->getOption('paginate');
         $renderType = $paginate ? 'paginate(' . $paginate . ')' : 'all()';

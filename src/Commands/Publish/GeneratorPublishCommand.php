@@ -86,9 +86,9 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishTestCases()
     {
         $testsPath = config('app-generator.path.tests', base_path('tests/'));
-        $this->fillAndCreateFile('test.api_test_trait', $testsPath, 'ApiTestTrait.php');
+        $this->fillAndCreateFile('tests.api_test_trait', $testsPath, 'ApiTestTrait.php');
 
-        $testAPIsPath = config('app-generator.path.api_test', base_path('tests/APIs/'));
+        $testAPIsPath = config('app-generator.path.api_tests', base_path('tests/APIs/'));
         if (!file_exists($testAPIsPath)) {
             FileUtil::createDirectoryIfNotExist($testAPIsPath);
             $this->info('APIs Tests directory created');
@@ -107,7 +107,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishBaseController()
     {
         $controllerPath = config('app-generator.path.controller', app_path('Http/Controllers/'));
-        $this->fillAndCreateFile('api_base_controller', $controllerPath, 'ApiBaseController.php');
+        $this->fillAndCreateFile('api.controller.api_base_controller', $controllerPath, 'ApiBaseController.php');
     }
 
     /**
@@ -116,7 +116,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishBaseRequest()
     {
         $requestPath = config('app-generator.path.request', app_path('Http/Requests/'));
-        $this->fillAndCreateFile('base_request', $requestPath, 'BaseRequest.php');
+        $this->fillAndCreateFile('api.requests.base_request', $requestPath, 'BaseRequest.php');
     }
 
     /**
@@ -125,7 +125,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishBaseModel()
     {
         $modelPath = config('app-generator.path.model', app_path('Http/Models/'));
-        $this->fillAndCreateFile('base_model', $modelPath, 'BaseModel.php');
+        $this->fillAndCreateFile('api.model.base_model', $modelPath, 'BaseModel.php');
     }
 
     /**
@@ -134,7 +134,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishBaseService()
     {
         $servicePath = config('app-generator.path.service', app_path('Http/Services/'));
-        $this->fillAndCreateFile('base_service', $servicePath, 'BaseService.php');
+        $this->fillAndCreateFile('api.services.base_service', $servicePath, 'BaseService.php');
     }
 
     /**
@@ -143,7 +143,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     private function publishBaseRepository()
     {
         $repositoriesPath = config('app-generator.path.repository', app_path('Repositories/'));
-        $this->fillAndCreateFile('base_repository', $repositoriesPath, 'BaseRepository.php');
+        $this->fillAndCreateFile('api.repositories.base_repository', $repositoriesPath, 'BaseRepository.php');
     }
 
     /**

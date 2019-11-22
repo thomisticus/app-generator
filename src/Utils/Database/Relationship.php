@@ -172,7 +172,7 @@ class Relationship
             $inputFields .= ", '" . implode("', '", $this->additionalParams) . "'";
         }
 
-        $template = get_template('model.relationship', 'app-generator');
+        $template = get_template('api.model.relationship', 'app-generator');
 
         $replacers = [
             '$RELATIONSHIP_CLASS$' => $relationClass,

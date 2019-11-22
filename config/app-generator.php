@@ -17,8 +17,6 @@ return [
 
         'api_routes' => base_path('routes/api.php'),
 
-        'api_test' => base_path('tests/APIs/'),
-
         'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
 
         'factory' => database_path('factories/'),
@@ -47,7 +45,7 @@ return [
 
         'tests' => base_path('tests/'),
 
-        'api_tests' => base_path('tests/'),
+        'api_tests' => base_path('tests/Feature/APIs/'),
 
         'trait' => app_path('Traits/'),
     ],
@@ -65,8 +63,6 @@ return [
 
         'request' => 'App\Http\Requests',
 
-        'api_test' => 'Tests\APIs',
-
         'model' => 'App\Models',
 
         // Model extend class. E.g.: Illuminate\Database\Eloquent\Model
@@ -79,6 +75,8 @@ return [
         'service' => 'App\Services',
 
         'tests' => 'Tests',
+
+        'api_tests' => 'Tests\Feature\APIs',
 
         'trait' => 'App\Traits',
     ],

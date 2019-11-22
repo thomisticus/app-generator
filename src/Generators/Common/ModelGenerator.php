@@ -45,7 +45,7 @@ class ModelGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('model.model', 'app-generator');
+        $templateData = get_template('api.model.model', 'app-generator');
         $templateData = $this->fillTemplate($templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
@@ -79,7 +79,7 @@ class ModelGenerator extends BaseGenerator
         $primary = $this->commandData->getOption('primary') ?: $this->commandData->primaryKey;
 
         if (!empty($primary) && $primary !== 'id') {
-            $primaryDocs = get_template('docs.model_primary', 'app-generator');
+            $primaryDocs = get_template('api.docs.model.model_primary', 'app-generator');
             $primaryDocs = $primaryDocs . generate_new_line_tab();
             $primary = $primaryDocs . "protected \$primaryKey = '" . strtolower($primary) . "';\n";
         } else {
@@ -137,7 +137,7 @@ class ModelGenerator extends BaseGenerator
      */
     private function fillDocs($templateData)
     {
-        $docsTemplate = get_template('docs.model', 'app-generator');
+        $docsTemplate = get_template('api.docs.model.model', 'app-generator');
         $docsTemplate = fill_template($this->commandData->dynamicVars, $docsTemplate);
 
         $fillables = '';
@@ -291,17 +291,17 @@ class ModelGenerator extends BaseGenerator
             });
 
             if ($createdAt !== "'created_at'") {
-                $replace .= get_template('docs.model_created_at', 'app-generator');
+                $replace .= get_template('api.docs.model.model_created_at', 'app-generator');
                 $replace .= generate_new_line_tab() . "const CREATED_AT = $createdAt;\n\n";
             }
 
             if ($updatedAt !== "'updated_at'") {
-                $replace .= get_template('docs.model_updated_at', 'app-generator');
+                $replace .= get_template('api.docs.model.model_updated_at', 'app-generator');
                 $replace .= generate_new_line_tab() . "const UPDATED_AT = $updatedAt;\n\n";
             }
 
             if ($deletedAt !== "'deleted_at'") {
-                $replace .= get_template('docs.model_deleted_at', 'app-generator');
+                $replace .= get_template('api.docs.model.model_deleted_at', 'app-generator');
                 $replace .= generate_new_line_tab() . "const DELETED_AT = $deletedAt;";
             }
 

@@ -41,7 +41,7 @@ class TestGenerator extends BaseGenerator
      */
     public function generate()
     {
-        $templateData = get_template('api.test.api_test', 'app-generator');
+        $templateData = get_template('api.tests.api_test', 'app-generator');
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
