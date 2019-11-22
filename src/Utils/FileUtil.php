@@ -19,7 +19,9 @@ class FileUtil
 
         $path = $path . $fileName;
 
-        file_put_contents($path, $contents);
+        $bytes = file_put_contents($path, $contents);
+
+        return $bytes > 0;
     }
 
     /**

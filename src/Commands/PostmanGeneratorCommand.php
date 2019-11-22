@@ -26,6 +26,10 @@ class PostmanGeneratorCommand extends GenerateDocumentation
      */
     public function handle()
     {
-        (new PostmanGenerator($this))->generate();
+        if ((new PostmanGenerator($this))->generate()) {
+            return $this->info("Postman collection file written successfully.");
+        }
+
+        return $this->error('Error creating Postman collection.');
     }
 }

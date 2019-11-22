@@ -222,7 +222,7 @@ class BaseCommand extends Command
             ];
         }
 
-        $path = config('app-generator.path.schema_files', resource_path('model_schemas/'));
+        $path = config('app-generator.path.schema_files', resource_path('docs/model_schemas/'));
 
         $fileName = $this->commandData->modelName . '.json';
 

@@ -1,5 +1,5 @@
 /**
-     * Display a listing of the $MODEL_NAME$.
+     * Display a listing of $MODEL_NAME$.
      * GET|HEAD /$MODEL_NAME_PLURAL_CAMEL$
      *
      * @param Request $request
