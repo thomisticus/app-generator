@@ -10,10 +10,7 @@ class $MODEL_NAME$ApiTest extends TestCase
 {
     use ApiTestTrait, WithoutMiddleware, DatabaseTransactions;
 
-    /**
-     * @test
-     */
-    public function test_create_$MODEL_NAME_SNAKE$()
+    public function testCreate$MODEL_NAME_PASCAL$()
     {
         $$MODEL_NAME_CAMEL$ = factory($MODEL_NAME$::class)->make()->toArray();
 
@@ -22,10 +19,7 @@ class $MODEL_NAME$ApiTest extends TestCase
         $this->assertApiResponse($$MODEL_NAME_CAMEL$);
     }
 
-    /**
-     * @test
-     */
-    public function test_read_$MODEL_NAME_SNAKE$()
+    public function testRead$MODEL_NAME_PASCAL$()
     {
         $$MODEL_NAME_CAMEL$ = factory($MODEL_NAME$::class)->create();
 
@@ -34,10 +28,7 @@ class $MODEL_NAME$ApiTest extends TestCase
         $this->assertApiResponse($$MODEL_NAME_CAMEL$->toArray());
     }
 
-    /**
-     * @test
-     */
-    public function test_update_$MODEL_NAME_SNAKE$()
+    public function testUpdate$MODEL_NAME_PASCAL$()
     {
         $$MODEL_NAME_CAMEL$ = factory($MODEL_NAME$::class)->create();
         $edited$MODEL_NAME$ = factory($MODEL_NAME$::class)->make()->toArray();
@@ -47,10 +38,7 @@ class $MODEL_NAME$ApiTest extends TestCase
         $this->assertApiResponse($edited$MODEL_NAME$);
     }
 
-    /**
-     * @test
-     */
-    public function test_delete_$MODEL_NAME_SNAKE$()
+    public function testDelete$MODEL_NAME_PASCAL$()
     {
         $$MODEL_NAME_CAMEL$ = factory($MODEL_NAME$::class)->create();
 
