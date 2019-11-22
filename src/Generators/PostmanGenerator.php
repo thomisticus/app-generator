@@ -36,6 +36,17 @@ class PostmanGenerator
     private $baseUrl;
 
     /**
+     * Name of the postman collection json file
+     * @var string
+     */
+    private $collectionFileName;
+
+    /**
+     * @var string
+     */
+    private $modelNamespace;
+
+    /**
      * @var Collection
      */
     private $groupedRoutes;
@@ -164,11 +175,11 @@ class PostmanGenerator
     }
 
     /**
-     * @param array $action
+     * @param array|null $action
      * @return bool
      * @throws ReflectionException
      */
-    private function isRouteVisibleForDocumentation(array $action)
+    private function isRouteVisibleForDocumentation($action)
     {
         list($class, $method) = Utils::getRouteClassAndMethodNames($action);
         $reflection = new ReflectionClass($class);

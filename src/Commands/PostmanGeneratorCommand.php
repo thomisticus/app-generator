@@ -33,10 +33,8 @@ class PostmanGeneratorCommand extends GenerateDocumentation
             $filePath = $filePath . $fileName;
 
             $this->info('Postman collection file created successfully in: file://' . $filePath);
-
         } else {
-            return $this->error('Error creating Postman collection.');
+            $this->error('Error creating Postman collection.');
         }
-
     }
 }
