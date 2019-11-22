@@ -27,9 +27,16 @@ class PostmanGeneratorCommand extends GenerateDocumentation
     public function handle()
     {
         if ((new PostmanGenerator($this))->generate()) {
-            return $this->info("Postman collection file written successfully.");
+            $filePath = config('app-generator.path.postman', resource_path('docs/'));
+            $fileName = config('app-generator.postman.file_name', 'collection.json');
+
+            $filePath = $filePath . $fileName;
+
+            $this->info('Postman collection file created successfully in: file://' . $filePath);
+
+        } else {
+            return $this->error('Error creating Postman collection.');
         }
 
-        return $this->error('Error creating Postman collection.');
     }
 }
