@@ -2,6 +2,7 @@
 
 namespace Thomisticus\Generator\Generators\Common;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
@@ -386,13 +387,21 @@ class ModelGenerator extends BaseGenerator
         foreach ($this->commandData->relations as $relation) {
             $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
 
-            $relationShipText = $field;
+            // Consider pivot table name when generating the relation
+            if (!empty($relation->inputs[1])) {
+                $search = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
+                $field = str_replace($search, '', $relation->inputs[1]);
+                $field = ucfirst(\Str::camel($field));
+            }
+
+            $relationshipText = $field;
+
             if (in_array($field, $fieldsArr)) {
-                $relationShipText = $relationShipText . '_' . $count;
+                $relationshipText = $relationshipText . '_' . $count;
                 $count++;
             }
 
-            $relationText = $relation->getRelationFunctionText($relationShipText, $this->commandData->modelName);
+            $relationText = $relation->getRelationFunctionText($relationshipText, $this->commandData->modelName);
             if (!empty($relationText)) {
                 $fieldsArr[] = $field;
                 $relations[] = $relationText;
