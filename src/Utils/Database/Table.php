@@ -5,7 +5,6 @@ namespace Thomisticus\Generator\Utils\Database;
 use DB;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
-use Illuminate\Support\Str;
 
 class Table
 {
@@ -424,58 +423,41 @@ class Table
         // Get table details
         $table = $tables[$tableName];
 
-        $isAnyKeyOnModelTable = false;
-
         // Many to many model table name
         $manyToManyTable = '';
 
         $foreignKeys = $table['foreignKeys'];
-        $primary = $table['primaryKey'];
 
         // Check if any foreign key is there from model table
-        foreach ($foreignKeys as $foreignKey) {
-            if ($foreignKey->foreignTable == $modelTableName) {
-                $isAnyKeyOnModelTable = true;
-            }
-        }
-
-        // If foreign key is there
-        if (!$isAnyKeyOnModelTable) {
+        if (!in_array($modelTableName, array_column($foreignKeys, 'foreignTable'))) {
             return false;
         }
 
         $additionalParams = [];
 
         // If foreign key is there
-        if ($isAnyKeyOnModelTable) {
-            foreach ($foreignKeys as $foreignKey) {
-                $foreignField = $foreignKey->foreignField; // cd_fabrica_software
-                $foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
+        foreach ($foreignKeys as $foreignKey) {
+            $foreignField = $foreignKey->foreignField; // cd_fabrica_software
+            $foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
 
-                // If foreign table is model table
-                if ($foreignTableName == $modelTableName) {
-                    $foreignTable = $modelTable;
-                } else {
-                    $foreignTable = $tables[$foreignTableName];
-                    // Get the many to many model table name
-                    $manyToManyTable = $foreignTableName;
-                }
+            // If foreign table is model table
+            if ($foreignTableName == $modelTableName) {
+                $foreignTable = $modelTable;
+            } else {
+                $foreignTable = $tables[$foreignTableName];
+                // Get the many to many model table name
+                $manyToManyTable = $foreignTableName;
+            }
 
-                if ($foreignKey->foreignField == $this->primaryKey) {
-                    $additionalParams['foreignPivotKey'] = $foreignKey->localField;
-                } else {
-                    $additionalParams['relatedPivotKey'] = $foreignKey->localField;
-                }
+            if ($foreignKey->foreignField == $this->primaryKey && $foreignKey->foreignTable == $modelTableName) {
+                $additionalParams['foreignPivotKey'] = $foreignKey->localField;
+            } else {
+                $additionalParams['relatedPivotKey'] = $foreignKey->localField;
+            }
 
-                // If foreign field is not primary key of foreign table then it can not be many to many
-                if ($foreignField != $foreignTable['primaryKey']) {
-                    return false;
-                }
-
-                // If foreign field is primary key of this table then it can not be many to many
-                if ($foreignField == $primary && $primary != 'id') {
-                    return false;
-                }
+            // If foreign field is not primary key of foreign table then it can not be many to many
+            if ($foreignField != $foreignTable['primaryKey']) {
+                return false;
             }
         }
 

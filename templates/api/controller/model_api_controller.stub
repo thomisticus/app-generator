@@ -37,7 +37,7 @@ class $MODEL_NAME$Controller extends ApiBaseController
     public function store($MODEL_NAME$Request $request)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->create($request->all());
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->create($request->json()->all());
 
         return $this->sendResponse($$MODEL_NAME_CAMEL$->toArray(), '$MODEL_NAME_HUMAN$ saved successfully');
     }
@@ -59,7 +59,7 @@ class $MODEL_NAME$Controller extends ApiBaseController
     public function update($id, $MODEL_NAME$Request $request)
     {
         /** @var $MODEL_NAME$ $$MODEL_NAME_CAMEL$ */
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->update($id, $request->all());
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Service->update($id, $request->json()->all());
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError('$MODEL_NAME_HUMAN$ not found');
