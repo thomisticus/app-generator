@@ -146,7 +146,7 @@ class ModelGenerator extends BaseGenerator
         $fieldsArr = [];
         $count = 1;
         foreach ($this->commandData->relations as $relation) {
-            $field = $relationText = $this->treatRelationshipFieldText($relation);
+            $field = $relationText = $this->treatRelationshipFieldText($relation, $fieldsArr);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;
@@ -388,7 +388,7 @@ class ModelGenerator extends BaseGenerator
         $count = 1;
 
         foreach ($this->commandData->relations as $relation) {
-            $field = $relationText = $this->treatRelationshipFieldText($relation);
+            $field = $relationText = $this->treatRelationshipFieldText($relation, $fieldsArr);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;
@@ -406,19 +406,32 @@ class ModelGenerator extends BaseGenerator
     }
 
     /**
-     * Treat the relationship field text considering the pivot table name before generating the relation
+     * Treat the relationship field text considering the pivot table name and custom foreign key names
+     * before generating the relation.
+     * This method is useful to avoid weird method names like: "item1s()" and make it more readable.
      *
      * @param Relationship $relation
+     * @param array $computedFields Fields already computed while creating the relationship models
      * @return mixed|string|null
      */
-    private function treatRelationshipFieldText(Relationship $relation)
+    private function treatRelationshipFieldText(Relationship $relation, array $computedFields = [])
     {
         $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
+        $searchModelNames = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
 
+        $relationFk = $relation->additionalParams['foreignKey'] ?? null;
+        $relationOk = $relation->additionalParams['ownerKey'] ?? null;
+
+        // If relationship is made with a custom name other than eg: 'table_name_id' and already in $computedFields
+        if ($relationFk && in_array($relationFk, $computedFields) && !Str::contains($relationFk, $searchModelNames)) {
+            $relationFkText = $relationOk ? str_replace($relationOk, '', $relationFk) : $relationFk;
+            $field = model_name_from_table_name($relationFkText);
+        }
+
+        // If contains pivot table. Usually will enter here only for many to many relationships
         if (!empty($relation->inputs[1])) {
-            $search = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
-            $field = str_replace($search, '', $relation->inputs[1]);
-            $field = ucfirst(\Str::camel($field));
+            $field = str_replace($searchModelNames, '', $relation->inputs[1]);
+            $field = model_name_from_table_name($field);
         }
 
         return $field;

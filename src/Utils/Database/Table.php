@@ -427,6 +427,7 @@ class Table
         $manyToManyTable = '';
 
         $foreignKeys = $table['foreignKeys'];
+        $primary = $table['primaryKey'];
 
         // Check if any foreign key is there from model table
         if (!in_array($modelTableName, array_column($foreignKeys, 'foreignTable'))) {
@@ -456,7 +457,8 @@ class Table
             }
 
             // If foreign field is not primary key of foreign table then it can not be many to many
-            if ($foreignField != $foreignTable['primaryKey']) {
+            // Or if foreign field is primary key of this table then it can not be many to many
+            if ($foreignField != $foreignTable['primaryKey'] || $foreignField == $primary) {
                 return false;
             }
         }
