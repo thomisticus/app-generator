@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
+use Thomisticus\Generator\Utils\Database\Relationship;
 use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -145,12 +146,14 @@ class ModelGenerator extends BaseGenerator
         $fieldsArr = [];
         $count = 1;
         foreach ($this->commandData->relations as $relation) {
-            $field = $relationText = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
+            $field = $relationText = $this->treatRelationshipFieldText($relation);
+
             if (in_array($field, $fieldsArr)) {
-                $relationText = $relationText . '_' . $count;
+                $relationText .= '_' . $count;
                 $count++;
             }
 
+            $relationText = $relation->treatRelationFunctionName($relationText, $this->commandData->modelName);
             $fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation, $relationText) . PHP_EOL;
             $fieldsArr[] = $field;
         }
@@ -385,23 +388,14 @@ class ModelGenerator extends BaseGenerator
         $count = 1;
 
         foreach ($this->commandData->relations as $relation) {
-            $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
-
-            // Consider pivot table name when generating the relation
-            if (!empty($relation->inputs[1])) {
-                $search = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
-                $field = str_replace($search, '', $relation->inputs[1]);
-                $field = ucfirst(\Str::camel($field));
-            }
-
-            $relationshipText = $field;
+            $field = $relationText = $this->treatRelationshipFieldText($relation);
 
             if (in_array($field, $fieldsArr)) {
-                $relationshipText = $relationshipText . '_' . $count;
+                $relationText .= '_' . $count;
                 $count++;
             }
 
-            $relationText = $relation->getRelationFunctionText($relationshipText, $this->commandData->modelName);
+            $relationText = $relation->getRelationFunctionText($relationText, $this->commandData->modelName);
             if (!empty($relationText)) {
                 $fieldsArr[] = $field;
                 $relations[] = $relationText;
@@ -409,6 +403,25 @@ class ModelGenerator extends BaseGenerator
         }
 
         return $relations;
+    }
+
+    /**
+     * Treat the relationship field text considering the pivot table name before generating the relation
+     *
+     * @param Relationship $relation
+     * @return mixed|string|null
+     */
+    private function treatRelationshipFieldText(Relationship $relation)
+    {
+        $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
+
+        if (!empty($relation->inputs[1])) {
+            $search = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
+            $field = str_replace($search, '', $relation->inputs[1]);
+            $field = ucfirst(\Str::camel($field));
+        }
+
+        return $field;
     }
 
     /**

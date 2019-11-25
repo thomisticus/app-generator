@@ -91,7 +91,7 @@ class Relationship
      * @param bool $plural If it's to generate a plural method name or not
      * @return string
      */
-    private function treatRelationFunctionName($relationText, $modelOwnerName, $plural = false)
+    public function treatRelationFunctionName($relationText, $modelOwnerName, $plural = false)
     {
         if (!empty($this->relationName)) {
             return $this->relationName;
