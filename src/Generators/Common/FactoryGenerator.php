@@ -90,42 +90,27 @@ class FactoryGenerator extends BaseGenerator
 
             $fieldData = "'" . $field->name . "' => " . '$faker->';
 
-            switch (strtolower($field->fieldType)) {
-                case 'integer':
-                case 'biginteger':
-                    $fakerData = 'randomDigitNotNull';
-                    break;
-                case 'float':
-                    $fakerData = 'randomFloat';
-                    break;
-                case 'string':
-                    $fakerData = 'word';
-                    break;
-                case 'char':
-                    $fakerData = 'randomLetter';
-                    break;
-                case 'text':
-                case 'mediumtext':
-                case 'longtext':
-                    $fakerData = 'text';
-                    break;
-                case 'datetime':
-                case 'timestamp':
-                    $fakerData = "date('Y-m-d H:i:s')";
-                    break;
-                case 'boolean':
-                    $fakerData = "boolean";
-                    break;
-                case 'enum':
-                    $fakerData = 'randomElement(' .
-                        FieldsInputUtil::prepareValuesArrayString($field->htmlValues) .
-                        ')';
-                    break;
-                default:
-                    $fakerData = 'word';
+            $fieldTypeMap = [
+                'integer' => 'randomDigitNotNull',
+                'biginteger' => 'randomDigitNotNull',
+                'float' => 'randomFloat',
+                'string' => 'word',
+                'char' => 'randomLetter',
+                'text' => 'text',
+                'mediumtext' => 'text',
+                'longtext' => 'text',
+                'datetime' => "date('Y-m-d H:i:s')",
+                'timestamp' => "date('Y-m-d H:i:s')",
+                'boolean' => 'boolean',
+                'enum' => 'randomElement(' . FieldsInputUtil::prepareValuesArrayString($field->htmlValues) . ')'
+            ];
+
+            $fieldType = strtolower($field->fieldType);
+            if (!isset($fieldTypeMap[$fieldType])) {
+                $fieldType = 'string';
             }
 
-            $fieldData .= $fakerData;
+            $fieldData .= $fieldTypeMap[$fieldType];
 
             $fields[] = $fieldData;
         }

@@ -98,9 +98,8 @@ class Relationship
         }
 
         if ($modelOwnerName) {
-            $modelOwnerNameCamelLength = strlen($modelOwnerName);
-            if (substr($relationText, 0, $modelOwnerNameCamelLength) == $modelOwnerName) {
-                $relationText = substr($relationText, $modelOwnerNameCamelLength);
+            if (Str::contains($relationText, $modelOwnerName)) {
+                $relationText = str_replace([Str::plural($modelOwnerName), $modelOwnerName], '', $relationText);
             }
         }
 

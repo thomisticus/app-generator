@@ -121,44 +121,29 @@ class Table
         foreach ($this->columns as $column) {
             $type = $column->getType()->getName();
 
-            switch ($type) {
-                case 'integer':
-                    $field = $this->generateIntFieldInput($column, 'integer');
-                    break;
-                case 'smallint':
-                    $field = $this->generateIntFieldInput($column, 'smallInteger');
-                    break;
-                case 'bigint':
-                    $field = $this->generateIntFieldInput($column, 'bigInteger');
-                    break;
-                case 'boolean':
-                    $field = $this->generateField($column, 'boolean', 'checkbox,1');
-                    break;
-                case 'datetime':
-                    $field = $this->generateField($column, 'datetime', 'date');
-                    break;
-                case 'datetimetz':
-                    $field = $this->generateField($column, 'dateTimeTz', 'date');
-                    break;
-                case 'date':
-                    $field = $this->generateField($column, 'date', 'date');
-                    break;
-                case 'time':
-                    $field = $this->generateField($column, 'time', 'text');
-                    break;
-                case 'decimal':
-                    $field = $this->generateNumberInput($column, 'decimal');
-                    break;
-                case 'float':
-                    $field = $this->generateNumberInput($column, 'float');
-                    break;
-                case 'text':
-                    $field = $this->generateField($column, 'text', 'textarea');
-                    break;
-                case 'string':
-                default:
-                    $field = $this->generateField($column, 'string', 'text');
-                    break;
+            $fieldTypeMaps = [
+                'integer' => ['integer'],
+                'smallint' => ['smallInteger'],
+                'bigint' => ['bigInteger'],
+                'boolean' => ['boolean', 'checkbox,1'],
+                'datetime' => ['datetime', 'date'],
+                'datetimetz' => ['dateTimeTz', 'date'],
+                'date' => ['date', 'date'],
+                'time' => ['time', 'text'],
+                'decimal' => ['decimal'],
+                'float' => ['float'],
+                'text' => ['text', 'textarea'],
+                'string' => ['string', 'text']
+            ];
+
+            $type = isset($fieldTypeMaps[$type]) ? $type : 'string';
+
+            if (in_array($type, ['integer', 'smallint', 'bigint'])) {
+                $field = $this->generateIntFieldInput($column, $fieldTypeMaps[$type][0]);
+            } elseif (in_array($type, ['decimal', 'float'])) {
+                $field = $this->generateNumberInput($column, $fieldTypeMaps[$type][0]);
+            } else {
+                $field = $this->generateField($column, $fieldTypeMaps[$type][0], $fieldTypeMaps[$type][1]);
             }
 
             if (strtolower($field->name) == 'password') {

@@ -87,6 +87,10 @@ class FieldsInputUtil
      */
     public static function prepareValuesArrayString($array)
     {
+        if (empty($array) || !is_array($array)) {
+            return '[]';
+        }
+
         $arrStr = '[';
         foreach ($array as $item) {
             if (!empty($item)) {

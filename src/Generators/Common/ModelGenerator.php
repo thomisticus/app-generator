@@ -146,7 +146,7 @@ class ModelGenerator extends BaseGenerator
         $fieldsArr = [];
         $count = 1;
         foreach ($this->commandData->relations as $relation) {
-            $field = $relationText = $this->treatRelationshipFieldText($relation, $fieldsArr);
+            $field = $relationText = $this->treatRelationshipFieldText($relation);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;
@@ -182,59 +182,38 @@ class ModelGenerator extends BaseGenerator
      */
     public function getFieldType($dbType)
     {
-        $fieldType = $fieldFormat = null;
+        /** @var array $types $dbyType => ['fieldType', 'fieldFormat'] */
+        $types = [
+            'increments' => ['integer', 'int32'],
+            'integer' => ['integer', 'int32'],
+            'smallinteger' => ['integer', 'int32'],
+            'long' => ['integer', 'int32'],
+            'biginteger' => ['integer', 'int32'],
+            'double' => ['number', 'number'],
+            'float' => ['number', 'number'],
+            'real' => ['number', 'number'],
+            'decimal' => ['number', 'number'],
+            'boolean' => ['boolean', null],
+            'string' => ['string', null],
+            'char' => ['string', null],
+            'text' => ['string', null],
+            'mediumtext' => ['string', null],
+            'longtext' => ['string', null],
+            'enum' => ['string', null],
+            'byte' => ['string', 'byte'],
+            'binary' => ['string', 'binary'],
+            'password' => ['string', 'password'],
+            'date' => ['string', 'date'],
+            'datetime' => ['string', 'date-time'],
+            'timestamp' => ['string', 'date-time']
+        ];
 
-        switch (strtolower($dbType)) {
-            case 'increments':
-            case 'integer':
-            case 'smallinteger':
-            case 'long':
-            case 'biginteger':
-                $fieldType = 'integer';
-                $fieldFormat = 'int32';
-                break;
-            case 'double':
-            case 'float':
-            case 'real':
-            case 'decimal':
-                $fieldType = 'number';
-                $fieldFormat = 'number';
-                break;
-            case 'boolean':
-                $fieldType = 'boolean';
-                break;
-            case 'string':
-            case 'char':
-            case 'text':
-            case 'mediumtext':
-            case 'longtext':
-            case 'enum':
-                $fieldType = 'string';
-                break;
-            case 'byte':
-                $fieldType = 'string';
-                $fieldFormat = 'byte';
-                break;
-            case 'binary':
-                $fieldType = 'string';
-                $fieldFormat = 'binary';
-                break;
-            case 'password':
-                $fieldType = 'string';
-                $fieldFormat = 'password';
-                break;
-            case 'date':
-                $fieldType = 'string';
-                $fieldFormat = 'date';
-                break;
-            case 'datetime':
-            case 'timestamp':
-                $fieldType = 'string';
-                $fieldFormat = 'date-time';
-                break;
-        }
+        $type = $types[strtolower($dbType)];
 
-        return compact('fieldType', 'fieldFormat');
+        return [
+            'fieldType' => $type[0],
+            'fieldFormat' => $type[1]
+        ];
     }
 
     /**
@@ -327,48 +306,33 @@ class ModelGenerator extends BaseGenerator
 
         $timestamps = Table::getTimestampFieldNames();
 
+        $fieldTypesMap = [
+            'integer' => 'integer',
+            'increments' => 'integer',
+            'smallinteger' => 'integer',
+            'long' => 'integer',
+            'biginteger' => 'integer',
+            'double' => 'double',
+            'float' => 'float',
+            'decimal' => 'float',
+            'boolean' => 'boolean',
+            'datetime' => 'datetime',
+            'datetimetz' => 'datetime',
+            'date' => 'date',
+            'enum' => 'string',
+            'string' => 'string',
+            'char' => 'string',
+            'text' => 'string',
+        ];
+
         foreach ($this->commandData->fields as $field) {
             if (in_array($field->name, $timestamps)) {
                 continue;
             }
 
             $rule = "'" . $field->name . "' => ";
-
-            switch (strtolower($field->fieldType)) {
-                case 'integer':
-                case 'increments':
-                case 'smallinteger':
-                case 'long':
-                case 'biginteger':
-                    $rule .= "'integer'";
-                    break;
-                case 'double':
-                    $rule .= "'double'";
-                    break;
-                case 'float':
-                case 'decimal':
-                    $rule .= "'float'";
-                    break;
-                case 'boolean':
-                    $rule .= "'boolean'";
-                    break;
-                case 'datetime':
-                case 'datetimetz':
-                    $rule .= "'datetime'";
-                    break;
-                case 'date':
-                    $rule .= "'date'";
-                    break;
-                case 'enum':
-                case 'string':
-                case 'char':
-                case 'text':
-                    $rule .= "'string'";
-                    break;
-                default:
-                    $rule = '';
-                    break;
-            }
+            $fieldType = $fieldTypesMap[strtolower($field->fieldType)] ?? '';
+            $rule .= "'" . $fieldType . "'";
 
             if (!empty($rule)) {
                 $casts[] = $rule;
@@ -388,7 +352,7 @@ class ModelGenerator extends BaseGenerator
         $count = 1;
 
         foreach ($this->commandData->relations as $relation) {
-            $field = $relationText = $this->treatRelationshipFieldText($relation, $fieldsArr);
+            $field = $relationText = $this->treatRelationshipFieldText($relation);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;
@@ -414,18 +378,26 @@ class ModelGenerator extends BaseGenerator
      * @param array $computedFields Fields already computed while creating the relationship models
      * @return mixed|string|null
      */
-    private function treatRelationshipFieldText(Relationship $relation, array $computedFields = [])
+    private function treatRelationshipFieldText(Relationship $relation)
     {
         $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
-        $searchModelNames = array_reverse(Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake']));
+        $searchModelNames = array_reverse(
+            Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake_singular', 'snake'])
+        );
 
         $relationFk = $relation->additionalParams['foreignKey'] ?? null;
         $relationOk = $relation->additionalParams['ownerKey'] ?? null;
 
-        // If relationship is made with a custom name other than eg: 'table_name_id' and already in $computedFields
-        if ($relationFk && in_array($relationFk, $computedFields) && !Str::contains($relationFk, $searchModelNames)) {
+        // If relationship is made with a custom name other than eg: 'table_name_id'
+        if ($relationFk && !Str::contains($relationFk, $searchModelNames)) {
             $relationFkText = $relationOk ? str_replace($relationOk, '', $relationFk) : $relationFk;
-            $field = model_name_from_table_name($relationFkText);
+            $renamedField = model_name_from_table_name($relationFkText);
+
+            if (in_array(strtolower($renamedField), array_column($this->commandData->fields, 'name'))) {
+                $renamedField = $renamedField . $field;
+            }
+
+            $field = $renamedField;
         }
 
         // If contains pivot table. Usually will enter here only for many to many relationships

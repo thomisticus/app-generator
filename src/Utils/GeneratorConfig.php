@@ -3,7 +3,6 @@
 namespace Thomisticus\Generator\Utils;
 
 use Illuminate\Support\Str;
-use Thomisticus\Generator\Utils\CommandData;
 
 class GeneratorConfig
 {
@@ -164,6 +163,7 @@ class GeneratorConfig
      */
     public function prepareModelNames()
     {
+        $modelSingular = Str::singular($this->modelName);
         $modelPlural = $this->getOption('plural');
 
         if (empty($modelPlural)) {
@@ -172,10 +172,13 @@ class GeneratorConfig
 
         $baseNames = [
             'default' => $this->modelName,
+            'singular' => $modelSingular,
             'plural' => $modelPlural,
             'camel' => Str::camel($this->modelName),
             'snake' => Str::snake($this->modelName),
+            'camel_singular' => Str::camel($modelSingular),
             'camel_plural' => Str::camel($modelPlural),
+            'snake_singular' => Str::snake($modelSingular),
             'snake_plural' => Str::snake($modelPlural),
         ];
 
