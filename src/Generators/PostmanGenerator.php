@@ -21,7 +21,7 @@ use Thomisticus\Generator\Utils\FileUtil;
 class PostmanGenerator
 {
     /**
-     * @var PostmanGeneratorCommand|Command
+     * @var \Thomisticus\Generator\Commands\PostmanGeneratorCommand|Command
      */
     private $commandObj;
 
@@ -59,7 +59,7 @@ class PostmanGenerator
 
     /**
      * PostmanGenerator constructor.
-     * @param PostmanGeneratorCommand|Command|null $commandObj
+     * @param \Thomisticus\Generator\Commands\PostmanGeneratorCommand|Command|null $commandObj
      */
     public function __construct($commandObj)
     {
@@ -162,7 +162,7 @@ class PostmanGenerator
     private function isValidRoute(Route $route)
     {
         $middleware = $route->middleware();
-        if (!$middleware || $middleware[0] !== 'api') {
+        if (empty($middleware) || $middleware[0] !== 'api') {
             return false;
         }
 

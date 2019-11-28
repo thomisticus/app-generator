@@ -215,12 +215,12 @@ class CommandData
                 continue;
             }
 
-            $validations = $this->commandObj->ask('Enter validations: ', false);
+            $validations = $this->commandObj->ask('Enter validations: ', null);
             $validations = $validations ?? '';
 
             $relation = '';
             if ($this->getOption('relations')) {
-                $relation = $this->commandObj->ask('Enter relationship (Leave Blank to skip):', false);
+                $relation = $this->commandObj->ask('Enter relationship (Leave Blank to skip):', null);
             }
 
             $this->fields[] = FieldsInputUtil::processFieldInput($fieldInputStr, $validations);
