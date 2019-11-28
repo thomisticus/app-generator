@@ -5,6 +5,7 @@ namespace Thomisticus\Generator\Generators\API;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
+use Thomisticus\Generator\Utils\Database\Field;
 use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -56,7 +57,7 @@ class RequestGenerator extends BaseGenerator
 
     /**
      * Generates the validation rules
-     * @return array
+     * @return string
      */
     private function generateRules()
     {
@@ -107,22 +108,6 @@ class RequestGenerator extends BaseGenerator
         $rules = [];
         $timestamps = Table::getTimestampFieldNames();
 
-        $maxRule = 'max:' . ($field->length ?? '45');
-        $fieldTypesMap = [
-            'integer' => 'integer',
-            'decimal' => 'numeric',
-            'double' => 'numeric',
-            'float' => 'numeric',
-            'boolean' => 'boolean',
-            'dateTime' => 'datetime',
-            'dateTimeTz' => 'datetime',
-            'date' => 'date',
-            'enum' => $maxRule,
-            'string' => $maxRule,
-            'char' => $maxRule,
-            'text' => $maxRule,
-        ];
-
         foreach ($this->commandData->fields as $field) {
             if (
                 in_array($field->name, $timestamps) || !$field->isFillable ||
@@ -130,6 +115,22 @@ class RequestGenerator extends BaseGenerator
             ) {
                 continue;
             }
+
+            $maxRule = 'max:' . ($field->length ?? '45');
+            $fieldTypesMap = [
+                'integer' => 'integer',
+                'decimal' => 'numeric',
+                'double' => 'numeric',
+                'float' => 'numeric',
+                'boolean' => 'boolean',
+                'dateTime' => 'datetime',
+                'dateTimeTz' => 'datetime',
+                'date' => 'date',
+                'enum' => $maxRule,
+                'string' => $maxRule,
+                'char' => $maxRule,
+                'text' => $maxRule,
+            ];
 
             $rule = [];
 
