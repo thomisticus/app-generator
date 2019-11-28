@@ -121,6 +121,7 @@ class Table
         foreach ($this->columns as $column) {
             $type = $column->getType()->getName();
 
+            /** @var array $fieldTypeMaps 'column type' => ['db type', 'html type'] */
             $fieldTypeMaps = [
                 'integer' => ['integer'],
                 'smallint' => ['smallInteger'],
@@ -138,29 +139,46 @@ class Table
 
             $type = isset($fieldTypeMaps[$type]) ? $type : 'string';
 
+            $field = null;
             if (in_array($type, ['integer', 'smallint', 'bigint'])) {
                 $field = $this->generateIntFieldInput($column, $fieldTypeMaps[$type][0]);
-            } elseif (in_array($type, ['decimal', 'float'])) {
+            }
+
+            if (in_array($type, ['decimal', 'float'])) {
                 $field = $this->generateNumberInput($column, $fieldTypeMaps[$type][0]);
-            } else {
+            }
+
+            if (empty($field)) {
                 $field = $this->generateField($column, $fieldTypeMaps[$type][0], $fieldTypeMaps[$type][1]);
             }
 
-            if (strtolower($field->name) == 'password') {
-                $field->htmlType = 'password';
-            } elseif (strtolower($field->name) == 'email') {
-                $field->htmlType = 'email';
-            } elseif (in_array(strtolower($field->name), array_map('strtolower', $this->timestamps))) {
-                $field->isSearchable = $field->isFillable = $field->inForm = $field->inIndex = $field->inView = false;
-            }
-
-            $field->isNotNull = (bool)$column->getNotNull();
-            $field->description = $column->getComment(); // get comments from table
-
-            $this->fields[] = $field;
+            $this->fields[] = $this->prepareAdditionalFieldPropertiesFromTable($field, $column);
         }
 
         return $this;
+    }
+
+    /**
+     * Sets additional properties for the field when being prepared from a table
+     *
+     * @param Field $field
+     * @param Column $column
+     * @return Field
+     */
+    private function prepareAdditionalFieldPropertiesFromTable(Field $field, Column $column)
+    {
+        $fieldName = strtolower($field->name);
+
+        if (in_array($fieldName, ['email', 'password'])) {
+            $field->htmlType = $fieldName;
+        } elseif (in_array($fieldName, array_map('strtolower', $this->timestamps))) {
+            $field->isSearchable = $field->isFillable = $field->inForm = $field->inIndex = $field->inView = false;
+        }
+
+        $field->isNotNull = (bool)$column->getNotNull();
+        $field->description = $column->getComment(); // get comments from table
+
+        return $field;
     }
 
     /**
@@ -194,32 +212,6 @@ class Table
             config('app-generator.timestamps.updated_at', 'updated_at'),
             config('app-generator.timestamps.deleted_at', 'deleted_at')
         ];
-    }
-
-    /**
-     * Generates integer text field for database.
-     *
-     * @param string $dbType
-     * @param Column $column
-     *
-     * @return \Thomisticus\Generator\Utils\Database\Field
-     */
-    private function generateIntFieldInput($column, $dbType)
-    {
-        $field = new Field();
-        $field->name = $column->getName();
-        $field->parseDBType($dbType);
-        $field->htmlType = 'number';
-
-        $field->dbInput .= $column->getAutoincrement() ? ',true' : ',false';
-
-        if ($column->getUnsigned()) {
-            $field->dbInput .= ',true';
-        }
-
-        $field->isUnique = $column->isUnique ?? false;
-
-        return $this->checkForPrimary($field);
     }
 
     /**
@@ -273,6 +265,32 @@ class Table
         $field->name = $column->getName();
         $field->parseDBType($dbType . ',' . $column->getPrecision() . ',' . $column->getScale());
         $field->htmlType = 'number';
+
+        return $this->checkForPrimary($field);
+    }
+
+    /**
+     * Generates integer text field for database.
+     *
+     * @param string $dbType
+     * @param Column $column
+     *
+     * @return \Thomisticus\Generator\Utils\Database\Field
+     */
+    private function generateIntFieldInput($column, $dbType)
+    {
+        $field = new Field();
+        $field->name = $column->getName();
+        $field->parseDBType($dbType);
+        $field->htmlType = 'number';
+
+        $field->dbInput .= $column->getAutoincrement() ? ',true' : ',false';
+
+        if ($column->getUnsigned()) {
+            $field->dbInput .= ',true';
+        }
+
+        $field->isUnique = $column->isUnique ?? false;
 
         return $this->checkForPrimary($field);
     }

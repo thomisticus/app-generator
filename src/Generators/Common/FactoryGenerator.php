@@ -5,8 +5,8 @@ namespace Thomisticus\Generator\Generators\Common;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Utils\Database\Table;
-use Thomisticus\Generator\Utils\FileUtil;
 use Thomisticus\Generator\Utils\FieldsInputUtil;
+use Thomisticus\Generator\Utils\FileUtil;
 
 /**
  * Class FactoryGenerator.
@@ -83,6 +83,20 @@ class FactoryGenerator extends BaseGenerator
         $fields = [];
         $timestamps = Table::getTimestampFieldNames();
 
+        $fieldTypeMap = [
+            'integer' => 'randomDigitNotNull',
+            'biginteger' => 'randomDigitNotNull',
+            'float' => 'randomFloat',
+            'string' => 'word',
+            'char' => 'randomLetter',
+            'text' => 'text',
+            'mediumtext' => 'text',
+            'longtext' => 'text',
+            'datetime' => "date('Y-m-d H:i:s')",
+            'timestamp' => "date('Y-m-d H:i:s')",
+            'boolean' => 'boolean',
+        ];
+
         foreach ($this->commandData->fields as $field) {
             if (in_array($field->name, $timestamps) || $field->isPrimary) {
                 continue;
@@ -90,29 +104,13 @@ class FactoryGenerator extends BaseGenerator
 
             $fieldData = "'" . $field->name . "' => " . '$faker->';
 
-            $fieldTypeMap = [
-                'integer' => 'randomDigitNotNull',
-                'biginteger' => 'randomDigitNotNull',
-                'float' => 'randomFloat',
-                'string' => 'word',
-                'char' => 'randomLetter',
-                'text' => 'text',
-                'mediumtext' => 'text',
-                'longtext' => 'text',
-                'datetime' => "date('Y-m-d H:i:s')",
-                'timestamp' => "date('Y-m-d H:i:s')",
-                'boolean' => 'boolean',
-                'enum' => 'randomElement(' . FieldsInputUtil::prepareValuesArrayString($field->htmlValues) . ')'
-            ];
-
             $fieldType = strtolower($field->fieldType);
-            if (!isset($fieldTypeMap[$fieldType])) {
-                $fieldType = 'string';
+
+            if ($fieldType === 'enum') {
+                $fieldTypeMap['enum'] = 'randomElement(' . FieldsInputUtil::prepareValuesArrayString($field->htmlValues) . ')';
             }
 
-            $fieldData .= $fieldTypeMap[$fieldType];
-
-            $fields[] = $fieldData;
+            $fields[] = $fieldData . $fieldTypeMap[$fieldType] ?? $fieldTypeMap['string'];
         }
 
         return $fields;
