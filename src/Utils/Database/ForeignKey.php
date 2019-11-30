@@ -5,6 +5,7 @@ namespace Thomisticus\Generator\Utils\Database;
 class ForeignKey
 {
     /** @var string */
+    public $ownerTableName;
     public $name;
     public $localField;
     public $foreignField;
@@ -15,6 +16,7 @@ class ForeignKey
     /**
      * ForeignKey constructor.
      *
+     * @param string $ownerTableName
      * @param string $name
      * @param string $localField
      * @param string $foreignField
@@ -22,8 +24,9 @@ class ForeignKey
      * @param string|boolean $onUpdate
      * @param string|boolean $onDelete
      */
-    public function __construct($name, $localField, $foreignField, $foreignTable, $onUpdate, $onDelete)
+    public function __construct($ownerTableName, $name, $localField, $foreignField, $foreignTable, $onUpdate, $onDelete)
     {
+        $this->ownerTableName = $ownerTableName;
         $this->name = $name;
         $this->localField = $localField;
         $this->foreignField = $foreignField;

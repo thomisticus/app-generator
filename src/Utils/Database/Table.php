@@ -96,18 +96,13 @@ class Table
     private function prepareColumns()
     {
         $tableColumns = $this->schemaManager->listTableColumns($this->tableName);
-        $indexes = $this->schemaManager->listTableIndexes($this->tableName);
-
-        foreach ($indexes as $index) {
-            $columnsIndex = $index->getColumns();
-            if ($index->isUnique() && count($columnsIndex) == 1) {
-                $tableColumns[$columnsIndex[0]]->isUnique = true;
-            }
-        }
+        $singleUniqueIndexedColumns = $this->getSingleUniqueIndexedColumnsFromTable($this->tableName);
 
         $this->columns = [];
         foreach ($tableColumns as $column) {
-            if (!in_array($column->getName(), $this->ignoredFields)) {
+            $columnName = $column->getName();
+            if (!in_array($columnName, $this->ignoredFields)) {
+                $column->isUnique = in_array($columnName, $singleUniqueIndexedColumns);
                 $this->columns[] = $column;
             }
         }
@@ -325,17 +320,18 @@ class Table
             }
             $foreignKeys = [];
             $tableForeignKeys = $table->getForeignKeys();
-            foreach ($tableForeignKeys as $tableForeignKey) {
-                $tableForeignKey = [
-                    'name' => $tableForeignKey->getName(),
-                    'localField' => $tableForeignKey->getLocalColumns()[0],
-                    'foreignField' => $tableForeignKey->getForeignColumns()[0],
-                    'foreignTable' => $tableForeignKey->getForeignTableName(),
-                    'onUpdate' => $tableForeignKey->onUpdate(),
-                    'onDelete' => $tableForeignKey->onDelete(),
+            foreach ($tableForeignKeys as $foreignKey) {
+                $foreignKey = [
+                    'ownerTableName' => $table->getName(),
+                    'name' => $foreignKey->getName(),
+                    'localField' => $foreignKey->getLocalColumns()[0],
+                    'foreignField' => $foreignKey->getForeignColumns()[0],
+                    'foreignTable' => $foreignKey->getForeignTableName(),
+                    'onUpdate' => $foreignKey->onUpdate(),
+                    'onDelete' => $foreignKey->onDelete(),
                 ];
 
-                $foreignKeys[] = new ForeignKey(...array_values($tableForeignKey));
+                $foreignKeys[] = new ForeignKey(...array_values($foreignKey));
             }
 
             $tablesToSearchForeignKeys[$table->getName()] = compact('primaryKey', 'foreignKeys');
@@ -384,8 +380,16 @@ class Table
                 if ($foreignKey->foreignTable == $modelTableName) {
                     // detect if one to one relationship is there
                     if ($this->isOneToOne($primary, $foreignKey, $modelTable['primaryKey'])) {
+                        $additionalParams = [];
+                        if (!empty($foreignKey->localField) && !empty($foreignKey->foreignField)) {
+                            $additionalParams = [
+                                'foreignKey' => $foreignKey->localField,
+                                'localKey' => $foreignKey->foreignField
+                            ];
+                        }
+
                         $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = Relationship::parseRelation('1t1,' . $modelName);
+                        $this->relations[] = Relationship::parseRelation('1t1,' . $modelName, $additionalParams);
                         continue;
                     }
 
@@ -484,7 +488,16 @@ class Table
      */
     private function isOneToOne($primaryKey, $foreignKey, $modelTablePrimary)
     {
-        return $foreignKey->foreignField == $modelTablePrimary && $foreignKey->localField == $primaryKey;
+        if ($foreignKey->foreignField == $modelTablePrimary) {
+            if ($foreignKey->localField == $primaryKey) {
+                return true;
+            } else {
+                $uniqueColumns = $this->getSingleUniqueIndexedColumnsFromTable($foreignKey->ownerTableName);
+                return in_array($foreignKey->localField, $uniqueColumns);
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -522,11 +535,7 @@ class Table
             $foreignTable = $foreignKey->foreignTable;
             $foreignField = $foreignKey->foreignField;
 
-            if (!isset($tables[$foreignTable])) {
-                continue;
-            }
-
-            if ($foreignField == $tables[$foreignTable]['primaryKey']) {
+            if (isset($tables[$foreignTable]) && $foreignField == $tables[$foreignTable]['primaryKey']) {
                 $additionalParams = [];
                 if (!empty($foreignKey->localField)) {
                     $additionalParams = [
@@ -541,5 +550,27 @@ class Table
         }
 
         return $manyToOneRelations;
+    }
+
+    /**
+     * Retrieves an array of column names that contain a single unique index.
+     * (Unique indexes of only one column.)
+     *
+     * @param string $tableName
+     * @return array
+     */
+    public function getSingleUniqueIndexedColumnsFromTable($tableName)
+    {
+        $indexes = $this->schemaManager->listTableIndexes($tableName);
+
+        $uniqueIndexedColumns = [];
+        foreach ($indexes as $index) {
+            $indexedColumns = $index->getColumns();
+            if ($index->isUnique() && count($indexedColumns) == 1) {
+                $uniqueIndexedColumns[] = reset($indexedColumns);
+            }
+        }
+
+        return array_unique($uniqueIndexedColumns);
     }
 }
