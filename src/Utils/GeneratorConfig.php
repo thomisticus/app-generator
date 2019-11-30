@@ -49,7 +49,7 @@ class GeneratorConfig
     /**
      * @var string|boolean
      */
-    protected $primaryKeyName;
+    public $primaryKeyName;
 
     /**
      * Namespace variables array
