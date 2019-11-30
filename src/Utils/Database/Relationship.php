@@ -32,6 +32,12 @@ class Relationship
     public $additionalParams;
 
     /**
+     * Set and used only when getRelationFunctionText is called from ModelGenerator
+     * @var GeneratorConfig
+     */
+    private $config;
+
+    /**
      * Parse and returns the database relationships of a field
      *
      *
@@ -264,7 +270,7 @@ class Relationship
      * Format ("related_model_name" + "_" "related_primary_key")
      *        Str::snake(class_basename($relatedInstance)).'_'.$this->getKeyName()
      *
-     * @param $relatedModel related model name
+     * @param string $relatedModel related model name
      */
     private function validateBelongsToManyParams($relatedModel)
     {

@@ -166,7 +166,7 @@ class GeneratorConfig
      * @param null|string $plural
      * @return array
      */
-    public static function prepareModelNames($modelName, $plural = null)
+    public static function prepareModelNames($modelName, $modelPlural = null)
     {
         $modelSingular = Str::singular($modelName);
         $modelPlural = $modelPlural ?? Str::plural($modelName);
