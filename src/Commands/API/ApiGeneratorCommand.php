@@ -3,7 +3,6 @@
 namespace Thomisticus\Generator\Commands\API;
 
 use Thomisticus\Generator\Commands\BaseCommand;
-use Thomisticus\Generator\Utils\CommandData;
 
 class ApiGeneratorCommand extends BaseCommand
 {

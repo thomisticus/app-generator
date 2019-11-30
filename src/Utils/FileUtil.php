@@ -10,6 +10,7 @@ class FileUtil
      * @param string $path
      * @param string $fileName
      * @param string $contents
+     * @return bool
      */
     public static function createFile($path, $fileName, $contents)
     {

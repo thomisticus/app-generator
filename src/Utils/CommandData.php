@@ -38,7 +38,7 @@ class CommandData
     public $primaryKey;
 
     /**
-     * @var \Thomisticus\Generator\Utils\Database\Field[]
+     * @var Field[]
      */
     public $fields = [];
 

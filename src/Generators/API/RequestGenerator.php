@@ -31,7 +31,7 @@ class RequestGenerator extends BaseGenerator
     /**
      * RequestGenerator constructor.
      *
-     * @param \Thomisticus\Generator\Utils\CommandData $commandData
+     * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {

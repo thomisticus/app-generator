@@ -8,7 +8,7 @@ use Thomisticus\Generator\Utils\FileUtil;
 class RepositoryTestGenerator extends BaseGenerator
 {
     /**
-     * @var \Thomisticus\Generator\Utils\CommandData
+     * @var CommandData
      */
     private $commandData;
 

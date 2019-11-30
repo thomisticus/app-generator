@@ -147,7 +147,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
     }
 
     /**
-     *  ReponseTrait file publisher
+     *  ResponseTrait file publisher
      */
     private function publishResponseTrait()
     {

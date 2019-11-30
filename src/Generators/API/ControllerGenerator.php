@@ -26,7 +26,7 @@ class ControllerGenerator extends BaseGenerator
 
     /**
      * ControllerGenerator constructor.
-     * @param \Thomisticus\Generator\Utils\CommandData $commandData
+     * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {

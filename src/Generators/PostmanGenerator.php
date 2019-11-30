@@ -16,12 +16,13 @@ use Mpociot\Reflection\DocBlock;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use ReflectionException;
+use Thomisticus\Generator\Commands\PostmanGeneratorCommand;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class PostmanGenerator
 {
     /**
-     * @var \Thomisticus\Generator\Commands\PostmanGeneratorCommand|Command
+     * @var PostmanGeneratorCommand|Command
      */
     private $commandObj;
 
@@ -59,7 +60,7 @@ class PostmanGenerator
 
     /**
      * PostmanGenerator constructor.
-     * @param \Thomisticus\Generator\Commands\PostmanGeneratorCommand|Command|null $commandObj
+     * @param PostmanGeneratorCommand|Command|null $commandObj
      */
     public function __construct($commandObj)
     {
@@ -82,6 +83,7 @@ class PostmanGenerator
     /**
      * Generate postman collection
      * @return bool
+     * @throws Exception
      */
     public function generate()
     {
@@ -116,7 +118,7 @@ class PostmanGenerator
     }
 
     /**
-     * @param \Mpociot\ApiDoc\Extracting\Generator $generator
+     * @param Generator $generator
      * @param array $routes
      * @return array
      */
@@ -292,6 +294,7 @@ class PostmanGenerator
      * Generates the json text content for postman collection
      *
      * @return false|string
+     * @throws Exception
      */
     public function getCollectionTextContent()
     {

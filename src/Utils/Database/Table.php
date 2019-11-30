@@ -44,7 +44,7 @@ class Table
 
     /**
      * Table fields
-     * @var \Thomisticus\Generator\Utils\Database\Field[]
+     * @var Field[]
      */
     public $fields;
 
@@ -64,6 +64,7 @@ class Table
      * Table constructor.
      * @param string $tableName
      * @param array $ignoredFields
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function __construct($tableName, $ignoredFields)
     {
@@ -212,9 +213,9 @@ class Table
     /**
      * Check if key is primary key and sets field options.
      *
-     * @param \Thomisticus\Generator\Utils\Database\Field $field
+     * @param Field $field
      *
-     * @return \Thomisticus\Generator\Utils\Database\Field
+     * @return Field
      */
     private function checkForPrimary(Field $field)
     {
@@ -229,11 +230,11 @@ class Table
     /**
      * Generates field.
      *
-     * @param \Doctrine\DBAL\Schema\Column $column
+     * @param Column $column
      * @param                              $dbType
      * @param                              $htmlType
      *
-     * @return \Thomisticus\Generator\Utils\Database\Field
+     * @return Field
      */
     private function generateField($column, $dbType, $htmlType)
     {
@@ -249,10 +250,10 @@ class Table
     /**
      * Generates number field.
      *
-     * @param \Doctrine\DBAL\Schema\Column $column
+     * @param Column $column
      * @param string $dbType
      *
-     * @return \Thomisticus\Generator\Utils\Database\Field
+     * @return Field
      */
     private function generateNumberInput($column, $dbType)
     {
@@ -270,7 +271,7 @@ class Table
      * @param string $dbType
      * @param Column $column
      *
-     * @return \Thomisticus\Generator\Utils\Database\Field
+     * @return Field
      */
     private function generateIntFieldInput($column, $dbType)
     {

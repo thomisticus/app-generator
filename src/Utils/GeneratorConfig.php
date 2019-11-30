@@ -163,7 +163,7 @@ class GeneratorConfig
      * Retrieves an array of model names for multiple purposes during the code generation
      *
      * @param string $modelName
-     * @param null|string $plural
+     * @param null|string $modelPlural
      * @return array
      */
     public static function prepareModelNames($modelName, $modelPlural = null)
@@ -246,12 +246,10 @@ class GeneratorConfig
             'api_routes' => base_path('routes/api.php'),
             'api_tests' => base_path('tests/APIs/'),
             'test_trait' => base_path('tests/traits/'),
-            'controller' => app_path('Http/Controllers/'),
             'database_seeder' => database_path('seeds/DatabaseSeeder.php'),
             'factory' => database_path('factories/'),
             'model' => app_path('Models/'),
             'repository' => app_path('Repositories/'),
-            'request' => app_path('Http/Requests/'),
             'routes' => base_path('routes/web.php'),
             'seeder' => database_path('seeds/'),
             'service' => app_path('Services/'),
@@ -318,7 +316,6 @@ class GeneratorConfig
             'model_extend_class' => 'Illuminate\Database\Eloquent\Model',
             'repository' => 'App\Repositories',
             'repository_tests' => 'Tests\Repositories',
-            'request' => 'App\Http\Requests',
             'service' => 'App\Services',
             'tests' => 'Tests',
             'trait' => 'App\Traits',
@@ -395,7 +392,7 @@ class GeneratorConfig
     }
 
     /**
-     * Overrides config options when geting inputs from GUI interface
+     * Overrides config options when getting inputs from GUI interface
      * @param array $jsonData
      */
     public function overrideOptionsFromJsonFile($jsonData)

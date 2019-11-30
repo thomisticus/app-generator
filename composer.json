@@ -34,7 +34,8 @@
     "icanboogie/inflector": "^1.4",
     "doctrine/dbal": "^2.6",
     "mpociot/laravel-apidoc-generator": "^4.0",
-    "thomisticus/laravel-nested-attributes": "dev-master"
+    "thomisticus/laravel-nested-attributes": "dev-master",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "~5.0",

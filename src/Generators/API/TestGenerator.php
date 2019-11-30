@@ -9,7 +9,7 @@ use Thomisticus\Generator\Utils\FileUtil;
 class TestGenerator extends BaseGenerator
 {
     /**
-     * @var \Thomisticus\Generator\Utils\CommandData
+     * @var CommandData
      */
     private $commandData;
 
@@ -27,7 +27,7 @@ class TestGenerator extends BaseGenerator
 
     /**
      * TestGenerator constructor.
-     * @param \Thomisticus\Generator\Utils\CommandData $commandData
+     * @param CommandData $commandData
      */
     public function __construct(CommandData $commandData)
     {
