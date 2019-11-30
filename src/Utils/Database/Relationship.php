@@ -239,6 +239,7 @@ class Relationship
         ) {
             $this->additionalParams = [];
         }
+            unset($this->additionalParams['localKey']);
     }
 
     /**
@@ -259,6 +260,8 @@ class Relationship
         ) {
             $this->additionalParams = [];
         }
+
+        unset($this->additionalParams['ownerKey']);
     }
 
     /**
