@@ -463,6 +463,8 @@ class Table
                 $additionalParams['relatedPivotKey'] = $foreignKey->localField;
             }
 
+            $additionalParams['primaryKey'] = $primary;
+
             // If foreign field is not primary key of foreign table then it can not be many to many
             // Or if foreign field is primary key of this table then it can not be many to many
             if ($foreignField != $foreignTable['primaryKey'] || $foreignField == $primary) {

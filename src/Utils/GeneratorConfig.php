@@ -2,6 +2,7 @@
 
 namespace Thomisticus\Generator\Utils;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class GeneratorConfig
@@ -101,7 +102,7 @@ class GeneratorConfig
 
         $this->prepareAddOns();
         $this->prepareOptions($commandData);
-        $this->prepareModelNames();
+        $this->modelNames = self::prepareModelNames($this->modelName, $this->getOption('plural'));
         $this->preparePrefixes();
         $this->loadPaths();
         $this->prepareTableName();
@@ -159,23 +160,23 @@ class GeneratorConfig
 
 
     /**
-     * Set $modelNames for multiple naming purposes
+     * Retrieves an array of model names for multiple purposes during the code generation
+     *
+     * @param string $modelName
+     * @param null|string $plural
+     * @return array
      */
-    public function prepareModelNames()
+    public static function prepareModelNames($modelName, $plural = null)
     {
-        $modelSingular = Str::singular($this->modelName);
-        $modelPlural = $this->getOption('plural');
-
-        if (empty($modelPlural)) {
-            $modelPlural = Str::plural($this->modelName);
-        }
+        $modelSingular = Str::singular($modelName);
+        $modelPlural = $modelPlural ?? Str::plural($modelName);
 
         $baseNames = [
-            'default' => $this->modelName,
+            'default' => $modelName,
             'singular' => $modelSingular,
             'plural' => $modelPlural,
-            'camel' => Str::camel($this->modelName),
-            'snake' => Str::snake($this->modelName),
+            'camel' => Str::camel($modelName),
+            'snake' => Str::snake($modelName),
             'camel_singular' => Str::camel($modelSingular),
             'camel_plural' => Str::camel($modelPlural),
             'snake_singular' => Str::snake($modelSingular),
@@ -188,10 +189,10 @@ class GeneratorConfig
             'slash' => str_replace('_', '/', $baseNames['snake']),
             'slash_plural' => str_replace('_', '/', $baseNames['snake_plural']),
             'human' => Str::title(str_replace('_', ' ', $baseNames['snake'])),
-            'human_plural' => Str::title(str_replace('_', ' ', $baseNames['snake_plural'])),
+            'human_plural' => Str::title(str_replace('_', ' ', $baseNames['snake_plural']))
         ];
 
-        $this->modelNames = array_merge($baseNames, $customNames);
+        return array_merge($baseNames, $customNames);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Thomisticus\Generator\Utils\Database;
 
+use Illuminate\Support\Str;
+
 class ForeignKey
 {
     /** @var string */
@@ -33,5 +35,18 @@ class ForeignKey
         $this->foreignTable = $foreignTable;
         $this->onUpdate = $onUpdate;
         $this->onDelete = $onDelete;
+    }
+
+    /**
+     * Verify if the foreign key name follows the default formation {'function_name' . '_' . 'local_key/owner_key'}
+     *
+     * @param string $foreignKeyName
+     * @param string $relation
+     * @param string $ownerPrimaryKeyName
+     * @return bool
+     */
+    public static function isDefaultForeignKeyName($foreignKeyName, $relation, $ownerPrimaryKeyName)
+    {
+        return $foreignKeyName === Str::snake($relation) . '_' . $ownerPrimaryKeyName;
     }
 }

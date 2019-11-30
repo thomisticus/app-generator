@@ -4,6 +4,7 @@ namespace Thomisticus\Generator\Utils\Database;
 
 //use ICanBoogie\Inflector;
 use Illuminate\Support\Str;
+use Thomisticus\Generator\Utils\GeneratorConfig;
 
 class Relationship
 {
@@ -64,12 +65,13 @@ class Relationship
      * Retrieves the relationship function text
      *
      * @param string|null $relationText Relationship's custom name
-     * @param string|null $modelOwnerName Model name of the class that owns the relationship method
+     * @param GeneratorConfig $config
      * @return mixed|string
      */
-    public function getRelationFunctionText($relationText = null, $modelOwnerName = null)
+    public function getRelationFunctionText($relationText = null, $config)
     {
-        $relationAttr = $this->getRelationAttributes($relationText, $modelOwnerName);
+        $this->config = $config;
+        $relationAttr = $this->getRelationAttributes($relationText, $this->config->modelName);
 
         if (!empty($relationAttr['functionName']) && !empty($relationAttr['relation'])) {
             return $this->generateRelation(
@@ -166,7 +168,7 @@ class Relationship
             $inputFields = ", '" . implode("', '", $inputsArray) . "'";
         }
 
-        if (!empty($this->additionalParams)) {
+        if (!empty($this->additionalParams) && $this->validateAdditionalParams($functionName, $relation, $modelName)) {
             ksort($this->additionalParams);
             $inputFields .= ", '" . implode("', '", $this->additionalParams) . "'";
         }
@@ -182,5 +184,105 @@ class Relationship
         ];
 
         return str_replace(array_keys($replacers), $replacers, $template);
+    }
+
+
+    /**
+     * Validate the aditional parameters that will take place or not in the relationship methods.
+     * If the parameters already follow the standard name for each type of relationship, they won't be added, otherwise
+     * they will.
+     *
+     * @param string $functionName relationship function name
+     * @param string $relationType relationship type (eg: 'hasMany', 'hasOne', 'belongsTo', 'belongsToMany')
+     * @param string $relatedModel related model name
+     * @return bool
+     */
+    private function validateAdditionalParams($functionName, $relationType, $relatedModel)
+    {
+        if ($relationType === 'hasMany' || $relationType === 'hasOne') {
+            $this->validateHasOneOrHasManyParams();
+        }
+
+        if ($relationType === 'belongsTo') {
+            $this->validateBelongsToParams($functionName);
+        }
+
+        if ($relationType === 'belongsToMany') {
+            $this->validateBelongsToManyParams($relatedModel);
+        }
+
+        $this->additionalParams = array_filter($this->additionalParams);
+
+        return !empty($this->additionalParams);
+    }
+
+    /**
+     * For hasMany and hasOne, $foreignKey = column of OTHER table that connects to THIS
+     * Format: Str::snake(class_basename($this)).'_'.$this->getKeyName()
+     * $localKey = primary key of THIS table
+     */
+    private function validateHasOneOrHasManyParams()
+    {
+        $foreignKeyName = $this->additionalParams['foreignKey'];
+        if (
+            ForeignKey::isDefaultForeignKeyName(
+                $foreignKeyName,
+                $this->config->modelName,
+                $this->config->primaryKeyName
+            )
+        ) {
+            $this->additionalParams = [];
+        }
+    }
+
+    /**
+     * For belongsTo, $foreignKey = column of THIS table that connects to the other
+     * Format: ("relation function name" + "_" + "OTHER table primary key")
+     * $ownerKey = other key (the primary key of the OTHER table)
+     *
+     * @param string $functionName relationship function name
+     */
+    private function validateBelongsToParams($functionName)
+    {
+        if (
+            ForeignKey::isDefaultForeignKeyName(
+                $this->additionalParams['foreignKey'],
+                $functionName,
+                $this->additionalParams['ownerKey']
+            )
+        ) {
+            $this->additionalParams = [];
+        }
+    }
+
+    /**
+     * For belongsToMany, $foreignPivotKey = column in the PIVOT TABLE table that refers to THIS table
+     * Format: ("this_model_name" + "_" + "this_primary_key")
+     *         Str::snake(class_basename($this)).'_'.$this->getKeyName()
+     *
+     * $relatedPivotKey = column in the PIVOT TABLE table that refers to RELATED table
+     * Format ("related_model_name" + "_" "related_primary_key")
+     *        Str::snake(class_basename($relatedInstance)).'_'.$this->getKeyName()
+     *
+     * @param $relatedModel related model name
+     */
+    private function validateBelongsToManyParams($relatedModel)
+    {
+        if (
+            ForeignKey::isDefaultForeignKeyName(
+                $this->additionalParams['foreignPivotKey'],
+                $this->config->modelName,
+                $this->config->primaryKeyName
+            ) &&
+            ForeignKey::isDefaultForeignKeyName(
+                $this->additionalParams['relatedPivotKey'],
+                $relatedModel,
+                $this->additionalParams['primaryKey']
+            )
+        ) {
+            $this->additionalParams = [];
+        }
+
+        unset($this->additionalParams['primaryKey']);
     }
 }

@@ -9,6 +9,7 @@ use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Utils\Database\Relationship;
 use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
+use Thomisticus\Generator\Utils\GeneratorConfig;
 
 class ModelGenerator extends BaseGenerator
 {
@@ -359,7 +360,7 @@ class ModelGenerator extends BaseGenerator
                 $count++;
             }
 
-            $relationText = $relation->getRelationFunctionText($relationText, $this->commandData->modelName);
+            $relationText = $relation->getRelationFunctionText($relationText, $this->commandData->config);
             if (!empty($relationText)) {
                 $fieldsArr[] = $field;
                 $relations[] = $relationText;
@@ -370,40 +371,62 @@ class ModelGenerator extends BaseGenerator
     }
 
     /**
+     * Retrieves an array of model names that will be useful to verify the necessity of aditional params in the
+     * relationship method or not.
+     *
+     * @param string $relatedModel The name of the related model
+     * @return array
+     */
+    private function getModelNamesForRelationshipFunctionTreatment($relatedModel)
+    {
+        $modelNameTypes = ['snake_plural', 'snake_singular', 'snake'];
+        $localModelNames = array_reverse(Arr::only($this->commandData->config->modelNames, $modelNameTypes));
+
+        $relatedModelNames = GeneratorConfig::prepareModelNames($relatedModel);
+        $relatedModelNames = array_reverse(Arr::only($relatedModelNames, $modelNameTypes));
+
+        return array_merge(array_values($localModelNames), array_values($relatedModelNames));
+    }
+
+    /**
      * Treat the relationship field text considering the pivot table name and custom foreign key names
      * before generating the relation.
      * This method is useful to avoid weird method names like: "item1s()" and make it more readable.
      *
-     * @param Relationship $relation
+     * @param Relationship $relationship
      * @param array $computedFields Fields already computed while creating the relationship models
      * @return mixed|string|null
      */
-    private function treatRelationshipFieldText(Relationship $relation)
+    private function treatRelationshipFieldText(Relationship $relationship)
     {
-        $field = (isset($relation->inputs[0])) ? $relation->inputs[0] : null;
-        $searchModelNames = array_reverse(
-            Arr::only($this->commandData->config->modelNames, ['snake_plural', 'snake_singular', 'snake'])
-        );
+        $field = (isset($relationship->inputs[0])) ? $relationship->inputs[0] : null;
 
-        $relationFk = $relation->additionalParams['foreignKey'] ?? null;
-        $relationOk = $relation->additionalParams['ownerKey'] ?? null;
+        $searchModelNames = $this->getModelNamesForRelationshipFunctionTreatment($field);
 
-        // If relationship is made with a custom name other than eg: 'table_name_id'
+        // If contains pivot table. Usually will enter here only for many to many relationships
+        if (!empty($relationship->inputs[1])) {
+            $field = str_replace($searchModelNames, '', $relationship->inputs[1]);
+            return model_name_from_table_name($field);
+        }
+
+        $relationFk = $relationship->additionalParams['foreignKey'] ?? null;
+        $relationOk = $relationship->additionalParams['ownerKey'] ?? null;
+
+        // If relationship is made with a custom column name other than eg: 'tablename_id'
         if ($relationFk && !Str::contains($relationFk, $searchModelNames)) {
-            $relationFkText = $relationOk ? str_replace($relationOk, '', $relationFk) : $relationFk;
+            $relationFkText = collect(explode('_', $relationFk))->filter(function ($word) use ($relationOk) {
+                return strtolower($word) != strtolower($relationOk);
+            })->implode('_');
+
             $renamedField = model_name_from_table_name($relationFkText);
 
+            // In case the model already have a property/column with the same name of the created method
+            // It will append $field into method's name.
             if (in_array(strtolower($renamedField), array_column($this->commandData->fields, 'name'))) {
                 $renamedField = $renamedField . $field;
             }
 
             $field = $renamedField;
-        }
-
-        // If contains pivot table. Usually will enter here only for many to many relationships
-        if (!empty($relation->inputs[1])) {
-            $field = str_replace($searchModelNames, '', $relation->inputs[1]);
-            $field = model_name_from_table_name($field);
         }
 
         return $field;
