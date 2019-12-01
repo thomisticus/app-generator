@@ -98,19 +98,17 @@ class FactoryGenerator extends BaseGenerator
         ];
 
         foreach ($this->commandData->fields as $field) {
-            if (in_array($field->name, $timestamps) || $field->isPrimary) {
-                continue;
+            if (!in_array($field->name, $timestamps) && !$field->isPrimary) {
+                $fieldData = "'" . $field->name . "' => " . '$faker->';
+
+                $fieldType = strtolower($field->fieldType);
+
+                if ($fieldType === 'enum') {
+                    $fieldTypeMap['enum'] = 'randomElement(' . FieldsInputUtil::prepareValuesArrayString($field->htmlValues) . ')';
+                }
+
+                $fields[] = $fieldData . $fieldTypeMap[$fieldType] ?? $fieldTypeMap['string'];
             }
-
-            $fieldData = "'" . $field->name . "' => " . '$faker->';
-
-            $fieldType = strtolower($field->fieldType);
-
-            if ($fieldType === 'enum') {
-                $fieldTypeMap['enum'] = 'randomElement(' . FieldsInputUtil::prepareValuesArrayString($field->htmlValues) . ')';
-            }
-
-            $fields[] = $fieldData . $fieldTypeMap[$fieldType] ?? $fieldTypeMap['string'];
         }
 
         return $fields;

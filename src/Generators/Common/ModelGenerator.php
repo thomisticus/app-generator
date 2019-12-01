@@ -326,16 +326,14 @@ class ModelGenerator extends BaseGenerator
         ];
 
         foreach ($this->commandData->fields as $field) {
-            if (in_array($field->name, $timestamps)) {
-                continue;
-            }
+            if (!in_array($field->name, $timestamps)) {
+                $rule = "'" . $field->name . "' => ";
+                $fieldType = $fieldTypesMap[strtolower($field->fieldType)] ?? '';
+                $rule .= "'" . $fieldType . "'";
 
-            $rule = "'" . $field->name . "' => ";
-            $fieldType = $fieldTypesMap[strtolower($field->fieldType)] ?? '';
-            $rule .= "'" . $fieldType . "'";
-
-            if (!empty($rule)) {
-                $casts[] = $rule;
+                if (!empty($rule)) {
+                    $casts[] = $rule;
+                }
             }
         }
 

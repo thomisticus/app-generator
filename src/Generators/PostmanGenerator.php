@@ -130,15 +130,13 @@ class PostmanGenerator
             try {
                 /** @var Route $route */
                 $route = $routeItem['route'];
-                if (!$this->isValidRoute($route) || !$this->isRouteVisibleForDocumentation($route->getAction())) {
-                    continue;
+                if ($this->isValidRoute($route) && $this->isRouteVisibleForDocumentation($route->getAction())) {
+                    $parsedRoute = $generator->processRoute($route, $routeItem['apply'] ?? []);
+                    $parsedRoute['metadata']['groupName'] = $this->getRoutesGroupName($route);
+
+                    $parsedRoutes[] = $parsedRoute;
+                    $processedRoutesCount++;
                 }
-
-                $parsedRoute = $generator->processRoute($route, $routeItem['apply'] ?? []);
-                $parsedRoute['metadata']['groupName'] = $this->getRoutesGroupName($route);
-
-                $parsedRoutes[] = $parsedRoute;
-                $processedRoutesCount++;
             } catch (\Exception $e) {
                 $messageFormat = '%s route: [%s] %s';
                 $routeMethods = implode(',', $generator->getMethods($route));

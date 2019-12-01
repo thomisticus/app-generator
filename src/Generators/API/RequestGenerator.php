@@ -5,7 +5,6 @@ namespace Thomisticus\Generator\Generators\API;
 use Illuminate\Support\Str;
 use Thomisticus\Generator\Generators\BaseGenerator;
 use Thomisticus\Generator\Utils\CommandData;
-use Thomisticus\Generator\Utils\Database\Field;
 use Thomisticus\Generator\Utils\Database\Table;
 use Thomisticus\Generator\Utils\FileUtil;
 
@@ -110,43 +109,41 @@ class RequestGenerator extends BaseGenerator
 
         foreach ($this->commandData->fields as $field) {
             if (
-                in_array($field->name, $timestamps) || !$field->isFillable ||
-                !isset($fieldTypesMap[$field->fieldType])
+                !in_array($field->name, $timestamps) &&
+                $field->isFillable && isset($fieldTypesMap[$field->fieldType])
             ) {
-                continue;
-            }
+                $maxRule = 'max:' . ($field->length ?? '45');
+                $fieldTypesMap = [
+                    'integer' => 'integer',
+                    'decimal' => 'numeric',
+                    'double' => 'numeric',
+                    'float' => 'numeric',
+                    'boolean' => 'boolean',
+                    'dateTime' => 'datetime',
+                    'dateTimeTz' => 'datetime',
+                    'date' => 'date',
+                    'enum' => $maxRule,
+                    'string' => $maxRule,
+                    'char' => $maxRule,
+                    'text' => $maxRule,
+                ];
 
-            $maxRule = 'max:' . ($field->length ?? '45');
-            $fieldTypesMap = [
-                'integer' => 'integer',
-                'decimal' => 'numeric',
-                'double' => 'numeric',
-                'float' => 'numeric',
-                'boolean' => 'boolean',
-                'dateTime' => 'datetime',
-                'dateTimeTz' => 'datetime',
-                'date' => 'date',
-                'enum' => $maxRule,
-                'string' => $maxRule,
-                'char' => $maxRule,
-                'text' => $maxRule,
-            ];
+                $rule = [];
 
-            $rule = [];
+                if ($field->isNotNull) {
+                    $rule[] = 'required';
+                }
 
-            if ($field->isNotNull) {
-                $rule[] = 'required';
-            }
+                if ($field->isUnique) {
+                    $rule[] = 'unique';
+                }
 
-            if ($field->isUnique) {
-                $rule[] = 'unique';
-            }
+                $rule[] = $fieldTypesMap[$field->fieldType] ?? '';
 
-            $rule[] = $fieldTypesMap[$field->fieldType] ?? '';
-
-            if (!empty($rule)) {
-                $rule = "'" . $field->name . "' => '" . implode('|', $rule) . "'";
-                $rules[] = $rule;
+                if (!empty($rule)) {
+                    $rule = "'" . $field->name . "' => '" . implode('|', $rule) . "'";
+                    $rules[] = $rule;
+                }
             }
         }
 
