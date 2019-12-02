@@ -146,7 +146,7 @@ class ModelGenerator extends BaseGenerator
         $count = 1;
         foreach ($this->commandData->relations as $relation) {
             $relation->commandData = $this->commandData;
-            $field = $relationText = $relation->treatRelationshipFieldText($relation);
+            $field = $relationText = $relation->parseRelationFunctionName($relation);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;
@@ -351,7 +351,7 @@ class ModelGenerator extends BaseGenerator
 
         foreach ($this->commandData->relations as $relation) {
             $relation->commandData = $this->commandData;
-            $field = $relationText = $relation->treatRelationshipFieldText($relation);
+            $field = $relationText = $relation->parseRelationFunctionName($relation);
 
             if (in_array($field, $fieldsArr)) {
                 $relationText .= '_' . $count;

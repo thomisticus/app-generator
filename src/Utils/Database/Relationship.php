@@ -70,23 +70,23 @@ class Relationship
     }
 
     /**
-     * Treat the relationship field text considering the pivot table name and custom foreign key names
+     * Treat the relationship method name considering the pivot table name and custom foreign key names
      * before generating the relation.
      * This method is useful to avoid weird method names like: "item1s()" and make it more readable.
      *
      * @param Relationship $relationship
      * @return mixed|string|null
      */
-    public function treatRelationshipFieldText(Relationship $relationship)
+    public function parseRelationFunctionName(Relationship $relationship)
     {
-        $field = (isset($relationship->inputs[0])) ? $relationship->inputs[0] : null;
+        $relationName = (isset($relationship->inputs[0])) ? $relationship->inputs[0] : null;
 
-        $searchModelNames = $this->getModelNamesForRelationshipFunctionTreatment($field);
+        $searchModelNames = $this->getModelNamesForRelationshipFunctionTreatment($relationName);
 
         // If contains pivot table. Usually will enter here only for many to many relationships
         if (!empty($relationship->inputs[1])) {
-            $field = str_replace($searchModelNames['localModelNames'], '', $relationship->inputs[1]);
-            return model_name_from_table_name($field);
+            $relationName = str_replace($searchModelNames['localModelNames'], '', $relationship->inputs[1]);
+            return model_name_from_table_name($relationName);
         }
 
         $searchModelNames = Arr::flatten($searchModelNames);
@@ -99,18 +99,18 @@ class Relationship
                 return strtolower($word) != strtolower($relationOk);
             })->implode('_');
 
-            $renamedField = model_name_from_table_name($relationFkText);
+            $renamedRelation = model_name_from_table_name($relationFkText);
 
             // In case the model already have a property/column with the same name of the created method
-            // It will append $field into method's name.
-            if (in_array(strtolower($renamedField), array_column($this->commandData->fields, 'name'))) {
-                $renamedField = $renamedField . $field;
+            // It will append $relationName into method's name.
+            if (in_array(strtolower($renamedRelation), array_column($this->commandData->fields, 'name'))) {
+                $renamedRelation = $renamedRelation . $relationName;
             }
 
-            $field = $renamedField;
+            $relationName = $renamedRelation;
         }
 
-        return $field;
+        return $relationName;
     }
 
     /**
@@ -142,14 +142,10 @@ class Relationship
      */
     public function getRelationFunctionText($relationText = null)
     {
-        $relationAttr = $this->getRelationAttributes($relationText, $this->commandData->config->modelName);
+        $relationAttributes = $this->getRelationAttributes($relationText, $this->commandData->config->modelName);
 
-        if (!empty($relationAttr['functionName']) && !empty($relationAttr['relation'])) {
-            return $this->generateRelation(
-                $relationAttr['functionName'],
-                $relationAttr['relation'],
-                $relationAttr['relationClass']
-            );
+        if (!empty($relationAttributes['functionName']) && !empty($relationAttributes['relation'])) {
+            return $this->generateRelation(...array_values($relationAttributes));
         }
 
         return '';
@@ -164,7 +160,7 @@ class Relationship
      * @param bool $plural If it's to generate a plural method name or not
      * @return string
      */
-    public function treatRelationFunctionName($relationText, $modelOwnerName, $plural = false)
+    private function treatRelationFunctionName($relationText, $modelOwnerName, $plural = false)
     {
         if (!empty($this->relationName)) {
             return $this->relationName;

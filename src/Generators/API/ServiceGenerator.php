@@ -52,7 +52,7 @@ class ServiceGenerator extends BaseGenerator
         $count = 1;
         foreach ($this->commandData->relations as $relation) {
             $relation->commandData = $this->commandData;
-            $relationText = $relation->treatRelationshipFieldText($relation);
+            $relationText = $relation->parseRelationFunctionName($relation);
 
             if (in_array($relationText, $relationships)) {
                 $relationText .= '_' . $count;
