@@ -30,8 +30,8 @@ class PublishBaseCommand extends BaseCommand
 
         copy($sourceFile, $destinationFile);
 
-        $this->comment($fileName . ' published');
-        $this->info($destinationFile);
+        $this->info($fileName . ' published');
+        $this->line($destinationFile);
     }
 
     /**
@@ -49,7 +49,7 @@ class PublishBaseCommand extends BaseCommand
 
         FileUtil::createFile($filePath, $fileName, $templateData);
 
-        $this->info($fileName . ' created');
+        $this->comment($fileName . ' created');
     }
 
     /**

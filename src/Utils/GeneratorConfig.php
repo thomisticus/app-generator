@@ -169,7 +169,7 @@ class GeneratorConfig
     public static function prepareModelNames($modelName, $modelPlural = null)
     {
         $modelSingular = Str::singular($modelName);
-        $modelPlural = $modelPlural ?? Str::plural($modelName);
+        $modelPlural = $modelPlural ?: Str::plural($modelName);
 
         $baseNames = [
             'default' => $modelName,

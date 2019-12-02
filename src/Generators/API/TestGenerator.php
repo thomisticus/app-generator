@@ -46,8 +46,7 @@ class TestGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nApiTest created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- API Test created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -56,7 +55,7 @@ class TestGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('API Test file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->line("- API Test file deleted: <info>{$this->fileName}</info>");
         }
     }
 }

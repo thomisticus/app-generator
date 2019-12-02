@@ -51,8 +51,7 @@ class SeederGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nSeeder created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- Seeder created: <info>{$this->fileName}</info>");
 
         return $this;
     }
@@ -68,10 +67,10 @@ class SeederGenerator extends BaseGenerator
         $newSeederStatement = '$this->call(' . $pluralModelName . 'TableSeeder::class);';
 
         if (strpos($mainSeederContent, $newSeederStatement)) {
-            $infoText = $this->commandData->config->modelNames['plural'];
-            $infoText .= 'TableSeeder entry found in DatabaseSeeder. Skipping Adjustment.';
+            $infoText = '> ' . $this->commandData->config->modelNames['plural'];
+            $infoText .= 'TableSeeder entry found in DatabaseSeeder. Skipping adjustment.';
 
-            $this->commandData->commandObj->info($infoText);
+            $this->commandData->commandObj->warn($infoText);
             return;
         }
 
@@ -95,5 +94,15 @@ class SeederGenerator extends BaseGenerator
         $this->commandData->commandObj->comment('Main Seeder file updated.');
 
         return $this;
+    }
+
+    /**
+     * Rollback the seeder generation
+     */
+    public function rollback()
+    {
+        if ($this->rollbackFile($this->path, $this->fileName)) {
+            $this->commandData->commandObj->line("- Seeder file deleted: <info>{$this->fileName}</info>");
+        }
     }
 }

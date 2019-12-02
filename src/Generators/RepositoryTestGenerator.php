@@ -45,8 +45,7 @@ class RepositoryTestGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nRepositoryTest created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- RepositoryTest created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -55,7 +54,7 @@ class RepositoryTestGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('Repository Test file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->line("- Repository Test file deleted: <info>{$this->fileName}</info>");
         }
     }
 }

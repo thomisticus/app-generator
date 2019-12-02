@@ -76,8 +76,7 @@ class ServiceGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nService created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- Service created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -86,7 +85,7 @@ class ServiceGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('Service file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->line("- Service file deleted: <info>{$this->fileName}</info>");
         }
     }
 }

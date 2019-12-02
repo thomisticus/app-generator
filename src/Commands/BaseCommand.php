@@ -36,6 +36,12 @@ class BaseCommand extends Command
     public $composer;
 
     /**
+     * Start timestamp of the script execution
+     * @var integer
+     */
+    public $scriptStartedAt;
+
+    /**
      * Create a new command instance.
      */
     public function __construct()
@@ -51,8 +57,25 @@ class BaseCommand extends Command
      */
     public function handle()
     {
+        $this->scriptStartedAt = microtime(true);
         $this->commandData->modelName = $this->argument('model');
         $this->commandData->initCommandData()->setFieldsAndRelations();
+    }
+
+    /**
+     * Display script execution time on console
+     * @return bool
+     */
+    public function printScriptExecutionTime()
+    {
+        if (empty($this->scriptStartedAt)) {
+            return false;
+        }
+
+        $executionTime = microtime(true) - $this->scriptStartedAt;
+        $executionTime = number_format($executionTime, 2, '.', '');
+
+        $this->info('Execution time: ' . $executionTime . ' seconds');
     }
 
     /**
@@ -133,9 +156,11 @@ class BaseCommand extends Command
         }
 
         if (!$this->isSkip('dump-autoload')) {
-            $this->info('Generating autoload files');
+            $this->info("\nGenerating autoload files");
             $this->composer->dumpOptimized();
         }
+
+        $this->printScriptExecutionTime();
     }
 
     /**
@@ -231,8 +256,8 @@ class BaseCommand extends Command
         }
 
         FileUtil::createFile($path, $fileName, json_encode($fileFields, JSON_PRETTY_PRINT));
-        $this->commandData->commandObj->comment("\nSchema File saved: ");
-        $this->commandData->commandObj->info($fileName);
+        $this->commandData->commandObj->info("\nSchema File saved: ");
+        $this->commandData->commandObj->line($fileName);
     }
 
     /**

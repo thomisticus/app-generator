@@ -66,8 +66,7 @@ class RepositoryGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nRepository created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- Repository created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -76,7 +75,7 @@ class RepositoryGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('Repository file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->line("- Repository file deleted: <info>{$this->fileName}</info>");
         }
     }
 }

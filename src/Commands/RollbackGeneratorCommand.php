@@ -6,6 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Composer;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Thomisticus\Generator\Generators\API\ServiceGenerator;
+use Thomisticus\Generator\Generators\Common\FactoryGenerator;
+use Thomisticus\Generator\Generators\Common\SeederGenerator;
 use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\API\ControllerGenerator;
 use Thomisticus\Generator\Generators\API\RequestGenerator;
@@ -67,10 +70,13 @@ class RollbackGeneratorCommand extends Command
         $this->commandData->config->init($this->commandData, ['tableName', 'prefix', 'plural']);
 
         (new MigrationGenerator($this->commandData))->rollback();
+        (new FactoryGenerator($this->commandData))->rollback();
+        (new SeederGenerator($this->commandData))->rollback();
         (new ModelGenerator($this->commandData))->rollback();
         (new RepositoryGenerator($this->commandData))->rollback();
         (new RequestGenerator($this->commandData))->rollback();
         (new ControllerGenerator($this->commandData))->rollback();
+        (new ServiceGenerator($this->commandData))->rollback();
         (new RouteGenerator($this->commandData))->rollback();
 
         if ($this->commandData->getAddOn('tests')) {
@@ -78,7 +84,7 @@ class RollbackGeneratorCommand extends Command
             (new TestGenerator($this->commandData))->rollback();
         }
 
-        $this->info('Generating autoload files');
+        $this->info("\nGenerating autoload files");
         $this->composer->dumpOptimized();
     }
 

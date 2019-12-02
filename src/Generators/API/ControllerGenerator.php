@@ -57,8 +57,7 @@ class ControllerGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nAPI Controller created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- Controller created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -90,7 +89,7 @@ class ControllerGenerator extends BaseGenerator
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandObj->comment('API Controller file deleted: ' . $this->fileName);
+            $this->commandData->commandObj->line("- Controller file deleted: <info>{$this->fileName}</info>");
         }
     }
 }

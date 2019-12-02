@@ -57,7 +57,7 @@ class RouteGenerator extends BaseGenerator
 
         file_put_contents($this->path, $this->routeContents);
 
-        $commentText = "\n" . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.';
+        $commentText = "> " . $this->commandData->config->modelNames['camel_plural'] . ' api routes added.';
         $this->commandData->commandObj->comment($commentText);
     }
 
@@ -69,7 +69,7 @@ class RouteGenerator extends BaseGenerator
         if (Str::contains($this->routeContents, $this->routesTemplate)) {
             $this->routeContents = str_replace($this->routesTemplate, '', $this->routeContents);
             file_put_contents($this->path, $this->routeContents);
-            $this->commandData->commandObj->comment('api routes deleted');
+            $this->commandData->commandObj->comment('> api routes deleted');
         }
     }
 }

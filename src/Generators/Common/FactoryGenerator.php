@@ -52,8 +52,7 @@ class FactoryGenerator extends BaseGenerator
 
         FileUtil::createFile($this->path, $this->fileName, $templateData);
 
-        $this->commandData->commandObj->comment("\nFactory created: ");
-        $this->commandData->commandObj->info($this->fileName);
+        $this->commandData->commandObj->line("- Factory created: <info>{$this->fileName}</info>");
     }
 
     /**
@@ -112,5 +111,15 @@ class FactoryGenerator extends BaseGenerator
         }
 
         return $fields;
+    }
+
+    /**
+     * Rollback the factory file creation
+     */
+    public function rollback()
+    {
+        if ($this->rollbackFile($this->path, $this->fileName)) {
+            $this->commandData->commandObj->line("- Factory file deleted: <info>{$this->fileName}</info>");
+        }
     }
 }
