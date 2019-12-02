@@ -348,7 +348,7 @@ class Table
      */
     private function checkForRelations($tables)
     {
-        // get Model table name and table details from tables list
+        // Get Model table name and table details from tables list
         $modelTable = $tables[$this->tableName];
         unset($tables[$this->tableName]);
 
@@ -362,41 +362,49 @@ class Table
         }
 
         foreach ($tables as $tableName => $table) {
-            $foreignKeys = $table['foreignKeys'];
-            $primary = $table['primaryKey'];
-
-            // if foreign key count is 2 then check if many to many relationship is there
-            if (count($foreignKeys) == 2) {
-                $manyToManyRelation = $this->isManyToMany($tables, $tableName, $modelTable, $this->tableName);
-                if ($manyToManyRelation) {
-                    $this->relations[] = $manyToManyRelation;
-                    continue;
-                }
+            // First try to detect many to many relationships and go to next element if relationship is there
+            if ($this->detectManyToMany($tables, $tableName, $modelTable, $this->tableName)) {
+                continue;
             }
 
-            // iterate each foreign key and check for relationship
-            foreach ($foreignKeys as $foreignKey) {
-                // check if foreign key is on the model table for which we are using generator command
+            // Iterate each foreign key and check for relationship
+            foreach ($table['foreignKeys'] as $foreignKey) {
+                // Check if foreign key is on the model table for which we are using generator command
                 if ($foreignKey->foreignTable == $this->tableName) {
-                    // detect if one to one relationship is there
-                    if ($this->isOneToOne($primary, $foreignKey, $modelTable['primaryKey'])) {
-                        $additionalParams = $foreignKey->getAdditionalParamsByFk($foreignKey, '1t1');
-
-                        $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = Relationship::parseRelation('1t1,' . $modelName, $additionalParams);
+                    // Detect if one to one relationship is there
+                    if ($this->isOneToOne($table['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
+                        $this->appendRelations('1t1', $foreignKey, $tableName);
                         continue;
                     }
 
-                    // detect if one to many relationship is there
-                    if ($this->isOneToMany($primary, $foreignKey, $modelTable['primaryKey'])) {
-                        $additionalParams = $foreignKey->getAdditionalParamsByFk($foreignKey, '1tm');
-
-                        $modelName = model_name_from_table_name($tableName);
-                        $this->relations[] = Relationship::parseRelation('1tm,' . $modelName, $additionalParams);
+                    // Detect if one to many relationship is there
+                    if ($this->isOneToMany($table['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
+                        $this->appendRelations('1tm', $foreignKey, $tableName);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Append 1t1, 1tm and mt1 to $relations property.
+     * Obs: 'mtm' (Many to Many) has a different logic to append its relations.
+     *
+     * @param string $relationshipType Relationship type. '1t1' (One to One), '1tm' (One to Many), 'mt1' (Many to One)
+     * @param ForeignKey $foreignKey The foreign key to be analyzed for additional params
+     * @param string $tableName Name of the table for the current Model
+     */
+    private function appendRelations($relationshipType, $foreignKey, $tableName)
+    {
+        $additionalParamsArgs = [$foreignKey, $relationshipType];
+        if ($relationshipType === 'mt1') {
+            $additionalParamsArgs[] = $foreignKey->foreignField;
+        }
+
+        $additionalParams = $foreignKey->getAdditionalParamsByFk(...array_values($additionalParamsArgs));
+
+        $modelName = model_name_from_table_name($tableName);
+        $this->relations[] = Relationship::parseRelation($relationshipType . ',' . $modelName, $additionalParams);
     }
 
     /**
@@ -412,53 +420,54 @@ class Table
      *
      * @return bool|\Thomisticus\Generator\Utils\Database\Relationship
      */
-    private function isManyToMany($tables, $tableName, $modelTable, $modelTableName)
+    private function detectManyToMany($tables, $tableName, $modelTable, $modelTableName)
     {
         // Get table details
         $table = $tables[$tableName];
 
-        // Many to many model table name
-        $manyToManyTable = '';
-
-        // Check if any foreign key is there from model table
-        if (!in_array($modelTableName, array_column($table['foreignKeys'], 'foreignTable'))) {
+        // If Foreign key count is 2 then check if many to many relationship is there
+        // check if any foreign key is there from model table
+        if (
+            count($table['foreignKeys']) != 2 ||
+            !in_array($modelTableName, array_column($table['foreignKeys'], 'foreignTable'))
+        ) {
             return false;
         }
 
+        // Many to many model table name
+        $manyToManyTable = '';
         $additionalParams = [];
 
         // If foreign key is there
         foreach ($table['foreignKeys'] as $foreignKey) {
-            $foreignField = $foreignKey->foreignField; // cd_fabrica_software
-            $foreignTableName = $foreignKey->foreignTable; // tb_fabrica_software
-
             // If foreign table is model table
-            if ($foreignTableName == $modelTableName) {
+            if ($foreignKey->foreignTable == $modelTableName) {
                 $foreignTable = $modelTable;
             } else {
-                $foreignTable = $tables[$foreignTableName];
+                $foreignTable = $tables[$foreignKey->foreignTable];
                 // Get the many to many model table name
-                $manyToManyTable = $foreignTableName;
+                $manyToManyTable = $foreignKey->foreignTable;
             }
 
-            $additionalParams = $foreignKey->getAdditionalParamsByFk(
+            $additionalParams = array_merge($additionalParams, $foreignKey->getAdditionalParamsByFk(
                 $foreignKey,
                 'mtm',
                 $modelTableName,
                 $this->primaryKey,
                 $table['primaryKey']
-            );
+            ));
 
             // If foreign field is not primary key of foreign table then it can not be many to many
             // Or if foreign field is primary key of this table then it can not be many to many
-            if ($foreignField != $foreignTable['primaryKey'] || $foreignField == $table['primaryKey']) {
+            if ($foreignKey->foreignField != $foreignTable['primaryKey'] || $foreignKey->foreignField == $table['primaryKey']) {
                 return false;
             }
         }
 
         $modelName = model_name_from_table_name($manyToManyTable);
+        $this->relations[] = Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams);
 
-        return Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams);
+        return true;
     }
 
     /**

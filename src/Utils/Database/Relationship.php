@@ -85,10 +85,11 @@ class Relationship
 
         // If contains pivot table. Usually will enter here only for many to many relationships
         if (!empty($relationship->inputs[1])) {
-            $field = str_replace($searchModelNames, '', $relationship->inputs[1]);
+            $field = str_replace($searchModelNames['localModelNames'], '', $relationship->inputs[1]);
             return model_name_from_table_name($field);
         }
 
+        $searchModelNames = Arr::flatten($searchModelNames);
         $relationFk = $relationship->additionalParams['foreignKey'] ?? null;
         $relationOk = $relationship->additionalParams['ownerKey'] ?? null;
 
@@ -127,7 +128,10 @@ class Relationship
         $relatedModelNames = GeneratorConfig::prepareModelNames($relatedModel);
         $relatedModelNames = array_reverse(Arr::only($relatedModelNames, $modelNameTypes));
 
-        return array_merge(array_values($localModelNames), array_values($relatedModelNames));
+        return [
+            'localModelNames' => array_values($localModelNames),
+            'relatedModelNames' => array_values($relatedModelNames)
+        ];
     }
 
     /**
@@ -166,10 +170,8 @@ class Relationship
             return $this->relationName;
         }
 
-        if ($modelOwnerName) {
-            if (Str::contains($relationText, $modelOwnerName)) {
-                $relationText = str_replace([Str::plural($modelOwnerName), $modelOwnerName], '', $relationText);
-            }
+        if ($modelOwnerName && Str::contains($relationText, $modelOwnerName)) {
+            $relationText = str_replace([Str::plural($modelOwnerName), $modelOwnerName], '', $relationText);
         }
 
         // $inflector = Inflector::get('pt');
