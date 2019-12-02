@@ -354,12 +354,8 @@ class Table
 
         $this->relations = [];
 
-        // detects many to one rules for model table
-        $manyToOneRelations = $this->detectManyToOne($tables, $modelTable);
-
-        if (count($manyToOneRelations) > 0) {
-            $this->relations = array_merge($this->relations, $manyToOneRelations);
-        }
+        // Detects many to one rules for model table
+        $this->detectManyToOne($tables, $modelTable);
 
         foreach ($tables as $tableName => $table) {
             // First try to detect many to many relationships and go to next element if relationship is there
@@ -517,13 +513,9 @@ class Table
      *
      * @param Table[] $tables
      * @param Table $modelTable
-     *
-     * @return array
      */
     private function detectManyToOne($tables, $modelTable)
     {
-        $manyToOneRelations = [];
-
         $foreignKeys = $modelTable['foreignKeys'];
 
         foreach ($foreignKeys as $foreignKey) {
@@ -531,14 +523,9 @@ class Table
             $foreignField = $foreignKey->foreignField;
 
             if (isset($tables[$foreignTable]) && $foreignField == $tables[$foreignTable]['primaryKey']) {
-                $additionalParams = $foreignKey->getAdditionalParamsByFk($foreignKey, 'mt1', $foreignKey->foreignField);
-
-                $modelName = model_name_from_table_name($foreignTable);
-                $manyToOneRelations[] = Relationship::parseRelation('mt1,' . $modelName, $additionalParams);
+                $this->appendRelations('mt1', $foreignKey, $foreignTable);
             }
         }
-
-        return $manyToOneRelations;
     }
 
     /**
