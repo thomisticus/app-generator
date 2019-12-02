@@ -2,8 +2,8 @@
 
 namespace Thomisticus\Generator\Generators\API;
 
-use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Generators\BaseGenerator;
+use Thomisticus\Generator\Utils\CommandData;
 use Thomisticus\Generator\Utils\FileUtil;
 
 class ServiceGenerator extends BaseGenerator
@@ -49,10 +49,19 @@ class ServiceGenerator extends BaseGenerator
         $templateData = str_replace('$RENDER_TYPE$', $renderType, $templateData);
 
         $relationships = [];
+        $count = 1;
         foreach ($this->commandData->relations as $relation) {
-            $attributes = $relation->getRelationAttributes($relation->inputs[0], $this->commandData->modelName);
+            $relation->commandData = $this->commandData;
+            $relationText = $relation->treatRelationshipFieldText($relation);
 
-            if (!empty($attributes['functionName'])) {
+            if (in_array($relationText, $relationships)) {
+                $relationText .= '_' . $count;
+                $count++;
+            }
+
+            $attributes = $relation->getRelationAttributes($relationText, $this->commandData->modelName);
+
+            if (!empty($attributes)) {
                 $relationships[] = "'" . $attributes['functionName'] . "'";
             }
         }

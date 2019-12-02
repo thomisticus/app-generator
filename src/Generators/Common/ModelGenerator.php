@@ -153,8 +153,8 @@ class ModelGenerator extends BaseGenerator
                 $count++;
             }
 
-            $relationText = $relation->treatRelationFunctionName($relationText, $this->commandData->modelName);
-            $fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation, $relationText) . PHP_EOL;
+            $relationText = $relation->getRelationAttributes($relationText, $this->commandData->modelName);
+            $fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation, $relationText['functionName']) . PHP_EOL;
             $fieldsArr[] = $field;
         }
 
