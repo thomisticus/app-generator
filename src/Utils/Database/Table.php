@@ -3,6 +3,7 @@
 namespace Thomisticus\Generator\Utils\Database;
 
 use DB;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 
@@ -35,7 +36,7 @@ class Table
     /**
      * @var AbstractSchemaManager
      */
-    private $schemaManager;
+    public $schemaManager;
 
     /**
      * @var Column[]
@@ -72,7 +73,23 @@ class Table
         $this->ignoredFields = $ignoredFields;
 
         $this->schemaManager = DB::getDoctrineSchemaManager();
+
+        $this->registerDoctrineMappings();
+
+        $this->prepareColumns();
+        $this->primaryKey = static::getPrimaryKeyOfTable($tableName);
+        $this->timestamps = static::getTimestampFieldNames();
+        $this->defaultSearchable = config('app-generator.options.tables_searchable_default', false);
+    }
+
+    /**
+     * Register Doctrine mappings to schemaManager
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    private function registerDoctrineMappings()
+    {
         $platform = $this->schemaManager->getDatabasePlatform();
+
         $defaultMappings = [
             'enum' => 'string',
             'json' => 'text',
@@ -84,11 +101,6 @@ class Table
         foreach ($mappings as $dbType => $doctrineType) {
             $platform->registerDoctrineTypeMapping($dbType, $doctrineType);
         }
-
-        $this->prepareColumns();
-        $this->primaryKey = static::getPrimaryKeyOfTable($tableName);
-        $this->timestamps = static::getTimestampFieldNames();
-        $this->defaultSearchable = config('app-generator.options.tables_searchable_default', false);
     }
 
     /**

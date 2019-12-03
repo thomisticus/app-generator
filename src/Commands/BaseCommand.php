@@ -269,9 +269,7 @@ class BaseCommand extends Command
      */
     protected function confirmOverwrite($fileName, $prompt = '')
     {
-        $prompt = (empty($prompt))
-            ? $fileName . ' already exists. Do you want to overwrite it? [y|N]'
-            : $prompt;
+        $prompt = (empty($prompt)) ? $fileName . ' already exists. Do you want to overwrite it? [y|N]' : $prompt;
 
         return $this->confirm($prompt, false);
     }

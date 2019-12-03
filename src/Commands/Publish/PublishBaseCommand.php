@@ -49,7 +49,7 @@ class PublishBaseCommand extends BaseCommand
 
         FileUtil::createFile($filePath, $fileName, $templateData);
 
-        $this->comment($fileName . ' created');
+        $this->line($fileName . ' created');
     }
 
     /**

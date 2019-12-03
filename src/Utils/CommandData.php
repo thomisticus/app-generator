@@ -174,6 +174,7 @@ class CommandData
 
     /**
      * Get input fields and relations from existing table. To use it: --fromTable option.
+     * @throws \Doctrine\DBAL\DBALException
      */
     private function getInputFromTable()
     {
@@ -181,9 +182,14 @@ class CommandData
         $ignoredFields = !empty($ignoredFields) ? explode(',', trim($ignoredFields)) : [];
 
         $tableName = $this->dynamicVars['$TABLE_NAME$'];
-        $table = (new Table($tableName, $ignoredFields))
-            ->prepareFieldsFromTable()
-            ->prepareRelations();
+        $table = new Table($tableName, $ignoredFields);
+
+        if (!$table->schemaManager->tablesExist($tableName)) {
+            $this->commandObj->warn('Table "' . $tableName . '" not found in your database schema.');
+            exit;
+        }
+
+        $table->prepareFieldsFromTable()->prepareRelations();
 
         $this->primaryKey = $table->primaryKey;
         $this->fields = $table->fields;
