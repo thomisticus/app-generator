@@ -3,5 +3,5 @@
      **/
     public function $FUNCTION_NAME$()
     {
-        return $this->$RELATION$(\$NAMESPACE_MODEL$\$RELATION_MODEL_NAME$::class$INPUT_FIELDS$);
+        return $this->$RELATION$(\$NAMESPACE_MODEL$\$RELATION_MODEL_NAME$::class$INPUT_FIELDS$)$ADDITIONAL_METHOD_CALLS;
     }

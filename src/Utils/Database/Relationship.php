@@ -43,16 +43,19 @@ class Relationship
      * Parse and returns the database relationships of a field
      *
      *
-     * @param string $relationInput Relation input comma separated.
-     *                              One to One (Eg: 1t1,Phone,user_id,id)
-     *                              One to Many (Eg: 1tm,Comment,post_id,id)
-     *                              Many to One (Eg: mt1,Post,post_id)
-     *                              Many to Many (Eg: mtm,Role,user_roles,user_id,role_id)
-     * @param array $additionalParams Array with params like 'foreignKey', 'ownerKey','localKey',
-     *                                'foreignPivotKey','relatedPivotKey'
+     * @param string $relationInput         Relation input comma separated.
+     *                                      One to One (Eg: 1t1,Phone,user_id,id)
+     *                                      One to Many (Eg: 1tm,Comment,post_id,id)
+     *                                      Many to One (Eg: mt1,Post,post_id)
+     *                                      Many to Many (Eg: mtm,Role,user_roles,user_id,role_id)
+     *
+     * @param array $additionalParams       Array with params like 'foreignKey', 'ownerKey','localKey',
+     *                                      'foreignPivotKey','relatedPivotKey'
+     *
+     * @param array $additionalMethodCalls
      * @return Relationship
      */
-    public static function parseRelation($relationInput, $additionalParams = [])
+    public static function parseRelation($relationInput, $additionalParams = [], $additionalMethodCalls = [])
     {
         $inputs = explode(',', $relationInput);
 
@@ -65,6 +68,7 @@ class Relationship
         }
         $relation->inputs = array_merge($modelWithRelation, $inputs);
         $relation->additionalParams = $additionalParams;
+        $relation->additionalMethodCalls = $additionalMethodCalls;
 
         return $relation;
     }
@@ -149,6 +153,27 @@ class Relationship
         }
 
         return '';
+    }
+
+    /**
+     * Retrieves the additional method calls for the relationship.
+     * Usually it's used to set the ->withTimestamps() and ->withPivot() string methods
+     *
+     * @return string
+     */
+    protected function getAdditionalMethodCallsText() {
+        $string = '';
+
+        if (empty($this->additionalMethodCalls)) {
+            return $string;
+        }
+
+        foreach ($this->additionalMethodCalls as $method) {
+            $string .= generate_new_line_tab(1, 3) . '->' . $method['methodName'];
+            $string .= !empty($method['params']) ? '(' . $method['params'] . ')' : '()';
+        }
+
+        return $string;
     }
 
     /**
@@ -245,7 +270,8 @@ class Relationship
             '$FUNCTION_NAME$' => $functionName,
             '$RELATION$' => $relation,
             '$RELATION_MODEL_NAME$' => $modelName,
-            '$INPUT_FIELDS$' => strtolower($inputFields)
+            '$INPUT_FIELDS$' => strtolower($inputFields),
+            '$ADDITIONAL_METHOD_CALLS' => $this->getAdditionalMethodCallsText()
         ];
 
         return str_replace(array_keys($replacers), $replacers, $template);

@@ -5,6 +5,7 @@ namespace Thomisticus\Generator\Utils\Database;
 use DB;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
+use Thomisticus\Generator\Utils\FieldsInputUtil;
 
 class Table
 {
@@ -320,7 +321,9 @@ class Table
                 $primaryKey = $primaryKey->getColumns()[0];
             }
             $foreignKeys = [];
-            $tableForeignKeys = $table->getForeignKeys();
+//            $tableForeignKeys = $table->getForeignKeys();
+//            Calling directly from schemaManager to support SQLite Foreign Keys
+            $tableForeignKeys = $this->schemaManager->listTableForeignKeys($table->getName());
             foreach ($tableForeignKeys as $foreignKey) {
                 $foreignKey = [
                     'ownerTableName' => $table->getName(),
@@ -335,7 +338,9 @@ class Table
                 $foreignKeys[] = new ForeignKey(...array_values($foreignKey));
             }
 
-            $tablesToSearchForeignKeys[$table->getName()] = compact('primaryKey', 'foreignKeys');
+            $columnNames = array_keys($table->getColumns());
+            $name = $table->getName();
+            $tablesToSearchForeignKeys[$name] = compact('name', 'primaryKey', 'foreignKeys', 'columnNames');
         }
 
         return $tablesToSearchForeignKeys;
@@ -431,7 +436,7 @@ class Table
         }
 
         // Many to many model table name
-        $manyToManyTable = '';
+        $manyToManyTableName = '';
         $additionalParams = [];
 
         // If foreign key is there
@@ -442,7 +447,7 @@ class Table
             } else {
                 $foreignTable = $tables[$foreignKey->foreignTable];
                 // Get the many to many model table name
-                $manyToManyTable = $foreignKey->foreignTable;
+                $manyToManyTableName = $foreignKey->foreignTable;
             }
 
             $additionalParams = array_merge($additionalParams, $foreignKey->getAdditionalParamsByFk(
@@ -455,13 +460,16 @@ class Table
 
             // If foreign field is not primary key of foreign table then it can not be many to many
             // Or if foreign field is primary key of this table then it can not be many to many
-            if ($foreignKey->foreignField != $foreignTable['primaryKey'] || $foreignKey->foreignField == $table['primaryKey']) {
+            if ($foreignKey->foreignField != $foreignTable['primaryKey'] ||
+                ($foreignKey->foreignTable == $tableName && $foreignKey->foreignField == $table['primaryKey'])
+            ) {
                 return false;
             }
         }
 
-        $modelName = model_name_from_table_name($manyToManyTable);
-        $this->relations[] = Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams);
+        $additionalMethodCalls = $this->detectManyToManyAdditionalMethodCalls($table);
+        $modelName = model_name_from_table_name($manyToManyTableName);
+        $this->relations[] = Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams, $additionalMethodCalls);
 
         return true;
     }
@@ -548,5 +556,40 @@ class Table
         }
 
         return array_unique($uniqueIndexedColumns);
+    }
+
+
+    /**
+     * Determine the additional methods that the belongsToMany relationship should call.
+     * Based on pivot's timestamps columns and additional columns
+     *
+     * @param array $table
+     * @return array
+     */
+    public function detectManyToManyAdditionalMethodCalls($table)
+    {
+        $notWithPivot = array_column($table['foreignKeys'], 'localField');
+        $timestamps = self::getTimestampFieldNames();
+
+        $methods = [];
+
+        if (!empty($timestamps)) {
+            $notWithPivot = array_merge($notWithPivot, $timestamps);
+            if (!empty(array_intersect($timestamps, $table['columnNames']))) {
+                $methods[] = [
+                    'methodName' => 'withTimestamps'
+                ];
+            }
+        }
+
+        $withPivotColumns = array_diff($table['columnNames'], $notWithPivot);
+        if (!empty($withPivotColumns)) {
+            $methods[] = [
+                'methodName' => 'withPivot',
+                'params' => FieldsInputUtil::prepareValuesArrayString($withPivotColumns)
+            ];
+        }
+
+        return $methods;
     }
 }
