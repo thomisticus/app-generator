@@ -8,10 +8,10 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use Mpociot\ApiDoc\Extracting\Generator;
-use Mpociot\ApiDoc\Matching\RouteMatcher;
-use Mpociot\ApiDoc\Tools\DocumentationConfig;
-use Mpociot\ApiDoc\Tools\Utils;
+use Knuckles\Scribe\Extracting\Generator;
+use Knuckles\Scribe\Matching\RouteMatcher;
+use Knuckles\Scribe\Tools\DocumentationConfig;
+use Knuckles\Scribe\Tools\Utils;
 use Mpociot\Reflection\DocBlock;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -88,7 +88,7 @@ class PostmanGenerator
     public function generate()
     {
         $routeMatcher = new RouteMatcher(config('app-generator.postman.routes'), 'laravel');
-        $routes = $routeMatcher->getRoutes();
+        $routes = $routeMatcher->getRoutes(config('app-generator.postman.routes'), 'laravel');
 
         $generator = new Generator($this->docConfig);
         $parsedRoutes = $this->processRoutes($generator, $routes);
@@ -130,7 +130,7 @@ class PostmanGenerator
             try {
                 /** @var Route $route */
                 $route = $routeItem['route'];
-                if ($this->isValidRoute($route) && $this->isRouteVisibleForDocumentation($route->getAction())) {
+                if ($this->isValidRoute($route) && $this->isRouteVisibleForDocumentation($route)) {
                     $parsedRoute = $generator->processRoute($route, $routeItem['apply'] ?? []);
                     $parsedRoute['metadata']['groupName'] = $this->getRoutesGroupName($route);
 
@@ -161,6 +161,7 @@ class PostmanGenerator
      */
     private function isValidRoute(Route $route)
     {
+        return true;
         $middleware = $route->middleware();
         if (empty($middleware) || $middleware[0] !== 'api') {
             return false;
@@ -175,13 +176,13 @@ class PostmanGenerator
     }
 
     /**
-     * @param array|null $action
+     * @param Illuminate\Routing\Route $route
      * @return bool
      * @throws ReflectionException
      */
-    private function isRouteVisibleForDocumentation($action)
+    private function isRouteVisibleForDocumentation($route)
     {
-        list($class, $method) = Utils::getRouteClassAndMethodNames($action);
+        list($class, $method) = Utils::getRouteClassAndMethodNames($route);
         $reflection = new ReflectionClass($class);
 
         if (!$reflection->hasMethod($method)) {

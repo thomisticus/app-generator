@@ -2,7 +2,8 @@
 
 namespace Thomisticus\Generator\Commands;
 
-use Mpociot\ApiDoc\Commands\GenerateDocumentation;
+use Knuckles\Scribe\Commands\GenerateDocumentation;
+use Knuckles\Scribe\Matching\RouteMatcherInterface;
 use Thomisticus\Generator\Generators\PostmanGenerator;
 
 class PostmanGeneratorCommand extends GenerateDocumentation
@@ -23,8 +24,12 @@ class PostmanGeneratorCommand extends GenerateDocumentation
 
     /**
      * Execute the console command.
+     *
+     * @param RouteMatcherInterface $routeMatcher
+     *
+     * @return void
      */
-    public function handle()
+    public function handle(RouteMatcherInterface $routeMatcher)
     {
         if ((new PostmanGenerator($this))->generate()) {
             $filePath = config('app-generator.path.postman', resource_path('docs/'));
