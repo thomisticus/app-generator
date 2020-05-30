@@ -43,11 +43,19 @@ class ForeignKey
      * @param string $foreignKeyName
      * @param string $relation
      * @param string $ownerPrimaryKeyName
+     * @param array  $instanceTable
      * @return bool
      */
-    public static function isDefaultForeignKeyName($foreignKeyName, $relation, $ownerPrimaryKeyName)
+    public static function isDefaultForeignKeyName($foreignKeyName, $relation, $ownerPrimaryKeyName, $instanceTable)
     {
-        return $foreignKeyName === Str::snake($relation) . '_' . $ownerPrimaryKeyName;
+        $instananceClassBaseName = model_name_from_table_name($instanceTable['name']);
+
+        $defaultForeignKeyNames = [
+            Str::snake($relation) . '_' . $ownerPrimaryKeyName,
+            Str::snake($instananceClassBaseName) . '_' . $ownerPrimaryKeyName
+        ];
+
+        return in_array($foreignKeyName, $defaultForeignKeyNames);
     }
 
     /**

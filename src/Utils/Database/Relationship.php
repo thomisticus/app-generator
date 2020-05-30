@@ -34,6 +34,16 @@ class Relationship
     public $additionalParams;
 
     /**
+     * @var array
+     */
+    public $instanceTable;
+
+    /**
+     * @var array
+     */
+    public $additionalMethodCalls;
+
+    /**
      * Set and used  when getRelationFunctionText is called from ModelGenerator
      * @var CommandData
      */
@@ -55,7 +65,7 @@ class Relationship
      * @param array $additionalMethodCalls
      * @return Relationship
      */
-    public static function parseRelation($relationInput, $additionalParams = [], $additionalMethodCalls = [])
+    public static function parseRelation($relationInput, $instanceTable = [], $additionalParams = [], $additionalMethodCalls = [])
     {
         $inputs = explode(',', $relationInput);
 
@@ -67,6 +77,7 @@ class Relationship
             unset($modelWithRelation[1]);
         }
         $relation->inputs = array_merge($modelWithRelation, $inputs);
+        $relation->instanceTable = $instanceTable;
         $relation->additionalParams = $additionalParams;
         $relation->additionalMethodCalls = $additionalMethodCalls;
 
@@ -261,6 +272,8 @@ class Relationship
         if (!empty($this->additionalParams) && $this->validateAdditionalParams($functionName, $relation, $modelName)) {
             ksort($this->additionalParams);
             $inputFields .= ", '" . implode("', '", $this->additionalParams) . "'";
+        } elseif ($relation == 'belongsToMany') {
+            $inputFields = $this->validateBelongsToManyTableName($inputFields, $inputsArray);
         }
 
         $template = get_template('api.model.relationship', 'app-generator');
@@ -318,7 +331,8 @@ class Relationship
             ForeignKey::isDefaultForeignKeyName(
                 $this->additionalParams['foreignKey'],
                 $this->commandData->config->modelName,
-                $this->commandData->config->primaryKeyName
+                $this->commandData->config->primaryKeyName,
+                $this->instanceTable,
             )
         ) {
             $this->additionalParams = [];
@@ -339,7 +353,8 @@ class Relationship
             ForeignKey::isDefaultForeignKeyName(
                 $this->additionalParams['foreignKey'],
                 $functionName,
-                $this->additionalParams['ownerKey']
+                $this->additionalParams['ownerKey'],
+                $this->instanceTable,
             )
         ) {
             $this->additionalParams = [];
@@ -365,17 +380,56 @@ class Relationship
             ForeignKey::isDefaultForeignKeyName(
                 $this->additionalParams['foreignPivotKey'],
                 $this->commandData->config->modelName,
-                $this->commandData->config->primaryKeyName
+                $this->commandData->config->primaryKeyName,
+                $this->instanceTable
             ) &&
             ForeignKey::isDefaultForeignKeyName(
                 $this->additionalParams['relatedPivotKey'],
                 $relatedModel,
-                $this->additionalParams['primaryKey']
+                $this->instanceTable['primaryKey'],
+                $this->instanceTable
             )
         ) {
             $this->additionalParams = [];
         }
 
         unset($this->additionalParams['primaryKey']);
+
+
+        // Laravel can guess the table name by concatenating the two
+        // models using underscores in alphabetical order. The two model names
+        // are transformed to snake case from their default CamelCase also.
+        // If that is the case, the table name will be removed from params to keep the code cleaner
+        if (empty($this->additionalParams)) {
+            $segments = [
+                Str::snake($relatedModel),
+                Str::snake($this->commandData->modelName)
+            ];
+
+            sort($segments);
+
+            if ($this->inputs[1] == strtolower(implode('_', $segments))) {
+                unset($this->inputs[1]);
+            }
+        }
+    }
+
+    /**
+     * This method is called after validateAdditionalParams(),
+     * And removes the table name from the params of belongsToMany relationship
+     *
+     * @param string $inputFields
+     * @param array $inputsArray
+     * @return array|string|void
+     */
+    private function validateBelongsToManyTableName($inputFields, $inputsArray)
+    {
+        if (empty($this->additionalParams) && count($inputsArray) !== (count($this->inputs) - 1)) {
+            $inputFields = array_filter(explode(', ', $inputFields));
+            $inputFields = Arr::forget($inputFields, ["'" . $inputsArray[0] . "'"]);
+            $inputFields = !empty($inputFields) ? ", '" . implode("', '", $inputFields) . "'" : '';
+        }
+
+        return $inputFields;
     }
 }

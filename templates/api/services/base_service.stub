@@ -27,7 +27,7 @@ class BaseService
     {
         /** @var Eloquent $result */
         $result = $this->model::with($this->relationships);
-        return request()->pagination == 'true' ? $result->paginate() : $result->all();
+        return request()->pagination == 'true' ? $result->paginate() : $result->get();
     }
 
     /**

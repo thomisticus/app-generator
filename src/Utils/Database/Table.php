@@ -362,25 +362,25 @@ class Table
         // Detects many to one rules for model table
         $this->detectManyToOne($tables, $modelTable);
 
-        foreach ($tables as $tableName => $table) {
+        foreach ($tables as $tableName => $instanceTable) {
             // First try to detect many to many relationships and go to next element if relationship is there
             if ($this->detectManyToMany($tables, $tableName, $modelTable, $this->tableName)) {
                 continue;
             }
 
             // Iterate each foreign key and check for relationship
-            foreach ($table['foreignKeys'] as $foreignKey) {
+            foreach ($instanceTable['foreignKeys'] as $foreignKey) {
                 // Check if foreign key is on the model table for which we are using generator command
                 if ($foreignKey->foreignTable == $this->tableName) {
                     // Detect if one to one relationship is there
-                    if ($this->isOneToOne($table['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
-                        $this->appendRelations('1t1', $foreignKey, $tableName);
+                    if ($this->isOneToOne($instanceTable['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
+                        $this->appendRelations('1t1', $foreignKey, $instanceTable);
                         continue;
                     }
 
                     // Detect if one to many relationship is there
-                    if ($this->isOneToMany($table['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
-                        $this->appendRelations('1tm', $foreignKey, $tableName);
+                    if ($this->isOneToMany($instanceTable['primaryKey'], $foreignKey, $modelTable['primaryKey'])) {
+                        $this->appendRelations('1tm', $foreignKey, $instanceTable);
                     }
                 }
             }
@@ -393,9 +393,9 @@ class Table
      *
      * @param string $relationshipType Relationship type. '1t1' (One to One), '1tm' (One to Many), 'mt1' (Many to One)
      * @param ForeignKey $foreignKey The foreign key to be analyzed for additional params
-     * @param string $tableName Name of the table for the current Model
+     * @param array $instanceTable Name of the table for the current Model
      */
-    private function appendRelations($relationshipType, $foreignKey, $tableName)
+    private function appendRelations($relationshipType, $foreignKey, $instanceTable)
     {
         $additionalParamsArgs = [$foreignKey, $relationshipType];
         if ($relationshipType === 'mt1') {
@@ -404,8 +404,8 @@ class Table
 
         $additionalParams = $foreignKey->getAdditionalParamsByFk(...array_values($additionalParamsArgs));
 
-        $modelName = model_name_from_table_name($tableName);
-        $this->relations[] = Relationship::parseRelation($relationshipType . ',' . $modelName, $additionalParams);
+        $modelName = model_name_from_table_name($instanceTable['name']);
+        $this->relations[] = Relationship::parseRelation($relationshipType . ',' . $modelName, $instanceTable, $additionalParams);
     }
 
     /**
@@ -461,15 +461,16 @@ class Table
             // If foreign field is not primary key of foreign table then it can not be many to many
             // Or if foreign field is primary key of this table then it can not be many to many
             if ($foreignKey->foreignField != $foreignTable['primaryKey'] ||
-                ($foreignKey->foreignTable == $tableName && $foreignKey->foreignField == $table['primaryKey'])
+                ($foreignKey->foreignField == $table['primaryKey'])
             ) {
                 return false;
             }
         }
 
         $additionalMethodCalls = $this->detectManyToManyAdditionalMethodCalls($table);
+        $instanceTable = $tables[$manyToManyTableName];
         $modelName = model_name_from_table_name($manyToManyTableName);
-        $this->relations[] = Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $additionalParams, $additionalMethodCalls);
+        $this->relations[] = Relationship::parseRelation('mtm,' . $modelName . ',' . $tableName, $instanceTable, $additionalParams, $additionalMethodCalls);
 
         return true;
     }
@@ -529,9 +530,10 @@ class Table
         foreach ($foreignKeys as $foreignKey) {
             $foreignTable = $foreignKey->foreignTable;
             $foreignField = $foreignKey->foreignField;
+            $instanceTable = $tables[$foreignTable];
 
-            if (isset($tables[$foreignTable]) && $foreignField == $tables[$foreignTable]['primaryKey']) {
-                $this->appendRelations('mt1', $foreignKey, $foreignTable);
+            if (isset($tables[$foreignTable]) && $foreignField == $instanceTable['primaryKey']) {
+                $this->appendRelations('mt1', $foreignKey, $instanceTable);
             }
         }
     }
