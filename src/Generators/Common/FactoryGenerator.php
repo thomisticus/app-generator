@@ -92,6 +92,7 @@ class FactoryGenerator extends BaseGenerator
             'mediumtext' => 'text',
             'longtext' => 'text',
             'datetime' => "date('Y-m-d H:i:s')",
+            'date' => "date('Y-m-d H:i:s')",
             'timestamp' => "date('Y-m-d H:i:s')",
             'boolean' => 'boolean',
         ];
